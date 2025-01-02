@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0 !important;
+    padding: 0;
+}
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px; /* Set a fixed height to prevent layout shift */
+
+  }
+  
+  .spinner-border {
+    color: #47509B;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .heading-title {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+    position: relative;
+  }
+  
+  .heading-title::before,
+  .heading-title::after {
+    content: "";
+    display: block;
+    height: 3px;
+    width: 60px;
+    background: #47509B; /* Solid color for dividers */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .heading-title::before {
+    left: 10%;
+  }
+  
+  .heading-title::after {
+    right: 10%;
+  }
+  
+  .animated-text {
+    display: inline-block;
+    animation: fadeInMove 1.5s ease-in-out  alternate;
+  }
+  
+  @keyframes fadeInMove {
+    from {
+      opacity: 0.6;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .pagination{
+    justify-content: center;
+  }
+  /* General styling for pagination buttons */
+  .pagination-button {
+    background-color: #fff; /* Default white background */
+    color: #5213a2; /* Default text color (purple) */
+    border: 2px solid #5213a2; /* Purple border */
+    padding: 3px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0 10px;
+  }
+  
+  /* Enable red color when button is active */
+  .pagination-button:not(:disabled) {
+    background-color: #47509B; /* Red background */
+    color: white; /* White text when enabled */
+    border: 2px solid #47509B; /* Red border */
+  }
+  
+  /* Hover effect for enabled buttons */
+  .pagination-button:not(:disabled):hover {
+    background-color: #47509B; /* Darker red when hovered */
+    border-color: #47509B; /* Darker red border when hovered */
+  }
+  
+  /* Disabled button styling */
+  .pagination-button:disabled {
+    background-color: #b1a2d3; /* Light gray background */
+    color: #666; /* Gray text */
+    cursor: not-allowed;
+    opacity: 0.6; /* Reduced opacity for disabled state */
+    transition: none; /* No hover effect when disabled */
+  }
+  
+  /* Disabled button hover (no effect when disabled) */
+  .pagination-button:disabled:hover {
+    background-color: #b1a2d3; /* Keep the same background */
+  }
+  .styled-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
