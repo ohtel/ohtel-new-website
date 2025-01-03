@@ -40,7 +40,11 @@ export const ENDPOINTS = {
     ADS_DETAILS:'ads/get_ads_detail/',
     DELETE_IMAGE:'admin/delete-images/',
     EDIT_SUS:'admin/ads/manage-ads-under-sus/',
-    EDIT_MARKET_AND_FOODS:'admin/ads/manage-mark-food/'
+    EDIT_MARKET_AND_FOODS:'admin/ads/manage-mark-food/',
+
+
+
+    OTP_SEND:'send-otp-to-phone/',
     
 
   };

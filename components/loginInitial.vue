@@ -4,23 +4,25 @@
       <h1>Admin Login</h1>
       <p>Welcome Back! Sign in to continue</p>
 
-      <!-- Email Input with Icon -->
+      <!-- Mobile Number Input with Icon -->
       <div class="input-group mb-3 w-100 position-relative">
         <span class="input-icon">
-          <img src="../assets/images/login/username_icon.svg" alt="Email Icon" />
+          <img src="../assets/images/login/username_icon.svg" alt="Mobile Icon" />
         </span>
         <input
-          type="number"
+          type="tel"
           class="password-input form-control"
           v-model="email"
           placeholder="Enter your mobile number"
+          @input="validateMobileNumber"
+          maxlength="10"
         />
       </div>
 
-      <div class="center-section">
-       
+      <div v-if="showOtpSection" class="center-section">
+        <label for="otp-inputs">Enter OTP</label>
         <!-- OTP Inputs -->
-        <div class="otp-div d-flex">
+        <div id="otp-inputs" class="otp-div d-flex">
           <input
             v-for="(value, index) in otp"
             :key="index"
@@ -31,6 +33,7 @@
             @input="moveToNext($event, index)"
             @keydown.backspace="moveToPrev($event, index)"
             class="otp-input"
+            @keypress="isNumber($event)"
           />
         </div>
         <div class="login-buttons d-flex">
@@ -38,16 +41,30 @@
             Verify
           </button>
         </div>
+        <p class="resend-otp" v-if="timer > 0">Resend OTP in {{ timer }} seconds</p>
+        <p class="resend-otp" v-else @click="resendOtp">Resend OTP</p>
+        <p class="wrong-number" @click="resetState">Wrong mobile number?</p>
       </div>
 
-      <!-- Login Button -->
-      <button @click="emitLogin" class="login-btn btn btn-primary buttons w-100 mobile-login">
-        Log in
-      </button>
+      <div v-else class="login-buttons d-flex">
+        <button @click="sendOtp" class="btn btn-primary buttons w-100 mobile-login">
+          Send OTP
+        </button>
+          
 
+      </div>
       <div v-if="loginError" class="alert alert-danger mt-2">
         {{ loginError }}
       </div>
+      <!-- Google Login -->
+      <button class="btn btn-primary google-login-button w-100">
+            <span class="icon-space">
+              <img src="../assets/images/login/google_image.svg" alt="" />
+            </span>
+            Signin Via Google
+          </button>
+
+     
     </div>
   </div>
 </template>
@@ -62,16 +79,32 @@ export default {
   data() {
     return {
       email: '',
-      password: '',
       loginState: 'mobile',
       emailError: '',
-      passwordError: '',
       loginError: '',
       otp: ['', '', '', ''],
       otpInputRefs: [],
+      showOtpSection: false,
+      timer: 30,
     };
   },
   methods: {
+    validateMobileNumber(event) {
+      const value = event.target.value;
+      if (!/^\d*$/.test(value)) {
+        event.target.value = value.replace(/\D/g, '');
+        this.email = event.target.value;
+      }
+      if (value.length > 10) {
+        event.target.value = value.slice(0, 10);
+        this.email = event.target.value;
+      }
+    },
+    isNumber(event) {
+      if (!/^\d*$/.test(event.key)) {
+        event.preventDefault();
+      }
+    },
     moveToNext(event, index) {
       const value = event.target.value;
       if (value.length === 1) {
@@ -85,84 +118,97 @@ export default {
     },
     moveToPrev(event, index) {
       if (event.key === 'Backspace' && index > 0) {
- 
         this.otp[index] = '';
         this.$nextTick(() => {
           this.otpInputRefs[index - 1]?.focus();
         });
-      } else if (event.key === 'Backspace' && index === this.otp.length-1) {
-
+      } else if (event.key === 'Backspace' && index === this.otp.length - 1) {
         this.otp[index] = '';
       }
     },
     validateInputs() {
       this.emailError = '';
-      this.passwordError = '';
       this.loginError = '';
 
       if (!this.email) {
-        this.emailError = 'Email or Mobile Number is required.';
-      } else if (
-        this.loginState === 'email' &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)
-      ) {
-        this.emailError = 'Please enter a valid email address.';
+        this.emailError = 'Mobile Number is required.';
+      } else if (!/^\d{10}$/.test(this.email)) {
+        this.emailError = 'Please enter a valid 10-digit mobile number.';
       }
 
-      if (!this.password) {
-        this.passwordError = 'Password is required.';
-      }
-
-      return !this.emailError && !this.passwordError;
+      return !this.emailError;
     },
-    async emitLogin() {
+    async sendOtp() {
       if (!this.validateInputs()) {
-        this.loginError = this.emailError || this.passwordError;
+        this.loginError = this.emailError;
         return;
       }
 
       try {
-        const response = await axios.post(`${BASE_URL}${ENDPOINTS.LOGIN}`, {
-          identifier: this.email,
-          password: this.password,
-        });
-
-        console.log('Login successful:', response.data?.result);
-        localStorage.setItem('accessToken', response.data.result.token);
-
-        const userConfig = {
-          name: response.data?.result.user.name || 'Unknown User',
-          profilePhoto:
-            response.data?.result.user.profilePhoto || 'https://via.placeholder.com/150',
-          email: response.data?.result.user.email || 'No Email Provided',
-          phone: response.data?.result.data?.user.phone || 'No Phone Provided',
-          id: response.data?.result.user.id,
+        const payload = {
+          phone: this.email,
         };
+        const response = await axios.get(
+          `${BASE_URL}${ENDPOINTS.OTP_SEND}?phone=${this.email}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
-        // Store user config in localStorage
-        localStorage.setItem('user_config', JSON.stringify(userConfig));
-        localStorage.setItem('justLoggedIn', 'true');
-
-        this.$router.push('/dashboard');
+        console.log('OTP sent:', response.data);
+        this.showOtpSection = true;
+        this.startTimer();
       } catch (error) {
-        if (error.response && error.response.status !== 200) {
-          this.loginError = error.response.data.detail || 'Invalid Email or Phone';
-        } else {
-          this.loginError = error.message || 'An unknown error occurred.';
-        }
+        this.loginError = error.response?.data?.detail || 'Failed to send OTP';
       }
     },
-    verifyOtp() {
-      console.log('OTP Verified:', this.otp.join(''));
-      // Add OTP verification logic here
+    async verifyOtp() {
+      try {
+        const payload = {
+          phone: this.email,
+          otp: this.otp.join(''),
+        };
+        const response = await axios.post(
+          `${BASE_URL}phone-otp-validate/`,
+          payload,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('OTP Verified:', response.data);
+        localStorage.setItem('accessToken', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.data));
+        this.$router.push('/dashboard');
+      } catch (error) {
+        this.loginError = error.response?.data?.detail || 'Failed to verify OTP';
+      }
     },
-    loginStatusChange() {
-      this.loginState = this.loginState === 'mobile' ? 'email' : 'mobile';
-      const accessToken = localStorage.getItem('accessToken');
-      if (accessToken) {
-        console.log('Current Access Token:', accessToken);
-      } else {
-        console.error('Access token is undefined or empty');
+    resetState() {
+      this.showOtpSection = false;
+      this.email = '';
+      this.otp = ['', '', '', ''];
+      this.timer = 30;
+    },
+    startTimer() {
+      const interval = setInterval(() => {
+        if (this.timer > 0) {
+          this.timer--;
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+    },
+    resendOtp() {
+      if (this.timer === 0) {
+        this.timer = 30;
+        this.startTimer();
+        // Simulate resending OTP
+        console.log('OTP Resent');
       }
     },
   },
@@ -179,5 +225,13 @@ export default {
 .alert {
   color: red;
   padding: 5px;
+}
+.resend-otp {
+  cursor: pointer;
+  color: blue;
+}
+.wrong-number {
+  cursor: pointer;
+  color: blue;
 }
 </style>
