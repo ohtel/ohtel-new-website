@@ -50,21 +50,19 @@
         <button @click="sendOtp" class="btn btn-primary buttons w-100 mobile-login">
           Send OTP
         </button>
-          
-
       </div>
+
       <div v-if="loginError" class="alert alert-danger mt-2">
         {{ loginError }}
       </div>
-      <!-- Google Login -->
-      <button class="btn btn-primary google-login-button w-100">
-            <span class="icon-space">
-              <img src="../assets/images/login/google_image.svg" alt="" />
-            </span>
-            Signin Via Google
-          </button>
 
-     
+      <!-- Google Login -->
+      <button @click="signInWithGoogle" class="btn btn-primary google-login-button w-100">
+        <span class="icon-space">
+          <img src="../assets/images/login/google_image.svg" alt="" />
+        </span>
+        Signin Via Google
+      </button>
     </div>
   </div>
 </template>
@@ -74,6 +72,25 @@ import { useAuthStore } from '../store';
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import { useRouter } from 'vue-router';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAtgC47qVsVhvtu_GgKNQfSIEtq1a9hPAU",
+  authDomain: "ohtel-74809.firebaseapp.com",
+  databaseURL: "https://ohtel-74809.firebaseio.com",
+  projectId: "ohtel-74809",
+  storageBucket: "ohtel-74809.appspot.com",
+  messagingSenderId: "3929015854",
+  appId: "1:3929015854:web:16cbcac363d595ab4401bf",
+  measurementId: "G-05075W8FND"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 export default {
   data() {
@@ -209,6 +226,21 @@ export default {
         this.startTimer();
         // Simulate resending OTP
         console.log('OTP Resent');
+      }
+    },
+    async signInWithGoogle() {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+
+        console.log('Google Sign-In successful:', user);
+        localStorage.setItem('accessToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        this.$router.push('/dashboard');
+      } catch (error) {
+        this.loginError = error.message || 'Failed to sign in with Google';
       }
     },
   },
