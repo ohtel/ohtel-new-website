@@ -10,38 +10,33 @@
           <img src="../assets/images/login/username_icon.svg" alt="Email Icon" />
         </span>
         <input
-          type="email"
+          type="number"
           class="password-input form-control"
           v-model="email"
-          :placeholder="loginState === 'mobile' ? 'Enter Mobile Number or Email' : 'Enter Email Address'"
+          placeholder="Enter your mobile number"
         />
-        <!-- <small v-if="emailError" class="text-danger">{{ emailError }}</small> -->
       </div>
 
-      <!-- Password Input with Icon -->
-      <div class="input-group w-100 position-relative">
-        <span class="input-icon">
-          <img src="../assets/images/login/password_icon.svg" alt="Password Icon" />
-        </span>
-        <input
-          type="password"
-          class="password-input form-control"
-          v-model="password"
-          placeholder="Enter Password"
-        />
-        <!-- <small v-if="passwordError" class="text-danger">{{ passwordError }}</small> -->
-      </div>
-
-      <!-- Remember Me and Forgot Password -->
-      <div class="sub-options d-flex justify-content-between">
-        <!-- <div>
-          <input class="form-check-input" type="checkbox" id="flexCheckDefault" />
-          <label class="pl-1 form-check-label" for="flexCheckDefault">
-            Remember me
-          </label>
-        </div> -->
-        <div>
-          <!-- <a class="forgot-password" @click="emitForgotPassword">Forgot Password?</a> -->
+      <div class="center-section">
+       
+        <!-- OTP Inputs -->
+        <div class="otp-div d-flex">
+          <input
+            v-for="(value, index) in otp"
+            :key="index"
+            type="text"
+            maxlength="1"
+            v-model="otp[index]"
+            :ref="el => otpInputRefs[index] = el"
+            @input="moveToNext($event, index)"
+            @keydown.backspace="moveToPrev($event, index)"
+            class="otp-input"
+          />
+        </div>
+        <div class="login-buttons d-flex">
+          <button @click="verifyOtp" class="btn btn-primary buttons w-100 mobile-login">
+            Verify
+          </button>
         </div>
       </div>
 
@@ -57,98 +52,124 @@
   </div>
 </template>
 
-<script setup>
-import { useAuthStore } from '../store'
-import { ref } from 'vue'
-import axios from 'axios'
-import { BASE_URL, ENDPOINTS } from '../environment.js'; 
-import { useRouter } from 'vue-router'
+<script>
+import { useAuthStore } from '../store';
+import axios from 'axios';
+import { BASE_URL, ENDPOINTS } from '../environment.js';
+import { useRouter } from 'vue-router';
 
-const authStore = useAuthStore()
-const email = ref('')
-const password = ref('')
-const loginState = ref('mobile')
-const emailError = ref('')
-const passwordError = ref('')
-const loginError = ref('')
-const router = useRouter()
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      loginState: 'mobile',
+      emailError: '',
+      passwordError: '',
+      loginError: '',
+      otp: ['', '', '', ''],
+      otpInputRefs: [],
+    };
+  },
+  methods: {
+    moveToNext(event, index) {
+      const value = event.target.value;
+      if (value.length === 1) {
+        this.otp[index] = value;
+        if (index < this.otp.length - 1) {
+          this.$nextTick(() => {
+            this.otpInputRefs[index + 1]?.focus();
+          });
+        }
+      }
+    },
+    moveToPrev(event, index) {
+      if (event.key === 'Backspace' && index > 0) {
+ 
+        this.otp[index] = '';
+        this.$nextTick(() => {
+          this.otpInputRefs[index - 1]?.focus();
+        });
+      } else if (event.key === 'Backspace' && index === this.otp.length-1) {
 
-const emit = defineEmits(['login', 'login-failed', 'forgot-password'])
+        this.otp[index] = '';
+      }
+    },
+    validateInputs() {
+      this.emailError = '';
+      this.passwordError = '';
+      this.loginError = '';
 
-const emitForgotPassword = () => {
-  emit('forgot-password')
-}
+      if (!this.email) {
+        this.emailError = 'Email or Mobile Number is required.';
+      } else if (
+        this.loginState === 'email' &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)
+      ) {
+        this.emailError = 'Please enter a valid email address.';
+      }
 
-const validateInputs = () => {
-  emailError.value = ''
-  passwordError.value = ''
-  loginError.value = ''
+      if (!this.password) {
+        this.passwordError = 'Password is required.';
+      }
 
-  if (!email.value) {
-    emailError.value = 'Email or Mobile Number is required.'
-  } else if (loginState.value === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-    emailError.value = 'Please enter a valid email address.'
-  }
+      return !this.emailError && !this.passwordError;
+    },
+    async emitLogin() {
+      if (!this.validateInputs()) {
+        this.loginError = this.emailError || this.passwordError;
+        return;
+      }
 
-  if (!password.value) {
-    passwordError.value = 'Password is required.'
-  }
+      try {
+        const response = await axios.post(`${BASE_URL}${ENDPOINTS.LOGIN}`, {
+          identifier: this.email,
+          password: this.password,
+        });
 
-  return !emailError.value && !passwordError.value
-}
+        console.log('Login successful:', response.data?.result);
+        localStorage.setItem('accessToken', response.data.result.token);
 
-const emitLogin = async () => {
-  if (!validateInputs()) {
-    loginError.value = emailError.value || passwordError.value
-    return
-  }
-
-  try {
-    const response = await axios.post(`${BASE_URL}${ENDPOINTS.LOGIN}`, {
-      identifier: email.value,
-      // phone: email.value,
-      password: password.value,
-    })
-
-    console.log('Login successful:', response.data?.result)
-    localStorage.setItem('accessToken', response.data.result.token)
-    emit('login', {
-      email: email.value,
-      password: password.value,
-      response: response.data,
-    })
-    const userConfig = {
-          name: response.data?.result.user.name || "Unknown User",
-          profilePhoto: response.data?.result.user.profilePhoto || "https://via.placeholder.com/150",
-          email: response.data?.result.user.email || "No Email Provided",
-          phone: response.data?.result.data?.user.phone || "No Phone Provided",
-          id: response.data?.result.user.id
+        const userConfig = {
+          name: response.data?.result.user.name || 'Unknown User',
+          profilePhoto:
+            response.data?.result.user.profilePhoto || 'https://via.placeholder.com/150',
+          email: response.data?.result.user.email || 'No Email Provided',
+          phone: response.data?.result.data?.user.phone || 'No Phone Provided',
+          id: response.data?.result.user.id,
         };
 
         // Store user config in localStorage
-    localStorage.setItem("user_config", JSON.stringify(userConfig));
-    localStorage.setItem("justLoggedIn", "true");
-    router.push('/dashboard')
-  } catch (error) {
-    if (error.response && error.response.status !== 200) {
-      loginError.value = error.response.data.detail || 'Invalid Email or Phone'
-    } else {
-      loginError.value = error.message || 'An unknown error occurred.'
-    }
-    emit('login-failed', loginError.value)
-  }
-}
+        localStorage.setItem('user_config', JSON.stringify(userConfig));
+        localStorage.setItem('justLoggedIn', 'true');
 
-const loginStatusChange = () => {
-  loginState.value = loginState.value === 'mobile' ? 'email' : 'mobile'
-  const accessToken = localStorage.getItem('accessToken')
-
-  if (accessToken) {
-    console.log('Current Access Token:', accessToken)
-  } else {
-    console.error('Access token is undefined or empty')
-  }
-}
+        this.$router.push('/dashboard');
+      } catch (error) {
+        if (error.response && error.response.status !== 200) {
+          this.loginError = error.response.data.detail || 'Invalid Email or Phone';
+        } else {
+          this.loginError = error.message || 'An unknown error occurred.';
+        }
+      }
+    },
+    verifyOtp() {
+      console.log('OTP Verified:', this.otp.join(''));
+      // Add OTP verification logic here
+    },
+    loginStatusChange() {
+      this.loginState = this.loginState === 'mobile' ? 'email' : 'mobile';
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        console.log('Current Access Token:', accessToken);
+      } else {
+        console.error('Access token is undefined or empty');
+      }
+    },
+  },
+  mounted() {
+    this.otpInputRefs = this.otpInputRefs.slice(0, this.otp.length);
+  },
+};
 </script>
 
 <style>
