@@ -188,7 +188,7 @@ export default {
           otp: this.otp.join(''),
         };
         const response = await axios.post(
-          `${BASE_URL}phone-otp-validate/`,
+          `${BASE_URL}${ENDPOINTS.VALIDATE_OTP}`,
           payload,
           {
             headers: {

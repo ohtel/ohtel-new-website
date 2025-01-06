@@ -45,6 +45,7 @@ export const ENDPOINTS = {
 
 
     OTP_SEND:'send-otp-to-phone/',
+    VALIDATE_OTP:'phone-otp-validate/',
     
 
   };
