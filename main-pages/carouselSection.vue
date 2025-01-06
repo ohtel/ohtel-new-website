@@ -4,7 +4,7 @@
       <h1 class="supporting-hotelier">SUPPORTING HOTELIER</h1>
       <!-- <h2>Supporting <span>Hotelier</span> Find </h2> -->
       <h2 class="changing-head">{{ headings[currentIndex] }}</h2>
-      <h2 class="changing-head2">OHTEL APP Supporting Hoteliers </h2>
+      <!-- <h2 class="changing-head2">OHTEL APP Supporting Hoteliers </h2> -->
     </div>
     <div class="carousel">
       <div class="carousel-images">

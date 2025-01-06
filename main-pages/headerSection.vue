@@ -11,12 +11,14 @@
             <!-- Conditionally render links based on user info in localStorage -->
             <li v-if="isUserLoggedIn"><a href="#">Home</a></li>
             <li v-if="isUserLoggedIn"><a href="#">About</a></li>
+            <li v-if="isUserLoggedIn"><a href="#">Services</a></li>
+            <li v-if="isUserLoggedIn"><a href="#">Contact</a></li>
             <li v-if="isUserLoggedIn" class="location">
               <span class="location-icon">📍</span>
-              <span class="location-name">Location Name</span>
+              <span class="location-name">{{ locationName }}</span>
             </li>
-            <li>
-              <!-- <button class="login-button" @click="handleLogin">Login</button> -->
+            <li v-if="!isUserLoggedIn">
+              <button class="login-button" @click="handleLogin">Login</button>
             </li>
           </ul>
         </nav>
@@ -24,30 +26,71 @@
     </div>
   </template>
   
-  <script setup>
+  <script>
   import { ref, computed, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
-
-  const router = useRouter();
-  // Create a reactive variable to hold the user info
-  const userInfo = ref(null);
   
-  // Computed property to check if the user is logged in
-  const isUserLoggedIn = computed(() => !!userInfo.value);
+  export default {
+    setup() {
+      const router = useRouter();
+      // Create a reactive variable to hold the user info
+      const userInfo = ref(null);
+      const locationName = ref('Fetching location...');
   
-  // Method to handle login button click
-  const handleLogin = () => {
-    // Redirect to login page
-   router.push('/login');
+      // Computed property to check if the user is logged in
+      const isUserLoggedIn = computed(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        return  !!accessToken;
+      });
+  
+      // Method to handle login button click
+      const handleLogin = () => {
+        // Redirect to login page
+        router.push('/login');
+      };
+  
+      // Method to fetch location using Google Maps API
+      const fetchLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            const apiKey = "AIzaSyBsG-EGz_k6QKG0eAHN03mtKQQKVMKmCq0";
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+            );
+            const data = await response.json();
+            if (data.results.length > 0) {
+              const addressComponents = data.results[0].address_components;
+              const cityComponent = addressComponents.find(component =>
+                component.types.includes('locality')
+              );
+              locationName.value = cityComponent ? cityComponent.long_name : 'Location not found';
+            } else {
+              locationName.value = 'Location not found';
+            }
+          });
+        } else {
+          locationName.value = 'Geolocation is not supported by this browser.';
+        }
+      };
+  
+      // Ensure localStorage is accessed only on the client side
+      onMounted(() => {
+        const storedUserInfo = localStorage.getItem('user-info');
+        if (storedUserInfo) {
+          userInfo.value = JSON.parse(storedUserInfo);
+        }
+        fetchLocation();
+      });
+  
+      return {
+        userInfo,
+        isUserLoggedIn,
+        handleLogin,
+        locationName,
+      };
+    },
   };
-  
-  // Ensure localStorage is accessed only on the client side
-  onMounted(() => {
-    const storedUserInfo = localStorage.getItem('user-info');
-    if (storedUserInfo) {
-      userInfo.value = JSON.parse(storedUserInfo);
-    }
-  });
   </script>
   
   <style scoped>
