@@ -89,15 +89,13 @@ export default {
 .carousel-heading .changing-head {
   padding-bottom: 44px;
   margin-bottom: 0;
-  max-width: 828px;
+
     justify-self: center;
 }
 .carousel-heading .changing-head2 {
   padding-bottom: 44px;
   margin-bottom: 0;
-  max-width: 828px;
     justify-self: center;
-    white-space: nowrap;
 }
 .carousel-heading h2 {
   color: #100869;

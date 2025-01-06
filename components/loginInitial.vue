@@ -200,7 +200,7 @@ export default {
         console.log('OTP Verified:', response.data);
         localStorage.setItem('accessToken', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data));
-        this.$router.push('/dashboard');
+        this.$router.push('/main-dashboard');
       } catch (error) {
         this.loginError = error.response?.data?.detail || 'Failed to verify OTP';
       }

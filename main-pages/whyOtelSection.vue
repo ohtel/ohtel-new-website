@@ -187,5 +187,8 @@ margin-bottom: 0px;
         display: none;
     }
   }
+  .main{
+    max-height: 100%;
+  }
   
 </style>
