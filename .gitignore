@@ -50,3 +50,6 @@ firebase-debug.log
 *.old
 *.orig
 *.rej
+
+# Nuxt build directory
+.nuxt/
