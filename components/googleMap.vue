@@ -34,7 +34,7 @@
         class="save-button confirm-location"
         @click.prevent="confirmLocation"
       >
-        confirm location
+        Confirm Location
       </button>
     </div>
   </div>
@@ -50,58 +50,44 @@ export default {
       map: null,
       marker: null,
       isLoading: false,
-      defaultLocation: { lat: "", lng: "" },
+      defaultLocation: { lat: 12.9716, lng: 77.5946 },
     };
   },
   props: {
-    mapCenter: [],
+    mapCenter: Object,
   },
   mounted() {
-    console.log("mapCenter", this.mapCenter);
-    this.defaultLocation.lat='';
-    this.defaultLocation.lng='';
-    this.$nextTick(() => {
-      // Attempt to fetch the current location before initializing the map
-   
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            if (this.mapCenter) {
-              this.defaultLocation = {
-                lat: this.mapCenter.lat,
-                lng: this.mapCenter.lng,
-              }; // Set the default location to the current location
-            } else {
-              const { latitude, longitude } = position.coords;
-              this.defaultLocation = { lat: latitude, lng: longitude }; // Set the default location to the current location
-            }
-
-            this.initializeMap(); // Initialize the map with the updated default location
-          },
-          (error) => {
-            console.warn("Error fetching current location:", error.message);
-            this.initializeMap(); // Fallback to the original default location if geolocation fails
-          }
-        );
-      } else {
-        console.warn("Geolocation is not supported by this browser.");
-        this.initializeMap(); // Fallback to the original default location
-      }
+    this.loadGoogleMapsScript().then(() => {
+      this.initializeMap();
     });
   },
   methods: {
-    // Initialize the Google Map with default or current location
+    loadGoogleMapsScript() {
+      return new Promise((resolve, reject) => {
+        if (typeof google !== "undefined" && google.maps) {
+          resolve();
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBsG-EGz_k6QKG0eAHN03mtKQQKVMKmCq0&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    },
     initializeMap() {
-      // Wait for the DOM to render the map container
       this.$nextTick(() => {
         const mapDiv = document.getElementById("map");
         if (!mapDiv) {
           console.error("Map container not found!");
           return;
         }
-        this.isLoading = false;
+
         const mapOptions = {
-          center: this.defaultLocation,
+          center: this.mapCenter || this.defaultLocation,
           zoom: 13,
           scrollwheel: false,
           gestureHandling: "none",
@@ -110,7 +96,7 @@ export default {
         this.map = new google.maps.Map(mapDiv, mapOptions);
 
         this.marker = new google.maps.Marker({
-          position: this.defaultLocation,
+          position: this.mapCenter || this.defaultLocation,
           map: this.map,
           draggable: true,
         });
@@ -120,10 +106,12 @@ export default {
           this.reverseGeocode(position.lat(), position.lng());
         });
 
-        this.reverseGeocode(this.defaultLocation.lat, this.defaultLocation.lng);
+        this.reverseGeocode(
+          (this.mapCenter && this.mapCenter.lat) || this.defaultLocation.lat,
+          (this.mapCenter && this.mapCenter.lng) || this.defaultLocation.lng
+        );
       });
     },
-
     onSearchInput() {
       if (this.searchQuery.trim() === "") {
         this.suggestions = [];

@@ -13,7 +13,7 @@
             <li v-if="isUserLoggedIn"><a href="#">About</a></li>
             <li v-if="isUserLoggedIn"><a href="#">Services</a></li>
             <li v-if="isUserLoggedIn"><a href="#">Contact</a></li>
-            <li v-if="isUserLoggedIn" class="location">
+            <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
               <span class="location-icon">📍</span>
               <span class="location-name">{{ locationName }}</span>
             </li>
@@ -23,19 +23,30 @@
           </ul>
         </nav>
       </div>
+      <div v-if="showMap" class="map-modal">
+        <div class="map-popup">
+          <span class="close-icon" @click="closeGoogleMap">✖</span>
+          <google-map ref="googleMapComponent" @mapEvent="handleMapEvent"></google-map>
+        </div>
+      </div>
     </div>
   </template>
   
   <script>
   import { ref, computed, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
+  import googleMap from '../components/googleMap.vue';
   
   export default {
+    components: {
+      googleMap,
+    },
     setup() {
       const router = useRouter();
       // Create a reactive variable to hold the user info
       const userInfo = ref(null);
       const locationName = ref('Fetching location...');
+      const showMap = ref(false);
   
       // Computed property to check if the user is logged in
       const isUserLoggedIn = computed(() => {
@@ -74,6 +85,26 @@
         }
       };
   
+      // Method to open Google Map popup
+      const openGoogleMap = () => {
+        showMap.value = true;
+      };
+  
+      // Method to close Google Map popup
+      const closeGoogleMap = () => {
+        showMap.value = false;
+      };
+  
+      // Method to handle map events
+      const handleMapEvent = (eventData) => {
+        if (eventData.mapClosed) {
+          showMap.value = false;
+        }
+        if (eventData.address) {
+          locationName.value = eventData.address.split(',')[1].trim(); // Extract city name
+        }
+      };
+  
       // Ensure localStorage is accessed only on the client side
       onMounted(() => {
         const storedUserInfo = localStorage.getItem('user-info');
@@ -88,6 +119,10 @@
         isUserLoggedIn,
         handleLogin,
         locationName,
+        showMap,
+        openGoogleMap,
+        closeGoogleMap,
+        handleMapEvent,
       };
     },
   };
@@ -131,6 +166,7 @@
   .location {
     display: flex; /* Align location icon and name in a row */
     align-items: center; /* Center vertically */
+    cursor: pointer; /* Change cursor to pointer */
   }
   
   .location-icon {
@@ -155,6 +191,47 @@
     color: #ffffff;
   }
   
+  .map-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .map-popup {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+  }
+  
+  .close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .styled-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
   @media (max-width: 1200px) {
     .header-main {
       padding-left: 10px;
@@ -162,3 +239,4 @@
     }
   }
   </style>
+  
