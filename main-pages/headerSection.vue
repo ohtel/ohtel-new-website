@@ -26,7 +26,7 @@
       <div v-if="showMap" class="map-modal">
         <div class="map-popup">
           <span class="close-icon" @click="closeGoogleMap">✖</span>
-          <google-map ref="googleMapComponent" @mapEvent="handleMapEvent"></google-map>
+          <google-map ref="googleMapComponent" @mapEvent="handleMapEvent" :mapCenter="mapCenter"></google-map>
         </div>
       </div>
     </div>
@@ -47,6 +47,7 @@
       const userInfo = ref(null);
       const locationName = ref('Fetching location...');
       const showMap = ref(false);
+      const mapCenter = ref(null);
   
       // Computed property to check if the user is logged in
       const isUserLoggedIn = computed(() => {
@@ -76,6 +77,7 @@
                 component.types.includes('locality')
               );
               locationName.value = cityComponent ? cityComponent.long_name : 'Location not found';
+              mapCenter.value = { lat: latitude, lng: longitude };
             } else {
               locationName.value = 'Location not found';
             }
@@ -88,6 +90,11 @@
       // Method to open Google Map popup
       const openGoogleMap = () => {
         showMap.value = true;
+        if (mapCenter.value) {
+          // If mapCenter is already set, use it to center the map
+          const googleMapComponent = this.$refs.googleMapComponent;
+          googleMapComponent.setLocation(mapCenter.value.lat, mapCenter.value.lng);
+        }
       };
   
       // Method to close Google Map popup
@@ -102,6 +109,7 @@
         }
         if (eventData.address) {
           locationName.value = eventData.address.split(',')[1].trim(); // Extract city name
+          mapCenter.value = eventData.locationInformation;
         }
       };
   
@@ -123,6 +131,7 @@
         openGoogleMap,
         closeGoogleMap,
         handleMapEvent,
+        mapCenter,
       };
     },
   };
@@ -215,11 +224,12 @@
   
   .close-icon {
     position: absolute;
-    top: 10px;
+    top: 0px;
     right: 10px;
     cursor: pointer;
     font-size: 20px;
     font-weight: bold;
+    z-index: 1;
   }
   
   .styled-input {
@@ -239,4 +249,3 @@
     }
   }
   </style>
-  
