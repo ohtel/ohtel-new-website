@@ -54,20 +54,22 @@ export default {
 .main-div {
   position: relative;
   background-color: #EEEAF9;
-  padding-top: 70px;
-  padding-bottom: 140px;
+  padding-top: 50px;
+  padding-bottom: 100px;
 }
 
 .carousel {
   position: relative;
+  display: flex;
+  justify-content: center; /* Center the carousel */
   padding-left: 10%;
   padding-right: 10%;
   margin: 0 auto; /* Center the carousel */
 }
 
 .carousel-images {
-  width: 100%;
-  height: 100%;
+  width: 850px;
+  height: 450px;
 }
 
 .carousel-images img {
@@ -89,19 +91,19 @@ export default {
 .carousel-heading .changing-head {
   padding-bottom: 44px;
   margin-bottom: 0;
-
-    justify-self: center;
+  justify-self: center;
 }
+
 .carousel-heading .changing-head2 {
   padding-bottom: 44px;
   margin-bottom: 0;
-    justify-self: center;
+  justify-self: center;
 }
+
 .carousel-heading h2 {
   color: #100869;
   font-size: 40px;
   font-weight: 700;
-
 }
 
 .carousel-heading span {
@@ -119,8 +121,8 @@ export default {
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background-color: #D6D6D6FC;
   border-radius: 50%;
   opacity: 0.5;
@@ -128,8 +130,8 @@ export default {
 }
 
 .dot.active {
-  width: 100px;
-  height: 15px;
+  width: 50px;
+  height: 8px;
   opacity: 1;
   border-radius: 15px;
   background-color: #A20584;
@@ -140,13 +142,13 @@ export default {
   font-size: 16px;
   letter-spacing: 1.625px;
   color: #A20584;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 1440px) {
   .carousel-images {
     width: 80%;
-    height: 80%;
+    height: auto;
   }
   .carousel {
     text-align: -webkit-center;
@@ -167,6 +169,10 @@ export default {
     padding-left: 0;
     padding-right: 0;
   }
+  .carousel-images {
+    width: 100%;
+    height: auto;
+  }
 }
 
 @media (max-width: 768px) {
@@ -182,6 +188,10 @@ export default {
   }
   .dot.active {
     width: 50px;
+  }
+  .carousel-images {
+    width: 100%;
+    height: auto;
   }
 }
 </style>

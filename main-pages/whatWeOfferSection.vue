@@ -79,9 +79,11 @@
 }
 
 .grid-image {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 19px;
+  width: 350px;
+    height: 230px;
+    border-radius: 10px;
+    margin-bottom: 19px;
+    object-fit: cover;
 }
 
 .grid-text {

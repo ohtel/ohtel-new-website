@@ -139,7 +139,7 @@
   
   <style scoped>
   .header-main {
-    padding: 35px 100px;
+    padding: 20px 100px;
     display: flex;
     justify-content: space-between; /* Align items to the edges */
     align-items: center; /* Vertically center items */
@@ -187,7 +187,7 @@
   }
   
   .login-button {
-    padding: 18px 39px;
+    padding: 9px 35px;
     font-size: 20px;
     font-weight: 600;
     flex: 1 0 0;
