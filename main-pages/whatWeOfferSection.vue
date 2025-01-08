@@ -46,33 +46,33 @@
 
 </script>
 
-<style  scoped>
-.heading{
-    padding-top: 101px;
-    padding-bottom: 55px;
-    text-align: center;
+<style scoped>
+.heading {
+  padding-top: 101px;
+  padding-bottom: 55px;
+  text-align: center;
 }
-.heading-h1{
-    margin: 0px;
-    font-size: 48px;
-    font-weight: 700;
+.heading-h1 {
+  margin: 0px;
+  font-size: 48px;
+  font-weight: 700;
 }
-.heading-p{
-    font-size: 19px;
-    font-weight: 400;
-    line-height: 32px;
-    color: #161C2D;
-    margin-bottom: 0px;
+.heading-p {
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 32px;
+  color: #161C2D;
+  margin-bottom: 0px;
 }
 .grid-container {
   gap: 48px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
-.grid-section{
-    padding-left: 10%;
-    padding-right: 10%;
-    padding-bottom: 147px;
+.grid-section {
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 147px;
 }
 .grid-item {
   text-align: center;
@@ -80,44 +80,65 @@
 
 .grid-image {
   width: 350px;
-    height: 230px;
-    border-radius: 10px;
-    margin-bottom: 19px;
-    object-fit: cover;
+  height: 230px;
+  border-radius: 10px;
+  margin-bottom: 19px;
+  object-fit: cover;
 }
 
 .grid-text {
   font-size: 14px;
   color: #333;
 }
-.grid-text-head{
+.grid-text-head {
   font-weight: 700;
   font-size: 24px;
   margin-bottom: 19px;
 }
-.grid-text-sub-head{
-    font-weight: 400;
-    font-size: 21px;
-    line-height: 32px;
-    color: #161C2D;
+.grid-text-sub-head {
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 32px;
+  color: #161C2D;
 }
+@media (max-width: 1400px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+/* Tablet Adjustments */
 @media (max-width: 1024px) {
-    .heading{
-        padding-top: 70px;
-    }
-    .grid-container{
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .grid-section{
-        padding-bottom: 70px;
-    }
+  .heading {
+    padding-top: 70px;
   }
-  @media (max-width: 768px) {
-    .grid-container{
-        grid-template-columns: repeat(1, 1fr);
-    }
-    .heading{
-        padding-top: 50px;
-    }
+  .grid-section {
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 100px;
   }
+  .grid-image {
+    width: 280px;
+    height: 180px;
+  }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .heading {
+    padding-top: 50px;
+  }
+  .grid-section {
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 50px;
+  }
+  .grid-image {
+    width: 70%;
+    max-width: 100%;
+    height: auto;
+  }
+}
 </style>

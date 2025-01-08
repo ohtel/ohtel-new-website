@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="header-main">
       <img
         src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/ohtel_logo.svg"
@@ -7,6 +8,9 @@
       />
       <div class="right-menu">
         <nav>
+          <button class="menu-toggle" @click="toggleMobileMenu">
+            ☰
+          </button>
           <ul class="nav-list">
             <!-- Conditionally render links based on user info in localStorage -->
             <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Home</a></li>
@@ -30,7 +34,23 @@
         </div>
       </div>
     </div>
-  </template>
+    <div v-if="isMobileMenuOpen" class="mobile-menu">
+      <ul class="mobile-nav-list">
+        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Home</a></li>
+        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">About</a></li>
+        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Services</a></li>
+        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Contact</a></li>
+        <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
+          <span class="location-icon"><img src="/assets/images/location-icon.svg" alt=""></span>
+          <span class="location-name nav-title">{{ locationName }}</span>
+        </li>
+        <li v-if="isUserLoggedIn">
+          <button class="login-button" @click="handleLogin">Post Ad </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
   
   <script>
   import { ref, computed, onMounted } from 'vue';
@@ -48,6 +68,7 @@
       const locationName = ref('Fetching location...');
       const showMap = ref(false);
       const mapCenter = ref(null);
+      const isMobileMenuOpen = ref(false);
   
       // Computed property to check if the user is logged in
       const isUserLoggedIn = computed(() => {
@@ -113,6 +134,16 @@
         }
       };
   
+      // Method to toggle mobile menu
+      const toggleMobileMenu = () => {
+        isMobileMenuOpen.value = !isMobileMenuOpen.value;
+      };
+  
+      // Method to close mobile menu
+      const closeMobileMenu = () => {
+        isMobileMenuOpen.value = false;
+      };
+  
       // Ensure localStorage is accessed only on the client side
       onMounted(() => {
         const storedUserInfo = localStorage.getItem('user-info');
@@ -132,6 +163,9 @@
         closeGoogleMap,
         handleMapEvent,
         mapCenter,
+        isMobileMenuOpen,
+        toggleMobileMenu,
+        closeMobileMenu,
       };
     },
   };
@@ -160,12 +194,16 @@
     gap: 20px; /* Space between menu items */
   }
   
+  .nav-list-mobile {
+    display: none;
+  }
+  
   .nav-list li {
     display: flex; /* Center items vertically */
     align-items: center; /* Center items vertically */
   }
   
-  .nav-list a {
+  .nav-title{
     text-decoration: none; /* Remove underline from links */
     color: var(--Neutral-800, #170F49);
     text-align: center;
@@ -175,6 +213,7 @@
     font-weight: 500;
     line-height: 20px;
   }
+
   
   .location {
     display: flex; /* Align location icon and name in a row */
@@ -196,12 +235,19 @@
     align-self: stretch;
     border-radius: 12px;
     background: linear-gradient(180deg, #47509B 0%, #A20584 100%);
-
   }
   
   .login-button:hover {
     background-color: #9a1f6b; /* Darker shade on hover */
     color: #ffffff;
+  }
+  
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
   }
   
   .map-modal {
@@ -246,10 +292,48 @@
     transition: border-color 0.3s ease;
   }
   
-  @media (max-width: 1200px) {
+  .mobile-menu {
+    display: none;
+  }
+  
+  .mobile-nav-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-items: center;
+  }
+  
+  .mobile-nav-list li {
+    display: flex;
+    align-items: center;
+  }
+  
+  @media (max-width: 768px) {
     .header-main {
-      padding-left: 10px;
-      padding-right: 10px;
+      padding: 10px;
+    }
+  
+    .nav-list {
+      display: none;
+    }
+  
+    .nav-list-mobile {
+      display: flex;
+    }
+  
+    .menu-toggle {
+      display: block;
+    }
+  
+    .mobile-menu {
+      display: block;
     }
   }
   </style>
+  
