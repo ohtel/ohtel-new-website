@@ -7,33 +7,33 @@
    <div class="grid-section">
     <div class="grid-container">
     <div class="grid-item">
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage1.svg" alt="Text 1" class="grid-image" />
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage1.png" alt="Text 1" class="grid-image" />
       <p class="grid-text-head">Hospitality Spaces for Rent and Sale</p>
       <p class="grid-text-sub-head">Advertise hospitality properties effortlessly, and connect buyers with spaces by location. Make your property search convenient and accessible from anywhere.</p>
     </div>
     <div class="grid-item">
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage2.svg" alt="Text 2" class="grid-image" />
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage2.png" alt="Text 2" class="grid-image" />
       <p class="grid-text-head">Used Equipment for Hotels and Restaurants</p>
       <p class="grid-text-sub-head">Buying or selling used hospitality equipment? List or find high-quality, affordable items on the OHTEL APP, catering to all hotel and restaurant needs.</p>
     </div>
     <div class="grid-item">
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage3.svg" alt="Text 3" class="grid-image" />
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage3.png" alt="Text 3" class="grid-image" />
       <p class="grid-text-head">Hospitality and Allied Industry Jobs</p>
       <p class="grid-text-sub-head">Short on hotel staff? Recruiters can post job listings, and applicants can upload resumes seamlessly on the OHTEL APP.</p>
     </div>
     <div class="grid-item">
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage4.svg" alt="Text 4" class="grid-image" />
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage4.png" alt="Text 4" class="grid-image" />
       <p class="grid-text-head">Shared Hospitality Spaces</p>
       <p class="grid-text-sub-head">Discover and list shared spaces for food counters, pop-ups, and more. Ohtel connects businesses looking to optimize space and reduce costs.</p>
 
     </div>
     <div class="grid-item">
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage5.svg" alt="Text 5" class="grid-image" />
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage5.png" alt="Text 5" class="grid-image" />
       <p class="grid-text-head">Exclusive Market Deals for Hoteliers</p>
       <p class="grid-text-sub-head">Access unbeatable deals on inventory and daily supplies directly from trusted vendors. Ensure savings and quality for your hospitality business.</p>
     </div>
     <div class="grid-item">
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage6.svg" alt="Text 6" class="grid-image" />
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage6.png" alt="Text 6" class="grid-image" />
       <p class="grid-text-head">Food Factories and Home Chef Services</p>
       <p class="grid-text-sub-head">Advertise food products or find home chefs for culinary outsourcing. Perfect for hotels and restaurants looking to expand their food offerings.</p>
     </div>

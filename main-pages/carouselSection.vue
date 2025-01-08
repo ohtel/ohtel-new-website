@@ -27,12 +27,12 @@ export default {
   data() {
     return {
       images: [
-        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image1.svg',
-        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image2.svg',
-        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image3.svg',
-        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image4.svg'
+        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image1.png',
+        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image2.png',
+        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image3.png',
+        'https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/carousel/image4.png'
       ],
-      headings: ['Market Deals for Hoteliers – Unbeatable Offers', 'Hire Talented Home Chefs for Your Culinary Needs', 'Jobs in Hotel Industry – Find Your Next Opportunity in', 'Used Equipment for Hotels and Restaurants'],
+      headings: ['Market Deals for Hoteliers – Unbeatable Offers', 'Hire Talented Home Chefs for Your Culinary Needs', 'Jobs in Hotel Industry – Find Your Next Opportunity', 'Used Equipment for Hotels and Restaurants'],
       currentIndex: 0
     };
   },
@@ -54,7 +54,7 @@ export default {
 .main-div {
   position: relative;
   background-color: #EEEAF9;
-  padding-top: 136px;
+  padding-top: 70px;
   padding-bottom: 140px;
 }
 
@@ -99,8 +99,9 @@ export default {
 }
 .carousel-heading h2 {
   color: #100869;
-  font-size: 60px;
+  font-size: 40px;
   font-weight: 700;
+
 }
 
 .carousel-heading span {
@@ -135,10 +136,11 @@ export default {
 }
 
 .supporting-hotelier {
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 1.625px;
   color: #A20584;
-  margin-bottom: 44px;
+  margin-bottom: 32px;
 }
 
 @media (max-width: 1440px) {

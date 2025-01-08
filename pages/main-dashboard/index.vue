@@ -3,8 +3,9 @@
         <headerSection/>
         <carouselSection/>
         <whatWeOfferSection/>
-        <whyOtelSection/>
-        <aboutUsSection/>
+        <howToPostAdSection/>
+        <!-- <whyOtelSection/> -->
+        <!-- <aboutUsSection/> -->
         <getTheAppSection/>
         <footerSection/>
     </div>
@@ -18,6 +19,7 @@
     import aboutUsSection from '../main-pages/aboutUsSection.vue'
     import getTheAppSection from '../main-pages/getTheAppSection.vue'
     import footerSection from '../main-pages/footerSection.vue'
+    import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
     
 </script>
 

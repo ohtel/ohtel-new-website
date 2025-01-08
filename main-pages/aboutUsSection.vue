@@ -7,7 +7,7 @@
         <div class="about-description-section">
             <div class="about-description-container">
                 <div class="d-flex main-section">
-                        <img  src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/aboutUs/aboutUsImage.svg" alt="Text 1" class="grid-image" />
+                        <img  src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/aboutUs/aboutUsImage.png" alt="Text 1" class="grid-image" />
                     <!-- <div class="content-main">
                         <div class="contents d-flex">
                             <span><img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/aboutUs/tick.svg" alt=""></span><p class="grid-text-sub-head">Ohtel is a Location-based Classified App for the Hospitality and Allied Service Industry. </p>

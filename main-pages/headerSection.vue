@@ -9,16 +9,16 @@
         <nav>
           <ul class="nav-list">
             <!-- Conditionally render links based on user info in localStorage -->
-            <li v-if="isUserLoggedIn"><a href="#">Home</a></li>
-            <li v-if="isUserLoggedIn"><a href="#">About</a></li>
-            <li v-if="isUserLoggedIn"><a href="#">Services</a></li>
-            <li v-if="isUserLoggedIn"><a href="#">Contact</a></li>
+            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Home</a></li>
+            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">About</a></li>
+            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Services</a></li>
+            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Contact</a></li>
             <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
-              <span class="location-icon">📍</span>
-              <span class="location-name">{{ locationName }}</span>
+              <span class="location-icon"><img src="/assets/images/location-icon.svg" alt=""></span>
+              <span class="location-name nav-title">{{ locationName }}</span>
             </li>
-            <li v-if="!isUserLoggedIn">
-              <button class="login-button" @click="handleLogin">Login</button>
+            <li v-if="isUserLoggedIn">
+              <button class="login-button" @click="handleLogin">Post Ad </button>
             </li>
           </ul>
         </nav>
@@ -139,12 +139,10 @@
   
   <style scoped>
   .header-main {
+    padding: 35px 100px;
     display: flex;
     justify-content: space-between; /* Align items to the edges */
     align-items: center; /* Vertically center items */
-    padding-left: 75px;
-    padding-right: 75px;
-    height: 157px;
   }
   
   .logo {
@@ -156,6 +154,7 @@
   }
   
   .nav-list {
+    margin-bottom: 0px;
     list-style-type: none; /* Remove default list styling */
     display: flex; /* Use flexbox for horizontal alignment */
     gap: 20px; /* Space between menu items */
@@ -168,8 +167,13 @@
   
   .nav-list a {
     text-decoration: none; /* Remove underline from links */
-    color: #000; /* Set link color */
-    font-weight: bold; /* Bold links */
+    color: var(--Neutral-800, #170F49);
+    text-align: center;
+    font-family: Raleway;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
   }
   
   .location {
@@ -183,16 +187,16 @@
   }
   
   .login-button {
-    background-color: #ffffff; /* Set button background color */
-    cursor: pointer; /* Change cursor on hover */
-    border: 1px solid #9a1f6b; /* Add a border */
-    color: #47509B; /* Set button text color */
+    padding: 18px 39px;
+    font-size: 20px;
+    font-weight: 600;
+    flex: 1 0 0;
+    color: #fff;
+    border: none;
+    align-self: stretch;
     border-radius: 12px;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 700;
-    width: 215px;
-    height: 72px;
+    background: linear-gradient(180deg, #47509B 0%, #A20584 100%);
+
   }
   
   .login-button:hover {

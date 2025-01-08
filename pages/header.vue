@@ -9,11 +9,11 @@
         <nav>
           <ul class="nav-list">
             <!-- Conditionally render links based on user info in localStorage -->
-            <li v-if="isUserLoggedIn"><a href="#">Home</a></li>
-            <li v-if="isUserLoggedIn"><a href="#">About</a></li>
+            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Home</a></li>
+            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">About</a></li>
             <li v-if="isUserLoggedIn" class="location">
-              <span class="location-icon">📍</span>
-              <span class="location-name">Location Name</span>
+              <span  class="location-icon ">📍</span>
+              <span class="location-name nav-title">Location Name</span>
             </li>
             <li>
               <!-- <button class="login-button" @click="handleLogin">Login</button> -->
@@ -120,5 +120,10 @@
       padding-left: 10px;
       padding-right: 10px;
     }
+  }
+  .nav-title{
+    color: var(--Neutral-800, #170F49);
+font-size: 20px !important;
+font-weight: 500!important;
   }
   </style>

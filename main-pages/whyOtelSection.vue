@@ -69,7 +69,7 @@
 
 <style  scoped>
 .main-div{
-    background-color:#A20584;
+    background-color:#5131C3;
     position: relative;
 }
 .heading-h1,.heading-p{
@@ -117,7 +117,7 @@
   border: 1px solid #ddd;
   border-radius: 20px;
   /* width: 449px; */
-  height: 132px;
+  /* height: 132px; */
   align-content: center;
 }
 .grid-item .main{
@@ -141,6 +141,7 @@ margin-bottom: 0px;
 }
 .text-section{
     align-content: center;
+    align-self: center;
 }
 .icon-section{
     background-color: #F0F5FF;
