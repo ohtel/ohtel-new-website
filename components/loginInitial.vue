@@ -238,7 +238,7 @@ export default {
         console.log('Google Sign-In successful:', user);
         localStorage.setItem('accessToken', token);
         localStorage.setItem('user', JSON.stringify(user));
-        this.$router.push('/dashboard');
+        this.$router.push('/main-dashboard');
       } catch (error) {
         this.loginError = error.message || 'Failed to sign in with Google';
       }
