@@ -2,7 +2,9 @@
     <div>
         <headerSection/>
         <carouselSection/>
+        <startYourFreeTrail/>
         <whatWeOfferSection/>
+        <FeaturedAds/>
         <howToPostAdSection/>
         <!-- <whyOtelSection/> -->
         <!-- <aboutUsSection/> -->
@@ -20,6 +22,8 @@
     import getTheAppSection from '../main-pages/getTheAppSection.vue'
     import footerSection from '../main-pages/footerSection.vue'
     import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
+    import startYourFreeTrail from '~/main-pages/startYourFreeTrail.vue'
+    import FeaturedAds from '~/main-pages/FeaturedAds.vue'
     
 </script>
 
@@ -27,4 +31,5 @@
 body{
     margin: 0px;
 }
+
 </style>

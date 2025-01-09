@@ -7,7 +7,7 @@
                        <div class="heading">
                            <h1 class="heading-h1">Get the App</h1>
                            <p class="heading-p">Download Ohtel from the Play Store or App Store and start optimizing your hotel operations with just a few taps. Experience the convenience and efficiency of our platform today!</p>
-                           <div class="main-content d-flex mt-5">
+                           <div class="main-content d-flex mt-5 justify-content-center">
                                <img @click="redirectTo('appstore')" class="app-store" src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/getTheApp/appStore.svg" alt="">
                                <img @click="redirectTo('playstore')" class="play-store" src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/getTheApp/playStore.svg" alt="">
                            </div>
@@ -23,7 +23,7 @@
                            </div> -->
                            
                       <!-- </div> -->
-                      <img class="phone-image" src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/getTheApp/mobile-image.svg" alt="Text 1"  />
+                      <!-- <img class="phone-image" src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/getTheApp/mobile-image.svg" alt="Text 1"  /> -->
                        
                       
 
@@ -170,5 +170,8 @@ const redirectTo = (store) => {
    .app-store,.play-store{
        width: 100px;
   }
+ }
+ .get-app-main{
+    text-align: center;
  }
 </style>

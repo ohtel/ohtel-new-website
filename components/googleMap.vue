@@ -264,12 +264,13 @@ export default {
 
 .map-buttons {
   position: absolute;
-  bottom: 30px;
-  width: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+    bottom: 30px;
+    width: 50%;
+    display: flex;
+    left: 30px;
+    /* justify-content: center; */
+    /* align-items: center; */
+    gap: 20px;
 }
 .map-search {
   width: 100%;
@@ -282,6 +283,7 @@ export default {
   background-color: #f9f9f9; /* Subtle background color */
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Slight inner shadow for depth */
   color: #333; /* Dark gray text for contrast */
+  margin-left: 10px;
 }
 
 /* Add focus styles for interactivity */

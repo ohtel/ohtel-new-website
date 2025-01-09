@@ -22,7 +22,7 @@
               <span class="location-name nav-title">{{ locationName }}</span>
             </li>
             <li v-if="isUserLoggedIn">
-              <button class="login-button" @click="handleLogin">Post Ad </button>
+              <button class="login-button" @click="postAds()">Post Ad </button>
             </li>
           </ul>
         </nav>
@@ -79,7 +79,7 @@
       // Method to handle login button click
       const handleLogin = () => {
         // Redirect to login page
-        router.push('/login');
+        // router.push('/login');
       };
   
       // Method to fetch location using Google Maps API
@@ -268,7 +268,7 @@
     padding: 20px;
     border-radius: 10px;
     width: 80%;
-    max-width: 600px;
+    /* max-width: 600px; */
     position: relative;
   }
   
@@ -314,7 +314,7 @@
     align-items: center;
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 870px) {
     .header-main {
       padding: 10px;
     }

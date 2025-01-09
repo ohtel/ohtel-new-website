@@ -28,8 +28,8 @@ export default {
 
 .learn-more-button {
   display: flex;
-  width: 312px;
-  height: 72px;
+  width: 150px;
+  height: 50px;
   padding: 8px 16px;
   justify-content: center;
   align-items: center;

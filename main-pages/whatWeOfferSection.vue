@@ -2,40 +2,40 @@
 <div class="main-div">
    <div class="heading">
        <h1 class="heading-h1">What we Offer</h1>
-       <p class="heading-p">Discover our diverse range of offerings designed to support every aspect of <br/> your hospitality business.</p>
+       <p class="heading-p">Discover our diverse range of offerings designed to support every aspect of your hospitality business.</p>
    </div>
    <div class="grid-section">
     <div class="grid-container">
     <div class="grid-item">
       <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage1.png" alt="Text 1" class="grid-image" />
-      <p class="grid-text-head">Hospitality Spaces for Rent and Sale</p>
-      <p class="grid-text-sub-head">Advertise hospitality properties effortlessly, and connect buyers with spaces by location. Make your property search convenient and accessible from anywhere.</p>
+      <p class="grid-text-head">Hospitality Spaces</p>
+      <p class="grid-text-sub-head">Sellers can advertise hospitality properties, and buyers can easily search by location from home.</p>
     </div>
     <div class="grid-item">
       <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage2.png" alt="Text 2" class="grid-image" />
-      <p class="grid-text-head">Used Equipment for Hotels and Restaurants</p>
-      <p class="grid-text-sub-head">Buying or selling used hospitality equipment? List or find high-quality, affordable items on the OHTEL APP, catering to all hotel and restaurant needs.</p>
+      <p class="grid-text-head">Used Equipment</p>
+      <p class="grid-text-sub-head">Buying or selling used hospitality equipment? Advertise on OHTEL APP.</p>
     </div>
     <div class="grid-item">
       <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage3.png" alt="Text 3" class="grid-image" />
-      <p class="grid-text-head">Hospitality and Allied Industry Jobs</p>
-      <p class="grid-text-sub-head">Short on hotel staff? Recruiters can post job listings, and applicants can upload resumes seamlessly on the OHTEL APP.</p>
+      <p class="grid-text-head">Hospitality & Allied Industries Jobs</p>
+      <p class="grid-text-sub-head">Short on hotel staff? Recruiters can advertise jobs, & applicants can upload resumes on OHTEL APP.</p>
     </div>
     <div class="grid-item">
       <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage4.png" alt="Text 4" class="grid-image" />
-      <p class="grid-text-head">Shared Hospitality Spaces</p>
-      <p class="grid-text-sub-head">Discover and list shared spaces for food counters, pop-ups, and more. Ohtel connects businesses looking to optimize space and reduce costs.</p>
+      <p class="grid-text-head">Shared Spaces</p>
+      <p class="grid-text-sub-head">List or find shared spaces for food counters and more on OHTEL APP.</p>
 
     </div>
     <div class="grid-item">
       <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage5.png" alt="Text 5" class="grid-image" />
-      <p class="grid-text-head">Exclusive Market Deals for Hoteliers</p>
-      <p class="grid-text-sub-head">Access unbeatable deals on inventory and daily supplies directly from trusted vendors. Ensure savings and quality for your hospitality business.</p>
+      <p class="grid-text-head">Market Deals</p>
+      <p class="grid-text-sub-head">Connect with vendors and markets for exciting deals on daily inventory supplies.</p>
     </div>
     <div class="grid-item">
       <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/gridImage6.png" alt="Text 6" class="grid-image" />
-      <p class="grid-text-head">Food Factories and Home Chef Services</p>
-      <p class="grid-text-sub-head">Advertise food products or find home chefs for culinary outsourcing. Perfect for hotels and restaurants looking to expand their food offerings.</p>
+      <p class="grid-text-head">Food Factories and Home Chefs</p>
+      <p class="grid-text-sub-head">Advertise food products or outsource needs to hotels and restaurants on Ohtel-all from home.</p>
     </div>
   </div>
    </div>
@@ -48,18 +48,20 @@
 
 <style scoped>
 .heading {
-  padding-top: 101px;
+  padding-top: 80px;
   padding-bottom: 55px;
   text-align: center;
+
 }
 .heading-h1 {
   margin: 0px;
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 700;
+  margin-bottom: 24px;
 }
 .heading-p {
-  font-size: 19px;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 500;
   line-height: 32px;
   color: #161C2D;
   margin-bottom: 0px;
@@ -72,7 +74,7 @@
 .grid-section {
   padding-left: 10%;
   padding-right: 10%;
-  padding-bottom: 147px;
+  padding-bottom: 80px;
 }
 .grid-item {
   text-align: center;
@@ -92,14 +94,14 @@
 }
 .grid-text-head {
   font-weight: 700;
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 19px;
 }
 .grid-text-sub-head {
   font-weight: 400;
-  font-size: 21px;
+  font-size: 16px;
   line-height: 32px;
-  color: #161C2D;
+  color: rgba(22, 28, 45, 0.70);
 }
 @media (max-width: 1400px) {
   .grid-container {
