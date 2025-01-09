@@ -52,4 +52,4 @@ firebase-debug.log
 *.rej
 
 # Nuxt build directory
-.nuxt/
+*.nuxt
