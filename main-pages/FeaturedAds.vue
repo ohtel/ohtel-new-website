@@ -1,8 +1,8 @@
 <template>
-    <div class="container featured-ads-section">
+    <div class="main-div">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Featured Ads</h2>
-        <button class="btn btn-outline-primary">View All</button>
+        <button class="btn view-all">View All</button>
       </div>
       <!-- Horizontal Scroll Section -->
       <div class="scroll-container">
@@ -28,10 +28,10 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title mb-2">{{ ad.title }}</h5>
-                    <img src="/assets/images/love-blue.svg" alt="">
+                    <img src="/assets/images/love-blue.png" alt="">
                 </div>
               
-              <p class="card-text text-primary fw-bold mb-1">
+              <p class="card-text text-primary fw-bold mb-1 price-text">
                 ₹ {{ ad.price }} / month
               </p>
               <p class="card-text small text-muted mb-3">
@@ -39,7 +39,7 @@
               </p>
               <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">
-                  <i class="bi bi-geo-alt"></i> {{ ad.location }}
+                  <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.location }}
                 </small>
                 <small class="text-muted">{{ ad.date }}</small>
               </div>
@@ -116,6 +116,12 @@
         ],
       };
     },
+    mounted() {
+      const link = document.createElement('link');
+      link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap';
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    },
   };
   </script>
   
@@ -151,5 +157,28 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
+  }
+  .main-div{
+    background-color: #F4F6FA;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 64px;
+    padding-top: 64px;
+  }
+  .card-footer{
+    padding-bottom: 20px;
+  }
+  .card-body{
+    padding: 20px;
+  }
+  .card{
+    border: none;
+  }
+  .view-all{
+    border: 1px solid var(--Primary, #47509B);
+    color: #47509B;
+  }
+  .price-text {
+    font-family: 'Poppins', sans-serif;
   }
   </style>
