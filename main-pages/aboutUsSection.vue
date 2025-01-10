@@ -8,7 +8,7 @@
             <div class="about-description-container">
                 <div class="d-flex main-section">
                         <img  src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/aboutUs/aboutUsImage.png" alt="Text 1" class="grid-image" />
-                    <!-- <div class="content-main">
+                    <div class="content-main">
                         <div class="contents d-flex">
                             <span><img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/aboutUs/tick.svg" alt=""></span><p class="grid-text-sub-head">Ohtel is a Location-based Classified App for the Hospitality and Allied Service Industry. </p>
                         </div>
@@ -24,10 +24,10 @@
                         <div class="contents d-flex">
                             <span><img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/aboutUs/tick.svg" alt=""></span><p class="grid-text-sub-head">Find a wide range of Profiles & Deals.</p>
                         </div>
-                    </div> -->
-                    <div class="content-main grid-text-sub-head">
-                        Ohtel is a dedicated platform built for the hospitality industry, connecting professionals, businesses, and vendors to streamline operations and growth. Our app offers a comprehensive solution for listing hospitality jobs, advertising used equipment, sourcing home chefs, and accessing market deals on essential supplies. By bringing together job seekers, recruiters, property owners, and suppliers, Ohtel helps the industry thrive with ease and efficiency. With a commitment to connecting every need of the hotel and restaurant sector, we empower hoteliers to succeed in an evolving marketplace
                     </div>
+                    <!-- <div class="content-main grid-text-sub-head">
+                        Ohtel is a dedicated platform built for the hospitality industry, connecting professionals, businesses, and vendors to streamline operations and growth. Our app offers a comprehensive solution for listing hospitality jobs, advertising used equipment, sourcing home chefs, and accessing market deals on essential supplies. By bringing together job seekers, recruiters, property owners, and suppliers, Ohtel helps the industry thrive with ease and efficiency. With a commitment to connecting every need of the hotel and restaurant sector, we empower hoteliers to succeed in an evolving marketplace
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -39,6 +39,10 @@
 </script>
 
 <style  scoped>
+
+.main-div{
+    background-color: #EDEEF5;
+}
 .heading{
     padding-top: 86px;
     padding-bottom: 35px;
@@ -98,4 +102,5 @@
     display: flex;
    }
 }
+
 </style>

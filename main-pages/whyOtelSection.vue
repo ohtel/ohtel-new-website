@@ -189,7 +189,7 @@ margin-bottom: 0px;
     }
   }
   .main{
-    max-height: 100%;
+   height: auto;
   }
   
 </style>

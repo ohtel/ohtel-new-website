@@ -13,8 +13,8 @@
           </button>
           <ul class="nav-list">
             <!-- Conditionally render links based on user info in localStorage -->
-            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Home</a></li>
-            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">About</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard')}" class="nav-title" @click="navigateTo('/main-dashboard')">Home</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/about')}" class="nav-title" @click="navigateTo('/main-dashboard/about')">About</a></li>
             <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Services</a></li>
             <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Contact</a></li>
             <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
@@ -36,8 +36,8 @@
     </div>
     <div v-if="isMobileMenuOpen" class="mobile-menu">
       <ul class="mobile-nav-list">
-        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Home</a></li>
-        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">About</a></li>
+        <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard')}" class="nav-title" @click="navigateTo('/main-dashboard')">Home</a></li>
+        <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/about')}" class="nav-title" @click="navigateTo('/main-dashboard/about')">About</a></li>
         <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Services</a></li>
         <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Contact</a></li>
         <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
@@ -54,7 +54,7 @@
   
   <script>
   import { ref, computed, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
   import googleMap from '../components/googleMap.vue';
   
   export default {
@@ -63,12 +63,14 @@
     },
     setup() {
       const router = useRouter();
+      const route = useRoute();
       // Create a reactive variable to hold the user info
       const userInfo = ref(null);
       const locationName = ref('Fetching location...');
       const showMap = ref(false);
       const mapCenter = ref(null);
       const isMobileMenuOpen = ref(false);
+      const locationFetched = ref(false);
   
       // Computed property to check if the user is logged in
       const isUserLoggedIn = computed(() => {
@@ -99,6 +101,9 @@
               );
               locationName.value = cityComponent ? cityComponent.long_name : 'Location not found';
               mapCenter.value = { lat: latitude, lng: longitude };
+              locationFetched.value = true;
+              localStorage.setItem('locationName', locationName.value);
+              localStorage.setItem('mapCenter', JSON.stringify(mapCenter.value));
             } else {
               locationName.value = 'Location not found';
             }
@@ -131,6 +136,8 @@
         if (eventData.address) {
           locationName.value = eventData.address.split(',')[1].trim(); // Extract city name
           mapCenter.value = eventData.locationInformation;
+          localStorage.setItem('locationName', locationName.value);
+          localStorage.setItem('mapCenter', JSON.stringify(mapCenter.value));
         }
       };
   
@@ -144,13 +151,31 @@
         isMobileMenuOpen.value = false;
       };
   
+      // Method to check if the current route matches the given path
+      const isActiveRoute = (path) => {
+        return route.path === path;
+      };
+  
+      // Method to navigate to a specific route
+      const navigateTo = (path) => {
+        router.push(path);
+        closeMobileMenu();
+      };
+  
       // Ensure localStorage is accessed only on the client side
       onMounted(() => {
         const storedUserInfo = localStorage.getItem('user-info');
         if (storedUserInfo) {
           userInfo.value = JSON.parse(storedUserInfo);
         }
-        fetchLocation();
+        const storedLocationName = localStorage.getItem('locationName');
+        const storedMapCenter = localStorage.getItem('mapCenter');
+        if (storedLocationName && storedMapCenter) {
+          locationName.value = storedLocationName;
+          mapCenter.value = JSON.parse(storedMapCenter);
+        } else {
+          fetchLocation();
+        }
       });
   
       return {
@@ -166,6 +191,8 @@
         isMobileMenuOpen,
         toggleMobileMenu,
         closeMobileMenu,
+        isActiveRoute,
+        navigateTo,
       };
     },
   };
@@ -214,6 +241,9 @@
     line-height: 20px;
   }
 
+  .nav-title.active {
+    color: #47509B; /* Highlight color */
+  }
   
   .location {
     display: flex; /* Align location icon and name in a row */
@@ -336,4 +366,3 @@
     }
   }
   </style>
-  
