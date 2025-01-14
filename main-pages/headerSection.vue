@@ -15,6 +15,7 @@
             <!-- Conditionally render links based on user info in localStorage -->
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard')}" class="nav-title" @click="navigateTo('/main-dashboard')">Home</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/about')}" class="nav-title" @click="navigateTo('/main-dashboard/about')">About</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/contact_us')}" class="nav-title" @click="navigateTo('/main-dashboard/contact_us')">Contact Us</a></li>
             <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Services</a></li>
             <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Contact</a></li>
             <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
@@ -38,6 +39,7 @@
       <ul class="mobile-nav-list">
         <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard')}" class="nav-title" @click="navigateTo('/main-dashboard')">Home</a></li>
         <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/about')}" class="nav-title" @click="navigateTo('/main-dashboard/about')">About</a></li>
+        <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/contact_us')}" class="nav-title" @click="navigateTo('/main-dashboard/contact_us')">Contact Us</a></li>
         <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Services</a></li>
         <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Contact</a></li>
         <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
@@ -347,6 +349,8 @@
   @media (max-width: 870px) {
     .header-main {
       padding: 10px;
+      flex-direction: column;
+      align-items: flex-start;
     }
   
     .nav-list {
@@ -363,6 +367,7 @@
   
     .mobile-menu {
       display: block;
+      width: 100%;
     }
   }
   </style>

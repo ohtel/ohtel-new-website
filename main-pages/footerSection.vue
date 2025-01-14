@@ -39,7 +39,7 @@
 .main-div {
   align-content: center;
   text-align: center;
-  background-color: #A20584;
+  background-color: #47509B;
   padding: 20px 0;
   color: white;
 }

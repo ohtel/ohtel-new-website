@@ -1,9 +1,8 @@
 <template>
     <div>
         <headerSection/>
-           <aboutUsSection/>
+          <contact_us_details/>
         <whyOtelSection/>
-        <howToPostAdSection/>
         <getTheAppSection/>
         <footerSection/>
      
@@ -17,6 +16,7 @@ import headerSection from '../main-pages/headerSection.vue'
    import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
     import footerSection from '../main-pages/footerSection.vue'
         import getTheAppSection from '../main-pages/getTheAppSection.vue'
+        import contact_us_details from '~/main-pages/contact_us_details.vue'
     
 </script>
 
