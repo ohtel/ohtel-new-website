@@ -21,20 +21,20 @@
   export default {
     name: "ContactUs",
   };
+
+
   </script>
   
   <style scoped>
   .contact-us-section {
     background-color: #f4f4f8;
-    padding: 90px;
+    padding: 90px ;
+    padding-left: 0px;
+    padding-right: 0px;
+    font-size: 20px;
     text-align: center;
     font-family: Arial, sans-serif;
     color: #333;
-  }
-  
-  .contact-container {
-    max-width: 600px;
-    margin: 0 auto;
   }
   
   h2 {
@@ -91,5 +91,33 @@ text-underline-offset: auto;
     font-weight: 500;
     line-height: 32px; /* 160% */
     letter-spacing: -0.2px;
+  }
+
+  @media (max-width: 768px) {
+    .contact-us-section {
+      padding: 20px;
+    }
+  
+    h2 {
+      font-size: 28px;
+    }
+  
+    p, .description {
+      font-size: 14px;
+      padding-top: 16px;
+      padding-bottom: 24px;
+    }
+  
+    .contact-details {
+      font-size: 20px;
+    }
+  
+    .email-icon {
+      font-size: 20px;
+    }
+  
+    .email-link {
+      font-size: 16px;
+    }
   }
   </style>
