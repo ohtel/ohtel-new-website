@@ -1,4 +1,6 @@
 <template>
+    <div>
+        <headerSection/>
     <section class="blogs-section">
       <div class="container">
         <!-- Title and Subtitle -->
@@ -45,11 +47,22 @@
         </div>
       </div>
     </section>
+    <getTheAppSection/>
+        <footerSection/>
+    </div>
   </template>
   
   <script>
+  import headerSection from '../main-pages/headerSection.vue'
+  import getTheAppSection from '../main-pages/getTheAppSection.vue'
+    import footerSection from '../main-pages/footerSection.vue'
+  
   export default {
-    name: "Blogs",
+    components: {
+      headerSection,
+      getTheAppSection,
+      footerSection,
+    },
     data() {
       return {
         blogs: [
@@ -277,11 +290,9 @@
             author: "Luis Hamilton",
             date: "Oct 23, 2014",
           },
-          // Add more objects as needed...
-          // Total should be sufficient for multiple pages
         ],
         currentPage: 1,
-        blogsPerPage: 9, // Adjust to the number of cards per page
+        blogsPerPage: 9,
       };
     },
     computed: {
