@@ -50,17 +50,13 @@ const redirectTo = (store) => {
 <style scoped>
 .main-div{
    background-color: #EEEAF9;
-   padding-top: 132px;
+   padding-top: 74px;
 
-}
-.heading{
-   padding-bottom: 35px;
 }
 .heading-h1{
    margin: 0px;
    font-size: 48px;
    font-weight: 700;
-   margin-top: 60px;
 }
 .heading-p{
    font-size: 16px;
@@ -72,7 +68,7 @@ const redirectTo = (store) => {
 .about-description-section{
    padding-left: 10%;
    padding-right: 10%;
-   padding-bottom: 116px;
+   padding-bottom: 74px;
    
 }
 .about-description-section .about-description-container .contents span{

@@ -5,7 +5,7 @@
       <div class="container">
         <!-- Title and Subtitle -->
         <h1 class="section-title">Blogs</h1>
-        <p class="section-subtitle">Insights, Tips, and Trends to Help You Stay Ahead.</p>
+        <p class="section-subtitle text-center">Insights, Tips, and Trends to Help You Stay Ahead.</p>
   
         <!-- Blog Cards Grid -->
         <div class="blog-grid">
@@ -33,6 +33,7 @@
             v-for="page in totalPages"
             :key="page"
             :class="{ active: currentPage === page }"
+            class="button-inactive"
             @click="goToPage(page)"
           >
             {{ page }}
@@ -47,6 +48,7 @@
         </div>
       </div>
     </section>
+    <frequentlyAskedQuestions/>
     <getTheAppSection/>
         <footerSection/>
     </div>
@@ -55,13 +57,15 @@
   <script>
   import headerSection from '../main-pages/headerSection.vue'
   import getTheAppSection from '../main-pages/getTheAppSection.vue'
-    import footerSection from '../main-pages/footerSection.vue'
+  import footerSection from '../main-pages/footerSection.vue'
+  import frequentlyAskedQuestions from '~/main-pages/frequentlyAskedQuestions.vue';
   
   export default {
     components: {
       headerSection,
       getTheAppSection,
       footerSection,
+      frequentlyAskedQuestions
     },
     data() {
       return {
@@ -325,7 +329,7 @@
   
   <style scoped>
   .blogs-section {
-    padding: 40px 20px;
+    padding: 90px 20px;
     background-color: #f8f9fa;
   }
   
@@ -335,17 +339,19 @@
   }
   
   .section-title {
-    font-size: 32px;
-    font-weight: bold;
+    color: #161C2D;
     text-align: center;
-    margin-bottom: 10px;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 700;
   }
   
   .section-subtitle {
-    font-size: 16px;
-    text-align: center;
-    color: #777;
-    margin-bottom: 40px;
+    color: #161C2DB2;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+    margin-bottom: 64px;
   }
   
   .blog-grid {
@@ -355,66 +361,96 @@
   }
   
   .blog-card {
-    border: 1px solid #e3e3e3;
+    /* border: 1px solid #e3e3e3; */
     border-radius: 8px;
-    padding: 16px;
+    padding: 20px;
     text-align: center;
     background: #fff;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(22, 28, 45, 0.20);
+    max-width: 350px;
   }
   
   .title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
+    color: #161C2D;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: left;
   }
   
   .description {
     font-size: 14px;
-    margin-bottom: 16px;
     color: #555;
+    text-align: left;
+    margin-bottom: 24px;
   }
   
   .meta {
     font-size: 12px;
     color: #999;
-    margin-bottom: 16px;
+    margin-bottom: 22px;
     display: flex;
     justify-content: space-between;
+
   }
-  
+  .button-inactive{
+    width: 40px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid #F1F1F1;
+    background: #FFF;
+  }
   .view-button {
-    background-color: #5c4dff;
-    color: #fff;
-    padding: 8px 16px;
-    border: none;
     border-radius: 4px;
+    background-color: #47509B;
     cursor: pointer;
+    color: var(--White, #FFF);
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+width: 100%;
+height: 40px;
+border: none;
   }
   
   .view-button:hover {
-    background-color: #4b3dcc;
+    background-color: #545daf;
   }
   
   .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 64px;
+    gap: 16px;
+    justify-content: right;
+    right: 35px;
+    margin-right: 30px;
   }
   
   .page-button {
-    background: #5c4dff;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    margin: 0 5px;
-    border-radius: 4px;
     cursor: pointer;
+    width: 100px;
+    border-radius: 8px;
+    background-color: #47509B;
+    border: none;
+    color: white;
+    padding: 10px 4px;
   }
-  
+  .date{
+    color: #161C2D;
+font-size: 12px;
+font-style: normal;
+font-weight: 500;
+  }
   .page-button:disabled {
-    background: #ccc;
+    width: 100px;
+    padding: 10px 4px;
+    border-radius: 8px;
+    background: #EAEAEA;
+    color: black;
     cursor: not-allowed;
   }
   
@@ -423,7 +459,17 @@
   }
   
   button.active {
-    background-color: #4b3dcc;
-    font-weight: bold;
+    width: 40px;
+    border-radius: 8px;
+    background-color: #47509B;
+    border: none;
+    color: white;
+    color: white;
+  }
+  .author{
+    color: #161C2D;
+font-size: 14px;
+font-style: normal;
+font-weight: 600;
   }
   </style>
