@@ -204,6 +204,7 @@
   
   <style scoped>
   .header-main {
+    border-bottom: 0.5px solid #d8cece;
     padding: 20px 100px;
     display: flex;
     justify-content: space-between; /* Align items to the edges */

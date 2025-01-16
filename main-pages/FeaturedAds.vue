@@ -2,7 +2,7 @@
     <div class="main-div">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Featured Ads</h2>
-        <button class="btn view-all">View All</button>
+        <button class="btn view-all" @click="viewAllAds">View All</button>
       </div>
       <!-- Horizontal Scroll Section -->
       <div class="scroll-container">
@@ -54,6 +54,8 @@
   </template>
   
   <script>
+  import { useRouter } from 'vue-router';
+
   export default {
     data() {
       return {
@@ -115,6 +117,11 @@
           // Add more ad objects as needed...
         ],
       };
+    },
+    methods: {
+      viewAllAds() {
+        this.$router.push('../view-ads');
+      },
     },
     mounted() {
       const link = document.createElement('link');
