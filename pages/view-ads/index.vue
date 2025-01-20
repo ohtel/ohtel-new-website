@@ -1,10 +1,10 @@
 <template>
   <div>
-           <headerSection/>
-           <div class="ads-page">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <headerSection/>
+    <div class="ads-page">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
 <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
 <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
 </svg> Home</a> &gt; <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -26,101 +26,100 @@
 </clipPath>
 </defs>
 </svg>Restaurant without bar</span>
-    </nav>
+      </nav>
 
-    <h1 class="page-title">Restaurant without bar</h1>
+      <h1 class="page-title">Restaurant without bar</h1>
 
-    <div class="ads-container">
-      <!-- Filters Section -->
-      <aside class="filters">
-        <h2>Filters</h2>
+      <div class="ads-container">
+        <!-- Filters Section -->
+        <aside class="filters">
+          <h2>Filters</h2>
 
-        <div class="filter-section">
-          <h3>Category</h3>
-          <div>
-            <label><input type="checkbox" /> All</label>
-            <label><input type="checkbox" /> Category 1</label>
-            <label><input type="checkbox" /> Category 2</label>
-          </div>
-        </div>
-
-        <div class="filter-section">
-          <h3>Budget</h3>
-          <input type="range" min="0" max="100000" v-model="filters.budget" />
-          <div>
-            <span>₹0</span>
-            <span>₹{{ filters.budget }}</span>
-          </div>
-        </div>
-
-        <div class="filter-section">
-          <h3>Location</h3>
-          <label><input type="radio" name="location" value="Rajajinagar" /> Rajajinagar</label>
-          <label><input type="radio" name="location" value="Mahatma Gandhi Road" /> Mahatma Gandhi Road</label>
-          <label><input type="radio" name="location" value="HSR Layout" /> HSR Layout</label>
-          <label><input type="radio" name="location" value="Koramangala" /> Koramangala</label>
-        </div>
-
-        <div class="filter-section">
-          <h3>Furnishing</h3>
-          <label><input type="radio" name="furnishing" value="Furnished" /> Furnished</label>
-          <label><input type="radio" name="furnishing" value="Semi-Furnished" /> Semi-Furnished</label>
-          <label><input type="radio" name="furnishing" value="Unfurnished" /> Unfurnished</label>
-        </div>
-
-        <div class="filter-section">
-          <h3>Area (Sq.ft)</h3>
-          <input type="range" min="0" max="20000" v-model="filters.area" />
-          <div>
-            <span>0</span>
-            <span>{{ filters.area }}</span>
-          </div>
-        </div>
-
-        <button class="apply-button">Apply</button>
-      </aside>
-
-      <!-- Ads List Section -->
-      <main class="ads-list">
-        <div class="sort-section">
-          <span>Sort by:</span>
-          <select v-model="filters.sort">
-            <option value="date">Date posted</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-          </select>
-        </div>
-
-        <div class="ads-grid">
-          <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
-            <div class="position-relative">
-              <img src="/assets/images/posted.png" :alt="ad.title" class="card-img-top" />
-              <span class="ad-label">{{ ad.label }}</span>
+          <div class="filter-section">
+            <h3>Category</h3>
+            <div>
+              <label><input type="checkbox" /> All</label>
+              <label><input type="checkbox" /> Category 1</label>
+              <label><input type="checkbox" /> Category 2</label>
             </div>
-            <div class="card-body">
-              <div class="d-flex justify-content-between">
-                <h5 class="card-title mb-2">{{ ad.title }}</h5>
-                <img src="/assets/images/love-blue.png" alt="">
+          </div>
+
+          <div class="filter-section">
+            <h3>Budget</h3>
+            <input type="range" min="0" max="100000" v-model="filters.budget" />
+            <div>
+              <span>₹0</span>
+              <span>₹{{ filters.budget }}</span>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h3>Location</h3>
+            <label><input type="radio" name="location" value="Rajajinagar" /> Rajajinagar</label>
+            <label><input type="radio" name="location" value="Mahatma Gandhi Road" /> Mahatma Gandhi Road</label>
+            <label><input type="radio" name="location" value="HSR Layout" /> HSR Layout</label>
+            <label><input type="radio" name="location" value="Koramangala" /> Koramangala</label>
+          </div>
+
+          <div class="filter-section">
+            <h3>Furnishing</h3>
+            <label><input type="radio" name="furnishing" value="Furnished" /> Furnished</label>
+            <label><input type="radio" name="furnishing" value="Semi-Furnished" /> Semi-Furnished</label>
+            <label><input type="radio" name="furnishing" value="Unfurnished" /> Unfurnished</label>
+          </div>
+
+          <div class="filter-section">
+            <h3>Area (Sq.ft)</h3>
+            <input type="range" min="0" max="20000" v-model="filters.area" />
+            <div>
+              <span>0</span>
+              <span>{{ filters.area }}</span>
+            </div>
+          </div>
+
+          <button class="apply-button">Apply</button>
+        </aside>
+
+        <!-- Ads List Section -->
+        <main class="ads-list">
+          <div class="sort-section">
+            <span>Sort by:</span>
+            <select v-model="filters.sort">
+              <option value="date">Date posted</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+
+          <div class="ads-grid">
+            <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
+              <div class="position-relative">
+                <img src="/assets/images/posted.png" :alt="ad.title" class="card-img-top" />
+                <span class="ad-label">{{ ad.label }}</span>
               </div>
-              <p class="card-text text-primary fw-bold mb-1 price-text">₹ {{ ad.price }} / month</p>
-              <p class="card-text small text-muted mb-3">{{ ad.description }}</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                  <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.location }}
-                </small>
-                <small class="text-muted">{{ ad.date }}</small>
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <h5 class="card-title mb-2">{{ ad.title }}</h5>
+                  <img src="/assets/images/love-blue.png" alt="">
+                </div>
+                <p class="card-text text-primary fw-bold mb-1 price-text">₹ {{ ad.price }} / month</p>
+                <p class="card-text small text-muted mb-3">{{ ad.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.location }}
+                  </small>
+                  <small class="text-muted">{{ ad.date }}</small>
+                </div>
+              </div>
+              <div class="card-footer bg-white border-0">
+                <button class="btn view-details w-100">View Details</button>
               </div>
             </div>
-            <div class="card-footer bg-white border-0">
-              <button class="btn view-details w-100">View Details</button>
-            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   </div>
-  </div>
-
 </template>
 
 <script>
@@ -270,6 +269,10 @@ export default {
   padding: 15px;
   border-radius: 10px;
   border: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .filter-section {
@@ -295,6 +298,8 @@ export default {
 
 .ads-list {
   flex: 3;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .sort-section {
