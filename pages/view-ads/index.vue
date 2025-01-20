@@ -41,10 +41,25 @@
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span></h3>
-            <div v-if="isOpen('category')">
-              <label><input type="checkbox" /> All</label>
-              <label><input type="checkbox" /> Category 1</label>
-              <label><input type="checkbox" /> Category 2</label>
+            <div v-if="isOpen('category')" class="filter-options">
+              <label v-for="category in categories" :key="category.id">
+                <input type="radio" name="category" :value="category.id" v-model="filters.category" @change="fetchSubCategories(category.id)" />
+                {{ category.category_title }}
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-section" v-if="filters.category">
+            <h3 @click="toggleSection('subcategory')">Sub-Category <span class="arrow" :class="{ 'open': isOpen('subcategory') }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span></h3>
+            <div v-if="isOpen('subcategory')" class="filter-options">
+              <label v-for="subcategory in subCategories" :key="subcategory.id">
+                <input type="checkbox" :value="subcategory.id" v-model="filters.subCategory" />
+                {{ subcategory.sub_category_title }}
+              </label>
             </div>
           </div>
 
@@ -55,10 +70,21 @@
               </svg>
             </span></h3>
             <div v-if="isOpen('budget')">
-              <input type="range" min="0" max="100000" v-model="filters.budget" />
-              <div>
-                <span>₹0</span>
-                <span>₹{{ filters.budget }}</span>
+              <label for="budget">Budget</label>
+              <div class="slider-container">
+                <input
+                  id="budget"
+                  type="range"
+                  v-model="filters.budget"
+                  :min="minBudget"
+                  :max="maxBudget"
+                  step="1000"
+                />
+                <div class="budget-labels">
+                  <span>{{ minBudget }}</span>
+                  <span>{{ filters.budget.toLocaleString() }}</span>
+                  <span>{{ maxBudget.toLocaleString() }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -69,7 +95,7 @@
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span></h3>
-            <div v-if="isOpen('location')">
+            <div v-if="isOpen('location')" class="filter-options">
               <label><input type="radio" name="location" value="Rajajinagar" /> Rajajinagar</label>
               <label><input type="radio" name="location" value="Mahatma Gandhi Road" /> Mahatma Gandhi Road</label>
               <label><input type="radio" name="location" value="HSR Layout" /> HSR Layout</label>
@@ -83,7 +109,7 @@
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span></h3>
-            <div v-if="isOpen('furnishing')">
+            <div v-if="isOpen('furnishing')" class="filter-options">
               <label><input type="radio" name="furnishing" value="Furnished" /> Furnished</label>
               <label><input type="radio" name="furnishing" value="Semi-Furnished" /> Semi-Furnished</label>
               <label><input type="radio" name="furnishing" value="Unfurnished" /> Unfurnished</label>
@@ -152,6 +178,9 @@
 
 <script>
 import headerSection from '../main-pages/headerSection.vue'
+import axios from 'axios';
+import { BASE_URL, ENDPOINTS } from '../environment.js';
+
 export default {
   components: {
     headerSection,
@@ -159,10 +188,16 @@ export default {
   data() {
     return {
       filters: {
-        budget: 100000,
+        category: null,
+        subCategory: [],
+        budget: 50000, // default value
         area: 20000,
         sort: "date",
       },
+      minBudget: 0,
+      maxBudget: 100000,
+      categories: [],
+      subCategories: [],
       ads: [
         {
           image: "https://via.placeholder.com/150",
@@ -264,6 +299,7 @@ export default {
       ],
       openSections: {
         category: true,
+        subcategory: true,
         budget: true,
         location: true,
         furnishing: true,
@@ -271,12 +307,40 @@ export default {
       },
     };
   },
+  async mounted() {
+    await this.fetchCategories();
+  },
   methods: {
+    async fetchCategories() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${BASE_URL}${ENDPOINTS.CATEGORY}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        this.categories = response.data.result.category_list;
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    },
+    async fetchSubCategories(categoryId) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        this.subCategories = response.data.results;
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+      }
+    },
     toggleSection(section) {
       this.openSections[section] = !this.openSections[section];
     },
     isOpen(section) {
       return this.openSections[section];
+    },
+    formatCurrency(value) {
+      return `₹${value}`;
     },
   },
 };
@@ -330,6 +394,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.filter-options {
+  display: grid;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .arrow {
@@ -426,5 +496,23 @@ export default {
 .hover-effect:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease-in-out;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.budget-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 </style>

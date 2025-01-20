@@ -20,6 +20,7 @@
     "pinia": "^2.2.4",
     "vue": "latest",
     "vue-router": "latest",
+    "vue-slider-component": "^2.8.16",
     "vuex": "^4.1.0"
   }
 }

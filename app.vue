@@ -4,6 +4,7 @@
 </template>
 
 <script>
+import 'vue-slider-component/theme/default.css';
 export default {
 
 }

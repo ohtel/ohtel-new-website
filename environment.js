@@ -6,7 +6,7 @@ export const ENDPOINTS = {
     LOGIN: 'admin/admin_login/',
     DASHBOARD: 'admin/admin_homepage_api/',
     USERS:'admin/get_all_user_list/',
-    CATEGORY:'admin/category_list/',
+    // CATEGORY:'admin/category_list/',
     ORDER_CHANGE:'admin/category/order-update/',
     CHANGE_STATUS:'category/change-status/',
     NOTIFICATION:'admin/notifications/all/',
@@ -46,6 +46,7 @@ export const ENDPOINTS = {
 
     OTP_SEND:'send-otp-to-phone/',
     VALIDATE_OTP:'phone-otp-validate/',
+    CATEGORY:'master/app_homepage_api/' ,
     
 
   };
