@@ -36,8 +36,12 @@
           <h2>Filters</h2>
 
           <div class="filter-section">
-            <h3>Category</h3>
-            <div>
+            <h3 @click="toggleSection('category')">Category <span class="arrow" :class="{ 'open': isOpen('category') }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span></h3>
+            <div v-if="isOpen('category')">
               <label><input type="checkbox" /> All</label>
               <label><input type="checkbox" /> Category 1</label>
               <label><input type="checkbox" /> Category 2</label>
@@ -45,35 +49,59 @@
           </div>
 
           <div class="filter-section">
-            <h3>Budget</h3>
-            <input type="range" min="0" max="100000" v-model="filters.budget" />
-            <div>
-              <span>₹0</span>
-              <span>₹{{ filters.budget }}</span>
+            <h3 @click="toggleSection('budget')">Budget <span class="arrow" :class="{ 'open': isOpen('budget') }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span></h3>
+            <div v-if="isOpen('budget')">
+              <input type="range" min="0" max="100000" v-model="filters.budget" />
+              <div>
+                <span>₹0</span>
+                <span>₹{{ filters.budget }}</span>
+              </div>
             </div>
           </div>
 
           <div class="filter-section">
-            <h3>Location</h3>
-            <label><input type="radio" name="location" value="Rajajinagar" /> Rajajinagar</label>
-            <label><input type="radio" name="location" value="Mahatma Gandhi Road" /> Mahatma Gandhi Road</label>
-            <label><input type="radio" name="location" value="HSR Layout" /> HSR Layout</label>
-            <label><input type="radio" name="location" value="Koramangala" /> Koramangala</label>
+            <h3 @click="toggleSection('location')">Location <span class="arrow" :class="{ 'open': isOpen('location') }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span></h3>
+            <div v-if="isOpen('location')">
+              <label><input type="radio" name="location" value="Rajajinagar" /> Rajajinagar</label>
+              <label><input type="radio" name="location" value="Mahatma Gandhi Road" /> Mahatma Gandhi Road</label>
+              <label><input type="radio" name="location" value="HSR Layout" /> HSR Layout</label>
+              <label><input type="radio" name="location" value="Koramangala" /> Koramangala</label>
+            </div>
           </div>
 
           <div class="filter-section">
-            <h3>Furnishing</h3>
-            <label><input type="radio" name="furnishing" value="Furnished" /> Furnished</label>
-            <label><input type="radio" name="furnishing" value="Semi-Furnished" /> Semi-Furnished</label>
-            <label><input type="radio" name="furnishing" value="Unfurnished" /> Unfurnished</label>
+            <h3 @click="toggleSection('furnishing')">Furnishing <span class="arrow" :class="{ 'open': isOpen('furnishing') }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span></h3>
+            <div v-if="isOpen('furnishing')">
+              <label><input type="radio" name="furnishing" value="Furnished" /> Furnished</label>
+              <label><input type="radio" name="furnishing" value="Semi-Furnished" /> Semi-Furnished</label>
+              <label><input type="radio" name="furnishing" value="Unfurnished" /> Unfurnished</label>
+            </div>
           </div>
 
           <div class="filter-section">
-            <h3>Area (Sq.ft)</h3>
-            <input type="range" min="0" max="20000" v-model="filters.area" />
-            <div>
-              <span>0</span>
-              <span>{{ filters.area }}</span>
+            <h3 @click="toggleSection('area')">Area (Sq.ft) <span class="arrow" :class="{ 'open': isOpen('area') }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span></h3>
+            <div v-if="isOpen('area')">
+              <input type="range" min="0" max="20000" v-model="filters.area" />
+              <div>
+                <span>0</span>
+                <span>{{ filters.area }}</span>
+              </div>
             </div>
           </div>
 
@@ -234,7 +262,22 @@ export default {
         },
         // Add more ad objects here
       ],
+      openSections: {
+        category: true,
+        budget: true,
+        location: true,
+        furnishing: true,
+        area: true,
+      },
     };
+  },
+  methods: {
+    toggleSection(section) {
+      this.openSections[section] = !this.openSections[section];
+    },
+    isOpen(section) {
+      return this.openSections[section];
+    },
   },
 };
 </script>
@@ -277,12 +320,24 @@ export default {
 
 .filter-section {
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .filter-section h3 {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
 }
 
 .apply-button {
