@@ -72,17 +72,17 @@
             <div v-if="isOpen('budget')">
               <label for="budget">Budget</label>
               <div class="slider-container">
-                <input
-                  id="budget"
-                  type="range"
-                  v-model="filters.budget"
+                <MultiRangeSlider
                   :min="minBudget"
                   :max="maxBudget"
-                  step="1000"
+                  :minValue="filters.budget.min"
+                  :maxValue="filters.budget.max"
+                  :step="1000"
+                  @input="updateBudget"
                 />
                 <div class="budget-labels">
                   <span>{{ minBudget }}</span>
-                  <span>{{ filters.budget.toLocaleString() }}</span>
+                  <span>{{ filters.budget.min.toLocaleString() }} - {{ filters.budget.max.toLocaleString() }}</span>
                   <span>{{ maxBudget.toLocaleString() }}</span>
                 </div>
               </div>
@@ -186,18 +186,20 @@ import headerSection from '../main-pages/headerSection.vue'
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import googleMap from '../../components/googleMap.vue';
+import MultiRangeSlider from "multi-range-slider-vue";
 
 export default {
   components: {
     headerSection,
     googleMap,
+    MultiRangeSlider,
   },
   data() {
     return {
       filters: {
         category: null,
         subCategory: [],
-        budget: 50000, // default value
+        budget: { min: 50000, max: 100000 }, // default values
         area: 20000,
         sort: "date",
       },
@@ -392,6 +394,10 @@ export default {
       } else {
         console.error("Geolocation is not supported by this browser.");
       }
+    },
+    updateBudget({ minValue, maxValue }) {
+      this.filters.budget.min = minValue;
+      this.filters.budget.max = maxValue;
     },
   },
 };
