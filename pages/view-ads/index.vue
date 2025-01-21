@@ -48,7 +48,7 @@
               </label>
             </div>
           </div>
-
+          <div class="border-class"></div>
           <div class="filter-section" v-if="filters.category">
             <h3 @click="toggleSection('subcategory')">Sub-Category <span class="arrow" :class="{ 'open': isOpen('subcategory') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
@@ -62,7 +62,7 @@
               </label>
             </div>
           </div>
-
+          <div class="border-class"></div>
           <div class="filter-section">
             <h3 @click="toggleSection('budget')">Budget <span class="arrow" :class="{ 'open': isOpen('budget') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
@@ -96,10 +96,9 @@
               </svg>
             </span></h3>
             <div v-if="isOpen('location')" class="filter-options">
-              <label><input type="radio" name="location" value="Rajajinagar" /> Rajajinagar</label>
-              <label><input type="radio" name="location" value="Mahatma Gandhi Road" /> Mahatma Gandhi Road</label>
-              <label><input type="radio" name="location" value="HSR Layout" /> HSR Layout</label>
-              <label><input type="radio" name="location" value="Koramangala" /> Koramangala</label>
+              <div class="location-search" @click="openGoogleMap">
+                <h2><span class="location-icon"><img src="/assets/images/locationIcon.svg" alt=""></span>select location</h2>
+              </div>
             </div>
           </div>
 
@@ -173,6 +172,12 @@
         </main>
       </div>
     </div>
+    <div v-if="showMap" class="map-modal">
+      <div class="map-popup">
+        <span class="close-icon" @click="closeGoogleMap">✖</span>
+        <googleMap ref="googleMapComponent" @mapEvent="handleMapEvent" :mapCenter="mapCenter"></googleMap>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -180,10 +185,12 @@
 import headerSection from '../main-pages/headerSection.vue'
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
+import googleMap from '../../components/googleMap.vue';
 
 export default {
   components: {
     headerSection,
+    googleMap,
   },
   data() {
     return {
@@ -305,10 +312,15 @@ export default {
         furnishing: true,
         area: true,
       },
+      showMap: false,
+      mapCenter: { lat: 12.9716, lng: 77.5946 }, // Default location
+      locationDetails: null, // To store location details
     };
   },
   async mounted() {
+    debugger
     await this.fetchCategories();
+    this.fetchCurrentLocation(); // Fetch current location on mount
   },
   methods: {
     async fetchCategories() {
@@ -342,6 +354,45 @@ export default {
     formatCurrency(value) {
       return `₹${value}`;
     },
+    openGoogleMap() {
+      debugger
+      this.showMap = true;
+      this.$nextTick(() => {
+        if (this.mapCenter) {
+          const googleMapComponent = this.$refs.googleMapComponent;
+          if (googleMapComponent && googleMapComponent.setLocation) {
+            googleMapComponent.setLocation(this.mapCenter.lat, this.mapCenter.lng);
+          }
+        }
+      });
+    },
+    closeGoogleMap() {
+      this.showMap = false;
+    },
+    handleMapEvent(eventData) {
+      if (eventData.mapClosed) {
+        this.showMap = false;
+      }
+      if (eventData.address) {
+        this.mapCenter = eventData.locationInformation;
+        this.locationDetails = eventData; // Store location details
+      }
+    },
+    fetchCurrentLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            this.mapCenter = { lat: latitude, lng: longitude };
+          },
+          (error) => {
+            console.error("Error fetching current location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    },
   },
 };
 </script>
@@ -358,9 +409,13 @@ export default {
 }
 
 .page-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  color: #161C2D;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  text-align: left;
+  margin-top: 32px;
+  margin-bottom: 59px;
 }
 
 /* Ads Page Layout */
@@ -372,40 +427,67 @@ export default {
 .filters {
   flex: 1;
   max-width: 390px;
-  background: #f9f9f9;
-  padding: 15px;
+  background: #ffffff;
   border-radius: 10px;
-  border: 1px solid #ddd;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  padding-right: 15px;
+}
+.filters h2{
+  margin-bottom: 26px;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
 }
 
 .filter-section {
   margin-bottom: 20px;
   cursor: pointer;
+  padding-left: 10px;
 }
 
 .filter-section h3 {
   font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-style: normal;
+  font-weight: 600;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 21px;
 }
-
+.filter-section h2 {
+  color: #161C2D80;
+  font-family: Raleway;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  justify-content:left;
+  align-items: center;
+  margin: 0px;
+}
+.border-class{
+  border-top: 1px solid #161C2D80;
+  margin-bottom: 24px;
+}
 .filter-options {
   display: grid;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 20px;
 }
 
 .arrow {
   transition: transform 0.3s ease;
 }
-
+.location-search{
+  padding: 10px;
+  border-radius: 4px;
+  background: rgba(217, 217, 217, 0.50);
+}
+.location-icon{
+  margin-right: 10px;
+}
 .arrow.open {
   transform: rotate(180deg);
 }
@@ -413,12 +495,13 @@ export default {
 .apply-button {
   display: block;
   width: 100%;
-  background: #007bff;
+  border-radius: 8px;
+  background: #47509B;
   color: #fff;
   padding: 10px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
+  margin-bottom: 30px;
 }
 
 .ads-list {
@@ -514,5 +597,36 @@ input[type="range"] {
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.map-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.map-popup {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+}
+
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>
