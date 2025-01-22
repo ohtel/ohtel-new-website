@@ -42,9 +42,8 @@
 
         <!-- Ad Description -->
         <h1 class="ad-title">{{ ad.title }}</h1>
-        <p class="price">{{ ad.price }}</p>
         <p class="description">{{ ad.description }}</p>
-
+        <h3 class="key-freatures-title">Key Features</h3>
         <!-- Key Features -->
         <div class="key-features">
           <span v-for="feature in ad.features" :key="feature" class="feature-badge">
@@ -55,21 +54,44 @@
 
       <!-- Right Section: Seller Info and Location -->
       <div class="right-section">
-        <!-- Seller Info -->
         <div class="seller-info">
-          <h3>About Seller</h3>
-          <div class="seller-details">
-            <img :src="ad.seller.image || '/default-profile.jpg'" alt="Seller Profile" class="seller-image" />
-            <div>
-              <p class="seller-name">{{ ad.seller.name }}</p>
-              <button class="contact-button">{{ ad.seller.contact }}</button>
+         
+          <div class="restaurant-card">
+            <div >
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h3>{{ restaurantAd.title }}</h3>
+                  <img class="love-icon" src="/assets/images/love-blue.png" alt="">
+                </div>
+                <p class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} / month</p>
+                <p class="card-text small text-muted mb-3">{{ restaurantAd.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ restaurantAd.location }}
+                  </small>
+                  <small class="text-muted">{{ restaurantAd.date }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
+        <!-- Seller Info -->
+        <h3 class="about-seller">About Seller</h3>
+        <div class="seller-info">
+         
+          <div class="seller-details d-flex">
+            <img :src="ad.seller.image || '/default-profile.jpg'" alt="Seller Profile" class="seller-image" />
+            <p class="seller-name">{{ ad.seller.name }}</p>
+            
+          </div>
+          <div >
+             
+             <button class="contact-button w-100">{{ ad.seller.contact }}</button>
+           </div>
+        </div>
+        <h3 class="about-seller">Location :</h3>
         <!-- Location Map -->
         <div class="location-map">
-          <h3>Location</h3>
           <googleMap ref="googleMapComponent" :mapCenter="ad.location" :showControls="false"></googleMap>
         </div>
       </div>
@@ -101,7 +123,7 @@ const ad = ref({
   price: '₹ 52,000/- per month',
   description: 'Don’t miss this fantastic opportunity to own a fully equipped restaurant space! Ready for you to start your business right away, with everything you need already in place.',
   features: ['Fully Furnished', 'Free Wifi', '10,000 sq.ft', 'Car Parking', 'Kitchen Setup', 'Washrooms'],
-  seller: { name: 'John Spencer', contact: 'Call now', image: '/default-profile.jpg' },
+  seller: { name: 'John Spencer', contact: 'Call now', image: 'https://i.ibb.co/8sv6t1Y/Ellipse-124.png' },
   location: { lat: 12.9716, lng: 77.5946 },
   images: [
     'https://i.ibb.co/b536R2w/Frame-1618871932.png',
@@ -128,6 +150,14 @@ const ad = ref({
 });
 const images = ref(ad.value.images);
 const mainImageIndex = ref(0);
+const restaurantAd = ref({
+  id: 123,
+  title: "Prime Restaurant",
+  description: "Fully Furnished with Cabin and 20 Workspaces",
+  price: 52000,
+  location: "Bengaluru",
+  date: "3 days ago",
+});
 
 const fetchAdDetails = async (id) => {
   try {
@@ -141,6 +171,11 @@ const fetchAdDetails = async (id) => {
 
 const setMainImage = (index) => {
   mainImageIndex.value = index;
+};
+
+const viewDetails = (adId) => {
+  // Implement the logic to view ad details
+  console.log("View details for ad ID:", adId);
 };
 
 onMounted(() => {
@@ -166,7 +201,7 @@ onMounted(() => {
 .content-wrapper {
   display: flex;
   gap: 2rem;
-  padding: 0px 10%;
+  padding: 0px 10% 64px;
 }
 .left-section {
   flex: 2;
@@ -174,7 +209,7 @@ onMounted(() => {
 .image-gallery {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 36px;
   position: relative;
 }
 .main-image {
@@ -242,16 +277,18 @@ onMounted(() => {
   gap: 0.5rem;
 }
 .feature-badge {
-  background: #f0f0f0;
+  background: #EDECF5;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+font-size: 12px;
+font-style: normal;
+font-weight: 500;
 }
 .right-section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 24px;
 }
 .seller-info {
   background: #fff;
@@ -263,6 +300,7 @@ onMounted(() => {
   display: flex;
   gap: 1rem;
   align-items: center;
+  margin-bottom: 18px;
 }
 .seller-image {
   width: 50px;
@@ -272,9 +310,10 @@ onMounted(() => {
 .seller-name {
   font-size: 1.1rem;
   font-weight: bold;
+  margin: 0px;
 }
 .contact-button {
-  background: #6200ea;
+  background: #47509B;
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
@@ -310,4 +349,136 @@ onMounted(() => {
         font-style: normal;
         font-weight: 500;
     }
+.card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #DEE1E6;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.card-text {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #555;
+}
+
+.ad-label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background: #EDECF5;
+  border-radius: 8px;
+}
+
+.price-text {
+  font-family: 'Poppins', sans-serif;
+}
+
+.card-footer {
+  padding-bottom: 20px;
+}
+
+.view-details {
+  background: #47509B;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.hover-effect {
+  border-radius: 8px;
+}
+.love-icon{
+    object-fit: none;
+}
+.about-seller{
+    color: var(--Main-text, #161C2D);
+    font-size: 24px;
+    font-style: normal;
+}
+.key-features-title{
+    color: var(--Main-text, #161C2D);
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+margin-bottom: 24px;
+}
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+    padding: 0 5%;
+  }
+  .heading-section {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 7px 5% 32px 5%;
+  }
+  .main-heading {
+    font-size: 28px;
+    text-align: left;
+  }
+  .ad-id {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  .breadcrumb {
+    padding: 0 5%;
+  }
+  .right-section {
+    order: -1; /* Move the right section above the left section */
+  }
+  .main-image {
+    height: auto;
+  }
+  .thumbnail-gallery {
+    justify-content: center;
+  }
+  .ad-title {
+    font-size: 1.2rem;
+  }
+  .price {
+    font-size: 1rem;
+  }
+  .description {
+    font-size: 0.9rem;
+  }
+  .feature-badge {
+    font-size: 0.8rem;
+  }
+  .seller-info {
+    padding: 0.5rem;
+  }
+  .seller-name {
+    font-size: 1rem;
+  }
+  .contact-button {
+    padding: 0.3rem 0.8rem;
+  }
+  .location-map {
+    padding: 0.5rem;
+  }
+  .map {
+    height: 200px;
+  }
+}
 </style>

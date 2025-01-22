@@ -45,7 +45,7 @@
               </div>
             </div>
             <div class="card-footer bg-white border-0">
-              <button class="btn view-details w-100">View Details</button>
+              <button @click="viewDetails(123)" class="btn view-details w-100">View Details</button>
             </div>
           </div>
         </div>
@@ -122,6 +122,9 @@
       viewAllAds() {
         this.$router.push('../view-ads');
       },
+      viewDetails(adId) {
+      this.$router.push(`/ads-details/${adId}`);
+    },
     },
     mounted() {
       const link = document.createElement('link');
