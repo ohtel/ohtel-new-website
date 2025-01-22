@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="map" style="height: 400px; width: 100%"></div>
-    <div class="map-actions">
+    <div v-if="showControls" class="map-actions">
       <input
         v-if="map"
         class="map-search"
@@ -23,7 +23,7 @@
         </li>
       </ul>
     </div>
-    <div v-if="map" class="map-buttons">
+    <div v-if="map && showControls" class="map-buttons">
       <button
         class="save-button current-location"
         @click.prevent="fetchCurrentLocation"
@@ -55,6 +55,10 @@ export default {
   },
   props: {
     mapCenter: Object,
+    showControls: {
+      type: Boolean,
+      default: true,
+    },
   },
   mounted() {
     this.loadGoogleMapsScript().then(() => {

@@ -176,6 +176,11 @@
         </main>
       </div>
     </div>
+    <howToPostAdSection/>
+        <!-- <whyOtelSection/> -->
+        <!-- <aboutUsSection/> -->
+        <getTheAppSection/>
+        <footerSection/>
     <div v-if="showMap" class="map-modal">
       <div class="map-popup">
         <span class="close-icon" @click="closeGoogleMap">✖</span>
@@ -191,12 +196,18 @@ import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import googleMap from '../../components/googleMap.vue';
 import MultiRangeSlider from "multi-range-slider-vue";
+import getTheAppSection from '../main-pages/getTheAppSection.vue'
+    import footerSection from '../main-pages/footerSection.vue'
+    import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
 
 export default {
   components: {
     headerSection,
     googleMap,
     MultiRangeSlider,
+    getTheAppSection,
+    footerSection,
+    howToPostAdSection
   },
   data() {
     return {
@@ -442,7 +453,7 @@ export default {
   border-radius: 10px;
   position: sticky;
   top: 0;
-  height: 100vh;
+  /* height: 100vh; */
   overflow-y: auto;
   padding-right: 15px;
 }
@@ -518,7 +529,7 @@ export default {
 .ads-list {
   flex: 3;
   overflow-y: auto;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .sort-section {

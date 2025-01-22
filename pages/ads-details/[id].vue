@@ -1,16 +1,32 @@
 <template>
   <div class="ad-details-page">
+    <headerSection/>
     <!-- Header Navigation -->
+     
     <nav class="breadcrumb">
       <a href="/">Home</a> > <a href="/ads">Hospitality Spaces</a> > {{ ad.title }}
     </nav>
-
+    <div class="heading-section">
+        <div class="main-heading">Restaurant Without Bar</div>
+        <div class="ad-id">Ad ID : 123456789</div>
+     </div>
     <div class="content-wrapper">
       <!-- Left Section: Ad Details -->
       <div class="left-section">
         <!-- Image Gallery -->
         <div class="image-gallery">
-          <img :src="images[mainImageIndex]" alt="Main Image" class="main-image" />
+            <div class="position-relative">
+                <img :src="images[mainImageIndex]" alt="Main Image" class="main-image" />
+                <div class="carousel-dots">
+            <span 
+              v-for="(image, index) in images" 
+              :key="index" 
+              :class="{ 'active': index === mainImageIndex }" 
+              class="dot"
+            ></span>
+          </div>
+            </div>
+         
           <div class="thumbnail-gallery">
             <img
               v-for="(image, index) in images"
@@ -21,6 +37,7 @@
               @click="setMainImage(index)"
             />
           </div>
+        
         </div>
 
         <!-- Ad Description -->
@@ -53,10 +70,16 @@
         <!-- Location Map -->
         <div class="location-map">
           <h3>Location</h3>
-          <googleMap ref="googleMapComponent" :mapCenter="ad.location"></googleMap>
+          <googleMap ref="googleMapComponent" :mapCenter="ad.location" :showControls="false"></googleMap>
         </div>
       </div>
     </div>
+    <FeaturedAds/>
+    <howToPostAdSection/>
+        <!-- <whyOtelSection/> -->
+        <!-- <aboutUsSection/> -->
+        <getTheAppSection/>
+        <footerSection/>
   </div>
 </template>
 
@@ -66,6 +89,11 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import googleMap from '../../components/googleMap.vue';
+import headerSection from '../main-pages/headerSection.vue'
+  import FeaturedAds from '~/main-pages/FeaturedAds.vue'
+  import getTheAppSection from '../main-pages/getTheAppSection.vue'
+    import footerSection from '../main-pages/footerSection.vue'
+    import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
 
 const route = useRoute();
 const ad = ref({
@@ -75,7 +103,28 @@ const ad = ref({
   features: ['Fully Furnished', 'Free Wifi', '10,000 sq.ft', 'Car Parking', 'Kitchen Setup', 'Washrooms'],
   seller: { name: 'John Spencer', contact: 'Call now', image: '/default-profile.jpg' },
   location: { lat: 12.9716, lng: 77.5946 },
-  images: ['/image1.jpg', '/image2.jpg', '/image3.jpg', '/image4.jpg', '/image5.jpg']
+  images: [
+    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871936.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871936.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871936.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
+    'https://i.ibb.co/b536R2w/Frame-1618871936.png'
+  ]
 });
 const images = ref(ad.value.images);
 const mainImageIndex = ref(0);
@@ -84,7 +133,7 @@ const fetchAdDetails = async (id) => {
   try {
     const response = await axios.get(`${BASE_URL}${ENDPOINTS.ADS_DETAILS}/${id}`);
     ad.value = response.data;
-    images.value = response.data.images;
+    images.value = response.data.images.map(image => `/assets/images/${image}`);
   } catch (error) {
     console.error('Error fetching ad details:', error);
   }
@@ -103,12 +152,12 @@ onMounted(() => {
 <style scoped>
 .ad-details-page {
   font-family: Arial, sans-serif;
-  padding: 1rem 2rem;
 }
 .breadcrumb {
   font-size: 14px;
   color: #666;
   margin-bottom: 1rem;
+  padding: 0px 10%;
 }
 .breadcrumb a {
   color: #007bff;
@@ -117,6 +166,7 @@ onMounted(() => {
 .content-wrapper {
   display: flex;
   gap: 2rem;
+  padding: 0px 10%;
 }
 .left-section {
   flex: 2;
@@ -125,6 +175,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  position: relative;
 }
 .main-image {
   width: 100%;
@@ -132,8 +183,13 @@ onMounted(() => {
   border-radius: 8px;
 }
 .thumbnail-gallery {
-  display: flex;
-  gap: 0.5rem;
+    display: inline-flex
+;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    /* flex-direction: row; */
+    flex-wrap: wrap;
 }
 .thumbnail {
   width: 100px;
@@ -141,6 +197,31 @@ onMounted(() => {
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid #ccc;
+  flex: 0 0 auto; /* Prevent flex items from shrinking */
+}
+.carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #D6D6D6FC;
+  border-radius: 50%;
+  opacity: 0.5;
+  transition: opacity 0.5s ease-in-out, background-color 0.5s ease-in-out, transform 0.4s ease, box-shadow 0.4s ease;
+}
+.dot.active {
+  width: 50px;
+  height: 8px;
+  opacity: 1;
+  border-radius: 15px;
+  background-color: #ffffff;
 }
 .ad-title {
   font-size: 1.5rem;
@@ -211,4 +292,22 @@ onMounted(() => {
   height: 300px;
   border-radius: 8px;
 }
+.heading-section{
+    padding: 7px 10% 32px 10%;
+    display: flex;
+    justify-content: space-between;
+    }
+    .main-heading{
+        color: #161C2D;
+        text-align: center;
+        font-size: 36px;
+        font-style: normal;
+        font-weight: 700;
+    }
+    .ad-id{
+        color: var(--Main-text, #161C2D);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+    }
 </style>

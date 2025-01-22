@@ -205,7 +205,7 @@
   <style scoped>
   .header-main {
     border-bottom: 0.5px solid #d8cece;
-    padding: 20px 100px;
+    padding: 20px 10%;
     display: flex;
     justify-content: space-between; /* Align items to the edges */
     align-items: center; /* Vertically center items */
@@ -349,7 +349,7 @@
     align-items: center;
   }
   
-  @media (max-width: 870px) {
+  @media (max-width: 1024px) {
     .header-main {
       padding: 10px;
     }
