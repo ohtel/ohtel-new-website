@@ -114,3 +114,18 @@ body {
     outline: none;
     transition: border-color 0.3s ease;
   }
+  .multi-range-slider .ruler {
+    display: none!important;
+  }
+  .multi-range-slider .labels {
+    display: none!important;
+  }
+  .multi-range-slider .bar-inner {
+    background-color: #47509B !important;
+  }
+  .multi-range-slider .bar-right {
+    box-shadow: inset 0px 0px 0px black!important;
+  }
+  .multi-range-slider .bar-left {
+    box-shadow: inset 0px 0px 0px black!important;
+  }

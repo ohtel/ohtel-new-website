@@ -320,7 +320,6 @@ export default {
     };
   },
   async mounted() {
-    debugger
     await this.fetchCategories();
     this.fetchCurrentLocation(); // Fetch current location on mount
   },
@@ -357,7 +356,6 @@ export default {
       return `₹${value}`;
     },
     openGoogleMap() {
-      debugger
       this.showMap = true;
       this.$nextTick(() => {
         if (this.mapCenter) {
@@ -590,8 +588,27 @@ export default {
 .slider-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: 1rem 0;
+}
+
+.multi-range-slider {
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.multi-range-slider .track {
+  height: 4px !important;
+  background: #47509B !important;
+}
+
+.multi-range-slider .thumb {
+  width: 16px !important;
+  height: 16px !important;
+  background: #47509B !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 input[type="range"] {
@@ -634,5 +651,8 @@ input[type="range"] {
   cursor: pointer;
   font-size: 20px;
   font-weight: bold;
+}
+.ruler {
+  display: none!important;
 }
 </style>

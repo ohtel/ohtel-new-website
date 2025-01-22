@@ -918,7 +918,6 @@ export default {
       this.showAddModal = true;
     },
     openEditModal(ad) {
-      debugger
       console.log("ads data from post page",ad)
       this.adDetails=ad
       this.showEditModal = true;

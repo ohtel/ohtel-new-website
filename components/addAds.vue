@@ -356,7 +356,6 @@ export default {
   },
   methods: {
     assignValues(data) {
-debugger
       // Reassign `setLocationValue` to ensure reactivity
       this.setLocationValue = {
         lat: data.result.ad.coordinate.latitude,
