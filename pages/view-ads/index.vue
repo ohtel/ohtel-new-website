@@ -49,19 +49,23 @@
             </div>
           </div>
           <div class="border-class"></div>
-          <div class="filter-section" v-if="filters.category">
+          <div class="filter-section" >
             <h3 @click="toggleSection('subcategory')">Sub-Category <span class="arrow" :class="{ 'open': isOpen('subcategory') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span></h3>
-            <div v-if="isOpen('subcategory')" class="filter-options">
+            <div v-if="isOpen('subcategory')&&filters.category" class="filter-options">
               <label v-for="subcategory in subCategories" :key="subcategory.id">
                 <input type="checkbox" :value="subcategory.id" v-model="filters.subCategory" />
                 {{ subcategory.sub_category_title }}
               </label>
             </div>
+            <div class="no-subcategory" v-if="!filters.category">
+            Please select a category to view its sub category
           </div>
+          </div>
+          
           <div class="border-class"></div>
           <div class="filter-section">
             <h3 @click="toggleSection('budget')">Budget <span class="arrow" :class="{ 'open': isOpen('budget') }">
@@ -165,7 +169,7 @@
                 </div>
               </div>
               <div class="card-footer bg-white border-0">
-                <button class="btn view-details w-100">View Details</button>
+                <button class="btn view-details w-100" @click="viewDetails(123)">View Details</button>
               </div>
             </div>
           </div>
@@ -397,6 +401,9 @@ export default {
       this.filters.budget.min = minValue;
       this.filters.budget.max = maxValue;
     },
+    viewDetails(adId) {
+      this.$router.push(`/ads-details/${adId}`);
+    },
   },
 };
 </script>
@@ -580,15 +587,15 @@ export default {
   cursor: pointer;
 }
 
-.hover-effect:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease-in-out;
+.hover-effect {
+  border-radius: 8px;
 }
 
 .slider-container {
   display: flex;
   flex-direction: column;
   margin: 1rem 0;
+  padding: 0px 20px;
 }
 
 .multi-range-slider {
@@ -654,5 +661,12 @@ input[type="range"] {
 }
 .ruler {
   display: none!important;
+}
+.no-subcategory {
+  color: #161C2D;
+font-size: 15px;
+font-style: normal;
+font-weight: 400;
+opacity: 0.7;
 }
 </style>

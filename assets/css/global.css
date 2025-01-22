@@ -122,6 +122,7 @@ body {
   }
   .multi-range-slider .bar-inner {
     background-color: #47509B !important;
+    border: none!important;
   }
   .multi-range-slider .bar-right {
     box-shadow: inset 0px 0px 0px black!important;
