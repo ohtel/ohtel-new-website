@@ -130,3 +130,6 @@ body {
   .multi-range-slider .bar-left {
     box-shadow: inset 0px 0px 0px black!important;
   }
+  .p-step-number{
+    display: none!important;;
+}
