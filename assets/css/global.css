@@ -133,3 +133,6 @@ body {
   .p-step-number{
     display: none!important;;
 }
+.p-stepitem.p-stepitem-active {
+  flex: none!important;
+}
