@@ -49,7 +49,7 @@
           <span class="location-name nav-title">{{ locationName }}</span>
         </li>
         <li v-if="isUserLoggedIn">
-          <button class="login-button" @click="handleLogin">Post Ad </button>
+          <button class="login-button" @click="postAds">Post Ad </button>
         </li>
       </ul>
     </div>
@@ -87,7 +87,9 @@
         // Redirect to login page
         // router.push('/login');
       };
-  
+     const postAds=()=>{
+       router.push('/post-ad');
+     };
       // Method to fetch location using Google Maps API
       const fetchLocation = () => {
         if (navigator.geolocation) {
@@ -186,6 +188,7 @@
         userInfo,
         isUserLoggedIn,
         handleLogin,
+        postAds,
         locationName,
         showMap,
         openGoogleMap,
