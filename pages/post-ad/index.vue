@@ -127,21 +127,21 @@
                      v-for="card in cards"
                      :key="card.id"
                      :class="['d-flex items-start bg-white p-4 card-section align-items-center gap-3', { 'selected-card': selectedCategory === card.id }]"
-                     @click="selectCategory(card.id)"
+                     @click="selectCategory(card)"
                    >
                      <!-- Image -->
                      <img
-                       :src="card.image"
+                       :src="card.category_images"
                        alt="Card Image"
                        class="w-28 h-20 object-cover"
                      />
                      <!-- Content -->
                      <div class="ml-4 text-left">
                        <h3 class="category-card-title">
-                         {{ card.title }}
+                         {{ card.category_title }}
                        </h3>
                        <p class="category-subtitle">
-                         {{ card.description }}
+                         {{ card.category_description }}
                        </p>
                      </div>
                      <div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -175,12 +175,12 @@
                      v-for="card in step2Cards"
                      :key="card.id"
                      :class="['d-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between', { 'selected-card': selectedStep2Card === card.id }]"
-                     @click="selectStep2Card(card.id)"
+                     @click="selectStep2Card(card)"
                    >
                      <!-- Image -->
                     <div class="d-flex">
                        <img
-                       :src="card.image"
+                       src="/assets/images/ohtel_logo.png"
                        alt="Card Image"
                        class="w-28 h-20 object-cover-buyer-seller"
                      />
@@ -208,7 +208,7 @@
              label="Back"
              class="back-button"
              severity="secondary"
-             @click="handleNextStep(1)">Back</button>
+             @click="handleBackStep(1)">Back</button>
            <button
              label="Next"
              class="next-button"
@@ -246,7 +246,7 @@
              label="Back"
              class="back-button"
              severity="secondary"
-             @click="handleNextStep(2)"
+             @click="handleBackStep(2)"
            >Back</Button>
            <Button
              label="Next"
@@ -261,38 +261,27 @@
            <div class="content-box">
              <section class="category-section py-12 px-6 bg-gray-50">
                <div class="max-w-6xl mx-auto">
-                 <!-- Header -->
-
-                 <!-- Card List -->
-                 <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
-                   <div
-                     v-for="card in step4Cards"
-                     :key="card.id"
-                     :class="['d-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between', { 'selected-card': selectedStep4Card === card.id }]"
-                     @click="selectStep4Card(card.id)"
-                   >
-                     <!-- Image -->
-                    <div class="d-flex">
-                       <img
-                       :src="card.image"
-                       alt="Card Image"
-                       class="w-28 h-20 object-cover-buyer-seller"
-                     />
-                     <!-- Content -->
-                     <div class="ml-4 text-left">
-                       <h3 class="category-card-title">
-                         {{ card.title }}
-                       </h3>
-                       <p class="category-subtitle">
-                         {{ card.description }}
-                       </p>
-                     </div>
-                    </div>
-                     <div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-<path d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></div>
-                   </div>
-                 </div>
+                 <!-- Dynamic Form Component -->
+                 <form1
+                   v-if="this.adType === 'Spaces' || selectedCategoryDetails?.category_title === 'Used Equipments' || selectedCategoryDetails?.category_title === 'Shared Spaces'"
+                   ref="form1Ref"
+                   :dataFromParent="adDetails"
+                 ></form1>
+                 <form2
+                   v-if="this.adType === 'Market Deals' || selectedCategoryDetails?.category_title === 'Foods Factory/Home Chef'"
+                   ref="form2Ref"
+                   :dataFromParent="adDetails"
+                 ></form2>
+                 <form3
+                   v-if="this.adType === 'Applicant'"
+                   ref="form3Ref"
+                   :dataFromParent="adDetails"
+                 ></form3>
+                 <form4
+                   v-if="this.adType === 'Recruiter'"
+                   ref="form4Ref"
+                   :dataFromParent="adDetails"
+                 ></form4>
                </div>
              </section>
            </div>
@@ -302,7 +291,7 @@
              label="Back"
              class="back-button"
              severity="secondary"
-             @click="handleNextStep(3)">Back</button>
+             @click="handleBackStep(3)">Back</button>
            <button
              label="Next"
              class="next-button"
@@ -340,7 +329,7 @@
              label="Back"
              class="back-button"
              severity="secondary"
-             @click="handleNextStep(4)"
+             @click="handleBackStep(4)"
            />
            <Button
              label="Submit"
@@ -364,12 +353,21 @@
     import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
     import getTheAppSection from '../main-pages/getTheAppSection.vue'
     import footerSection from '../main-pages/footerSection.vue'
+    import form1 from '../components/forms/form-1.vue'
+    import form2 from '../components/forms/form-2.vue'
+    import form3 from '../components/forms/form-3.vue'
+    import form4 from '../components/forms/form-4.vue'
+
 export default {
     components: {
         headerSection,
         howToPostAdSection,
         getTheAppSection,
-        footerSection
+        footerSection,
+        form1,
+        form2,
+        form3,
+        form4
     },
   data() {
     return {
@@ -379,59 +377,27 @@ export default {
       selectedStep3Card: null,
       selectedStep4Card: null,
       selectedStep5Card: null,
-      cards: [
-        {
-          id: 1,
-          title: "Hospitality Spaces",
-          description:
-            "Advertise your Restaurants, Hotels, Cafes, etc. in the 'Spaces' category to Sell, Buy, Rent, Lease, Partner, or Invest in Hospitality Spaces.",
-          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-        },
-        {
-          id: 2,
-          title: "Used Equipments",
-          description:
-            "Advertise your Used Equipment from Restaurants, Cruise Lines, Hotels, etc. in the 'Used Equipment' category to Sell, Buy, Rent, or Lease your Used Equipment.",
-          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-        },
-        {
-          id: 3,
-          title: "Jobs",
-          description:
-            "Advertise Staff Requirements for your Hospitality Business or Post your Resume as an Applicant.",
-          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-        },
-        {
-          id: 4,
-          title: "Market Deals in Your City",
-          description:
-            "Farmers / Supermarkets / Mega markets... Vegetable / Fruit / Grocery / Meat... vendors of perishable and non-perishable goods can showcase their deals here.",
-          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-        },
-        {
-          id: 5,
-          title: "Shared Spaces",
-          description:
-            "Have a Free Space in your Hotel, Book Store, Bakery to share OR Looking for Space to set-up your Food Counter / Display Food Products. Advertise in the 'Shared Spaces' category.",
-          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-        },
-      ],
-      step2Cards: [
-        {
-          id: 1,
-          title: "Buyer",
-          description:
-            "I am looking to sell spaces in hospitality section.",
-          image: "https://i.ibb.co/Qd86wxH/ohtel-logo.png",
-        },
-        {
-          id: 2,
-          title: "Seller",
-          description:
-            "I am looking to buy spaces in hospitality section.",
-          image: "https://i.ibb.co/Qd86wxH/ohtel-logo.png",
-        },
-      ],
+      adDetails: {
+        category: "",
+        sellerOrBuyer: "Seller",
+        subCategory: "",
+        subSubCategory: "",
+        title: "",
+        dealType: "",
+        description: "",
+        area: "",
+        price: "",
+        address: "",
+        images: [],
+        expiryDate: "",
+        city: "",
+        state: "",
+        subCategoryTitle: "",
+        subSubCategoryTitle: "",
+        levelType: "",
+      },
+      cards: [],
+      step2Cards: [],
       step3Cards: [],
       step4Cards: [],
       step5Cards: [],
@@ -439,6 +405,7 @@ export default {
   },
   methods: {
     handleNextStep(step) {
+        debugger
       this.progress = step === 1 ? 20 : step === 2 ? 40 : step === 3 ? 60 : step === 4 ? 80 : 100;
       if (step === 3) {
         this.fetchStep3Cards();
@@ -448,16 +415,29 @@ export default {
         this.fetchStep5Cards();
       }
     },
+    handleBackStep(step) {
+      if (step === 1) {
+        this.selectedStep2Card = null;
+      } else if (step === 2) {
+        this.selectedStep3Card = null;
+      } else if (step === 3) {
+        this.selectedStep4Card = null;
+      }
+      this.progress = step === 1 ? 20 : step === 2 ? 40 : step === 3 ? 60 : step === 4 ? 80 : 100;
+    },
     handleSubmit() {
       // Implement the submit logic here
       console.log("Form submitted");
     },
-    selectCategory(id) {
+    selectCategory(data) {
         debugger
-      this.selectedCategory = id;
+      this.selectedCategoryDetails = data;
+      this.selectedCategory = data.id;
+      this.updateStep2Cards(data);
     },
-    selectStep2Card(id) {
-      this.selectedStep2Card = id;
+    selectStep2Card(data) {
+      this.adType=data.title;
+      this.selectedStep2Card = data.id;
     },
     selectStep3Card(id) {
       this.selectedStep3Card = id;
@@ -471,7 +451,11 @@ export default {
     async fetchStep3Cards() {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.selectedStep2Card === 2 ? 'Seller' : 'Buyer'}`, {
+        let type = this.selectedStep2Card === 2 ? 'Seller' : 'Buyer';
+        if (this.selectedCategory === 3) {
+          type = this.selectedStep2Card === 2 ? 'Recruiter' : 'Applicant';
+        }
+        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.adType}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -485,7 +469,7 @@ export default {
     async fetchStep4Cards() {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.selectedStep2Card === 2 ? 'Seller' : 'Buyer'}`, {
+        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.adType}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -510,6 +494,39 @@ export default {
         console.error("Error fetching step 5 cards:", error);
       }
     },
+    async fetchCategories() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch('https://demo.ohtel.in/api/master/app_homepage_api/', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        this.cards = data.result.category_list;
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    },
+    updateStep2Cards(category) {
+      this.step2Cards = [
+        {
+          id: 1,
+          title: category.buyer.title,
+          description: category.buyer.description,
+          image: category.category_images,
+        },
+        {
+          id: 2,
+          title: category.seller.title,
+          description: category.seller.description,
+          image: category.category_images,
+        },
+      ];
+    },
+  },
+  created() {
+    this.fetchCategories();
   },
 };
 </script>
@@ -663,7 +680,7 @@ export default {
   justify-items: left;
 }
 .object-cover {
-  width: 400px;
+  width: 260px;
   height: 200px;
   border-radius: 16px;
 }
