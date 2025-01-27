@@ -1,228 +1,520 @@
 <template>
-  <div class="card p-6 bg-gray-50 rounded-lg shadow-lg max-w-3xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
-      Post Your Ad
-    </h1>
-    <p class="text-gray-500 mb-10 text-center">
-      Ready to Scale? Let’s Build Something Great Together!
-    </p>
-    <div class="stepper-content-wrapper">
-      <Stepper value="1" class="custom-stepper">
-        <StepItem value="1">
-          <Step>
-            <div class="step-header">
-              <div class="step-number-container">
-                <span
-                  class="step-number"
-                  :class="{ 'active-step': progress >= 33 }"
-                  >1</span
-                >
-                <div class="vertical-progress-bar">
-                  <div
-                    class="vertical-progress-bar-fill"
-                    :style="{ height: `${progress >= 33 ? 100 : 0}%` }"
-                  ></div>
-                </div>
-              </div>
-              <div class="justify-items-left">
-                <span class="step-count">Step 1:</span>
-                <div class="step-title">Select Category</div>
-              </div>
-            </div>
-          </Step>
-        </StepItem>
-        <div class="step-line" :class="{ active: progress >= 33 }"></div>
-        <StepItem value="2">
-          <Step>
-            <div class="step-header">
-              <div class="step-number-container">
-                <span
-                  class="step-number"
-                  :class="{ 'active-step': progress >= 66 }"
-                  >2</span
-                >
-                <div class="vertical-progress-bar">
-                  <div
-                    class="vertical-progress-bar-fill"
-                    :style="{ height: `${progress >= 66 ? 100 : 0}%` }"
-                  ></div>
-                </div>
-              </div>
-              <div class="justify-items-left">
-                <span class="step-count">Step 2:</span>
-                <div class="step-title">Fill Details</div>
-              </div>
-            </div>
-          </Step>
-        </StepItem>
-        <div class="step-line" :class="{ active: progress >= 66 }"></div>
-        <StepItem value="3">
-          <Step>
-            <div class="step-header">
-              <div class="step-number-container">
-                <span
-                  class="step-number"
-                  :class="{ 'active-step': progress === 100 }"
-                  >3</span
-                >
-                <div class="vertical-progress-bar">
-                  <div
-                    class="vertical-progress-bar-fill"
-                    :style="{ height: `${progress === 100 ? 100 : 0}%` }"
-                  ></div>
-                </div>
-              </div>
-              <div class="justify-items-left">
-                <span class="step-count">Step 3:</span>
-                <div class="step-title">Review & Submit</div>
-              </div>
-            </div>
-          </Step>
-        </StepItem>
-      </Stepper>
-      <div class="step-content">
-        <div v-if="progress === 33">
-          <div class="flex flex-col items-center h-48">
-            <div class="content-box">
-              <section class="category-section py-12 px-6 bg-gray-50">
-                <div class="max-w-6xl mx-auto">
-                  <!-- Header -->
+    <div class="main-section">
+        <headerSection/>
+        <div class="card p-6 bg-gray-50 rounded-lg shadow-lg max-w-3xl mx-auto main-div">
+   
+   <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
+     Post Your Ad
+   </h1>
+   <p class="text-gray-500 mb-10 text-center">
+     Ready to Scale? Let’s Build Something Great Together!
+   </p>
+   <div class="stepper-content-wrapper">
+     <Stepper value="1" class="custom-stepper">
+       <StepItem value="1">
+         <Step>
+           <div class="step-header">
+             <div class="step-number-container">
+               <span
+                 class="step-number"
+                 :class="{ 'active-step': progress >= 20 }"
+                 >1</span
+               >
+               <div class="vertical-progress-bar">
+                 <div
+                   class="vertical-progress-bar-fill"
+                   :style="{ height: `${progress >= 20 ? 100 : 0}%` }"
+                 ></div>
+               </div>
+             </div>
+             <div class="justify-items-left">
+               <span class="step-count">Step 1:</span>
+               <div class="step-title">Select Category</div>
+             </div>
+           </div>
+         </Step>
+       </StepItem>
+       <div class="step-line" :class="{ active: progress >= 20 }"></div>
+       <StepItem value="2">
+         <Step>
+           <div class="step-header">
+             <div class="step-number-container">
+               <span
+                 class="step-number"
+                 :class="{ 'active-step': progress >= 40 }"
+                 >2</span
+               >
+               <div class="vertical-progress-bar">
+                 <div
+                   class="vertical-progress-bar-fill"
+                   :style="{ height: `${progress >= 40 ? 100 : 0}%` }"
+                 ></div>
+               </div>
+             </div>
+             <div class="justify-items-left">
+               <span class="step-count">Step 2:</span>
+               <div class="step-title">Fill Details</div>
+             </div>
+           </div>
+         </Step>
+       </StepItem>
+       <div class="step-line" :class="{ active: progress >= 40 }"></div>
+       <StepItem value="3">
+         <Step>
+           <div class="step-header">
+             <div class="step-number-container">
+               <span
+                 class="step-number"
+                 :class="{ 'active-step': progress >= 60 }"
+                 >3</span
+               >
+             </div>
+             <div class="justify-items-left">
+               <span class="step-count">Step 3:</span>
+               <div class="step-title">Review & Submit</div>
+             </div>
+           </div>
+         </Step>
+       </StepItem>
+       <div class="step-line" :class="{ active: progress >= 60 }"></div>
+       <StepItem value="4">
+         <Step>
+           <div class="step-header">
+             <div class="step-number-container">
+               <span
+                 class="step-number"
+                 :class="{ 'active-step': progress >= 80 }"
+                 >4</span
+               >
+             </div>
+             <div class="justify-items-left">
+               <span class="step-count">Step 4:</span>
+               <div class="step-title">Additional Info</div>
+             </div>
+           </div>
+         </Step>
+       </StepItem>
+       <div class="step-line" :class="{ active: progress >= 80 }"></div>
+       <StepItem value="5">
+         <Step>
+           <div class="step-header">
+             <div class="step-number-container">
+               <span
+                 class="step-number"
+                 :class="{ 'active-step': progress === 100 }"
+                 >5</span
+               >
+             </div>
+             <div class="justify-items-left">
+               <span class="step-count">Step 5:</span>
+               <div class="step-title">Confirmation</div>
+             </div>
+           </div>
+         </Step>
+       </StepItem>
+     </Stepper>
+     <div class="step-content">
+       <div v-if="progress === 20">
+         <div class="flex flex-col items-center h-48">
+           <div class="content-box">
+             <section class="category-section py-12 px-6 bg-gray-50">
+               <div class="max-w-6xl mx-auto">
+                 <!-- Header -->
 
-                  <!-- Card List -->
-                  <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
-                    <div
-                      v-for="card in cards"
-                      :key="card.id"
-                      class="d-flex items-start bg-white shadow rounded-lg p-4 card-section"
-                    >
-                      <!-- Image -->
-                      <img
-                        :src="card.image"
-                        alt="Card Image"
-                        class="w-28 h-20 rounded object-cover"
-                      />
-                      <!-- Content -->
-                      <div class="ml-4">
-                        <h3 class="text-lg font-bold text-gray-800">
-                          {{ card.title }}
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                          {{ card.description }}
-                        </p>
-                      </div>
+                 <!-- Card List -->
+                 <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                   <div
+                     v-for="card in cards"
+                     :key="card.id"
+                     :class="['d-flex items-start bg-white p-4 card-section align-items-center gap-3', { 'selected-card': selectedCategory === card.id }]"
+                     @click="selectCategory(card.id)"
+                   >
+                     <!-- Image -->
+                     <img
+                       :src="card.image"
+                       alt="Card Image"
+                       class="w-28 h-20 object-cover"
+                     />
+                     <!-- Content -->
+                     <div class="ml-4 text-left">
+                       <h3 class="category-card-title">
+                         {{ card.title }}
+                       </h3>
+                       <p class="category-subtitle">
+                         {{ card.description }}
+                       </p>
+                     </div>
+                     <div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+<path d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div>
+                   </div>
+                 </div>
+               </div>
+             </section>
+           </div>
+         </div>
+         <div class="d-flex justify-end float-right py-4">
+           <Button
+             label="Next"
+             class="next-button"
+             :disabled="!selectedCategory"
+             @click="handleNextStep(2)"
+           >Next</Button>
+         </div>
+       </div>
+       <div v-if="progress === 40">
+         <div class="flex flex-col items-center h-48">
+           <div class="content-box">
+             <section class="category-section py-12 px-6 bg-gray-50">
+               <div class="max-w-6xl mx-auto">
+                 <!-- Header -->
+
+                 <!-- Card List -->
+                 <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                   <div
+                     v-for="card in step2Cards"
+                     :key="card.id"
+                     :class="['d-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between', { 'selected-card': selectedStep2Card === card.id }]"
+                     @click="selectStep2Card(card.id)"
+                   >
+                     <!-- Image -->
+                    <div class="d-flex">
+                       <img
+                       :src="card.image"
+                       alt="Card Image"
+                       class="w-28 h-20 object-cover-buyer-seller"
+                     />
+                     <!-- Content -->
+                     <div class="ml-4 text-left">
+                       <h3 class="category-card-title">
+                         {{ card.title }}
+                       </h3>
+                       <p class="category-subtitle">
+                         {{ card.description }}
+                       </p>
+                     </div>
                     </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-          <div class="flex justify-end py-4">
-            <Button
-              label="Next"
-              class="next-button"
-              @click="handleNextStep(2)"
-            />
-          </div>
-        </div>
-        <div v-if="progress === 66">
-          <div class="flex flex-col items-center h-48">
-            <div class="content-box">Content for Step 2</div>
-          </div>
-          <div class="flex justify-between py-4">
-            <Button
-              label="Back"
-              class="back-button"
-              severity="secondary"
-              @click="handleNextStep(1)"
-            />
-            <Button
-              label="Next"
-              class="next-button"
-              @click="handleNextStep(3)"
-            />
-          </div>
-        </div>
-        <div v-if="progress === 100">
-          <div class="flex flex-col items-center h-48">
-            <div class="content-box">Content for Step 3</div>
-          </div>
-          <div class="flex justify-between py-4">
-            <Button
-              label="Back"
-              class="back-button"
-              severity="secondary"
-              @click="handleNextStep(2)"
-            />
-            <Button
-              label="Submit"
-              class="submit-button"
-              @click="handleSubmit"
-            />
-          </div>
-        </div>
-      </div>
+                     <div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+<path d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div>
+                   </div>
+                 </div>
+               </div>
+             </section>
+           </div>
+         </div>
+         <div class="d-flex justify-space-between py-4">
+           <button
+             label="Back"
+             class="back-button"
+             severity="secondary"
+             @click="handleNextStep(1)">Back</button>
+           <button
+             label="Next"
+             class="next-button"
+             :disabled="!selectedStep2Card"
+             @click="handleNextStep(3)">Next</button>
+         </div>
+       </div>
+       <div v-if="progress === 60">
+             <section class="category-section py-12 px-6 bg-gray-50 div-grid">
+               
+                   <div
+                     v-for="card in step3Cards"
+                     :key="card.id"
+                     :class="['', { 'selected-card-subcategory': selectedStep3Card === card.id }]"
+                     @click="selectStep3Card(card.id)"
+                   >
+                     <!-- Image -->
+                     <img
+                       :src="card.sub_category_images"
+                       alt="Card Image"
+                       class="w-28 h-20 object-cover-step3"
+                     />
+                     <!-- Content -->
+                     <div class="ml-4 text-left">
+                       <h3 class="subcategory-card-title">
+                         {{ card.sub_category_title }}
+                       </h3>
+                     </div>
+                   </div>
+                
+             </section>
+          
+         <div class="d-flex justify-content-between py-4">
+           <Button
+             label="Back"
+             class="back-button"
+             severity="secondary"
+             @click="handleNextStep(2)"
+           >Back</Button>
+           <Button
+             label="Next"
+             class="next-button"
+             :disabled="!selectedStep3Card"
+             @click="handleNextStep(4)"
+           >Next</Button>
+         </div>
+       </div>
+       <div v-if="progress === 80">
+         <div class="flex flex-col items-center h-48">
+           <div class="content-box">
+             <section class="category-section py-12 px-6 bg-gray-50">
+               <div class="max-w-6xl mx-auto">
+                 <!-- Header -->
+
+                 <!-- Card List -->
+                 <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                   <div
+                     v-for="card in step4Cards"
+                     :key="card.id"
+                     :class="['d-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between', { 'selected-card': selectedStep4Card === card.id }]"
+                     @click="selectStep4Card(card.id)"
+                   >
+                     <!-- Image -->
+                    <div class="d-flex">
+                       <img
+                       :src="card.image"
+                       alt="Card Image"
+                       class="w-28 h-20 object-cover-buyer-seller"
+                     />
+                     <!-- Content -->
+                     <div class="ml-4 text-left">
+                       <h3 class="category-card-title">
+                         {{ card.title }}
+                       </h3>
+                       <p class="category-subtitle">
+                         {{ card.description }}
+                       </p>
+                     </div>
+                    </div>
+                     <div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+<path d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div>
+                   </div>
+                 </div>
+               </div>
+             </section>
+           </div>
+         </div>
+         <div class="d-flex justify-space-between py-4">
+           <button
+             label="Back"
+             class="back-button"
+             severity="secondary"
+             @click="handleNextStep(3)">Back</button>
+           <button
+             label="Next"
+             class="next-button"
+             :disabled="!selectedStep4Card"
+             @click="handleNextStep(5)">Next</button>
+         </div>
+       </div>
+       <div v-if="progress === 100">
+             <section class="category-section py-12 px-6 bg-gray-50 div-grid">
+               
+                   <div
+                     v-for="card in step5Cards"
+                     :key="card.id"
+                     :class="['', { 'selected-card': selectedStep5Card === card.id }]"
+                     @click="selectStep5Card(card.id)"
+                   >
+                     <!-- Image -->
+                     <img
+                       :src="card.sub_category_images"
+                       alt="Card Image"
+                       class="w-28 h-20 object-cover-step3"
+                     />
+                     <!-- Content -->
+                     <div class="ml-4 text-left">
+                       <h3 class="subcategory-card-title">
+                         {{ card.sub_category_title }}
+                       </h3>
+                     </div>
+                   </div>
+                
+             </section>
+          
+         <div class="flex justify-between py-4">
+           <Button
+             label="Back"
+             class="back-button"
+             severity="secondary"
+             @click="handleNextStep(4)"
+           />
+           <Button
+             label="Submit"
+             class="submit-button"
+             @click="handleSubmit"
+           />
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+ <howToPostAdSection/>
+ <getTheAppSection/>
+ <footerSection/>
     </div>
-  </div>
+
 </template>
 
-<script setup>
-import Stepper from "primevue/stepper";
-import StepItem from "primevue/stepitem";
-import Step from "primevue/step";
-import Button from "primevue/button";
-import { ref } from "vue";
-const cards = ref([
-  {
-    id: 1,
-    title: "Hospitality Spaces",
-    description:
-      "Advertise your Restaurants, Hotels, Cafes, etc. in the 'Spaces' category to Sell, Buy, Rent, Lease, Partner, or Invest in Hospitality Spaces.",
-    image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+<script>
+ import headerSection from '../main-pages/headerSection.vue'
+    import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
+    import getTheAppSection from '../main-pages/getTheAppSection.vue'
+    import footerSection from '../main-pages/footerSection.vue'
+export default {
+    components: {
+        headerSection,
+        howToPostAdSection,
+        getTheAppSection,
+        footerSection
+    },
+  data() {
+    return {
+      progress: 20, // Default to Step 1 (20%)
+      selectedCategory: null,
+      selectedStep2Card: null,
+      selectedStep3Card: null,
+      selectedStep4Card: null,
+      selectedStep5Card: null,
+      cards: [
+        {
+          id: 1,
+          title: "Hospitality Spaces",
+          description:
+            "Advertise your Restaurants, Hotels, Cafes, etc. in the 'Spaces' category to Sell, Buy, Rent, Lease, Partner, or Invest in Hospitality Spaces.",
+          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+        },
+        {
+          id: 2,
+          title: "Used Equipments",
+          description:
+            "Advertise your Used Equipment from Restaurants, Cruise Lines, Hotels, etc. in the 'Used Equipment' category to Sell, Buy, Rent, or Lease your Used Equipment.",
+          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+        },
+        {
+          id: 3,
+          title: "Jobs",
+          description:
+            "Advertise Staff Requirements for your Hospitality Business or Post your Resume as an Applicant.",
+          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+        },
+        {
+          id: 4,
+          title: "Market Deals in Your City",
+          description:
+            "Farmers / Supermarkets / Mega markets... Vegetable / Fruit / Grocery / Meat... vendors of perishable and non-perishable goods can showcase their deals here.",
+          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+        },
+        {
+          id: 5,
+          title: "Shared Spaces",
+          description:
+            "Have a Free Space in your Hotel, Book Store, Bakery to share OR Looking for Space to set-up your Food Counter / Display Food Products. Advertise in the 'Shared Spaces' category.",
+          image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+        },
+      ],
+      step2Cards: [
+        {
+          id: 1,
+          title: "Buyer",
+          description:
+            "I am looking to sell spaces in hospitality section.",
+          image: "https://i.ibb.co/Qd86wxH/ohtel-logo.png",
+        },
+        {
+          id: 2,
+          title: "Seller",
+          description:
+            "I am looking to buy spaces in hospitality section.",
+          image: "https://i.ibb.co/Qd86wxH/ohtel-logo.png",
+        },
+      ],
+      step3Cards: [],
+      step4Cards: [],
+      step5Cards: [],
+    };
   },
-  {
-    id: 2,
-    title: "Used Equipments",
-    description:
-      "Advertise your Used Equipment from Restaurants, Cruise Lines, Hotels, etc. in the 'Used Equipment' category to Sell, Buy, Rent, or Lease your Used Equipment.",
-    image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
+  methods: {
+    handleNextStep(step) {
+      this.progress = step === 1 ? 20 : step === 2 ? 40 : step === 3 ? 60 : step === 4 ? 80 : 100;
+      if (step === 3) {
+        this.fetchStep3Cards();
+      } else if (step === 4) {
+        this.fetchStep4Cards();
+      } else if (step === 5) {
+        this.fetchStep5Cards();
+      }
+    },
+    handleSubmit() {
+      // Implement the submit logic here
+      console.log("Form submitted");
+    },
+    selectCategory(id) {
+        debugger
+      this.selectedCategory = id;
+    },
+    selectStep2Card(id) {
+      this.selectedStep2Card = id;
+    },
+    selectStep3Card(id) {
+      this.selectedStep3Card = id;
+    },
+    selectStep4Card(id) {
+      this.selectedStep4Card = id;
+    },
+    selectStep5Card(id) {
+      this.selectedStep5Card = id;
+    },
+    async fetchStep3Cards() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.selectedStep2Card === 2 ? 'Seller' : 'Buyer'}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        this.step3Cards = data.result.data;
+      } catch (error) {
+        console.error("Error fetching step 3 cards:", error);
+      }
+    },
+    async fetchStep4Cards() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.selectedStep2Card === 2 ? 'Seller' : 'Buyer'}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        this.step4Cards = data.result.data;
+      } catch (error) {
+        console.error("Error fetching step 4 cards:", error);
+      }
+    },
+    async fetchStep5Cards() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch(`https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.selectedStep2Card === 2 ? 'Seller' : 'Buyer'}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        this.step5Cards = data.result.data;
+      } catch (error) {
+        console.error("Error fetching step 5 cards:", error);
+      }
+    },
   },
-  {
-    id: 3,
-    title: "Jobs",
-    description:
-      "Advertise Staff Requirements for your Hospitality Business or Post your Resume as an Applicant.",
-    image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-  },
-  {
-    id: 4,
-    title: "Market Deals in Your City",
-    description:
-      "Farmers / Supermarkets / Mega markets... Vegetable / Fruit / Grocery / Meat... vendors of perishable and non-perishable goods can showcase their deals here.",
-    image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-  },
-  {
-    id: 5,
-    title: "Shared Spaces",
-    description:
-      "Have a Free Space in your Hotel, Book Store, Bakery to share OR Looking for Space to set-up your Food Counter / Display Food Products. Advertise in the 'Shared Spaces' category.",
-    image: "https://i.ibb.co/b536R2w/Frame-1618871932.png",
-  },
-]);
-const progress = ref(33); // Default to Step 1 (33%)
-
-function handleNextStep(step) {
-  progress.value = step === 1 ? 33 : step === 2 ? 66 : 100;
-}
-
-function handleSubmit() {
-  // Implement the submit logic here
-  console.log("Form submitted");
-}
+};
 </script>
 
 <style lang="scss" scoped>
-
-
 .card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -281,11 +573,11 @@ function handleSubmit() {
 
 .vertical-progress-bar {
   width: 4px;
-  height: 100px;
+  height: 87px;
   background: #e5e7eb;
   position: absolute;
   left: 50%;
-  top: 35px;
+  top: 28px;
   transform: translateX(-50%);
   border-radius: 2px;
   overflow: hidden;
@@ -334,7 +626,6 @@ function handleSubmit() {
 .content-box {
   padding: 2rem;
   width: 100%;
-  text-align: center;
   font-size: 1rem;
   color: #374151;
 }
@@ -371,19 +662,88 @@ function handleSubmit() {
 .justify-items-left {
   justify-items: left;
 }
-.object-cover{
-    width: 400px;
-height: 200px;
+.object-cover {
+  width: 400px;
+  height: 200px;
+  border-radius: 16px;
 }
-.grid-section{
-    gap: 24px;
+.object-cover-step3 {
+  width: 336px;
+  height: 200px;
+  border-radius: 16px;
 }
-.category-section{
-.card-section{
+.object-cover-buyer-seller {
+  border-radius: 16px;
+}
+.grid-section {
+  gap: 24px;
+}
+.category-section {
+  .card-section {
     border-radius: 24px;
-border: 1px solid #DEE1E6;
+    border: 1px solid #dee1e6;
 
-background: #FFF;
+    background: #fff;
+  }
+  .category-card-title{
+    color: #284B80;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+
+  }
+  .category-subtitle{
+    
+    color: #4C4C4C;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
 }
+}
+.justify-space-between{
+    justify-content: space-between!important;
+}
+.selected-card {
+  border: 1px solid #161C2D!important;
+}
+.selected-card-subcategory{
+    border: 1px solid #161C2D!important;
+    border-radius: 30px;
+    padding: 9px;
+}
+.div-grid{
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    place-items: center;
+    text-align: center;
+}
+.subcategory-card-title{
+    color: var(--color4, #383838);
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+}
+.float-right{
+    float: right;
+}
+@media (max-width: 1300px) {
+.div-grid{
+    grid-template-columns: repeat(2, 1fr);
+}
+}
+
+@media (max-width: 945px) {
+    .main-section{
+        width: fit-content;
+    }
+    .div-grid{
+    grid-template-columns: repeat(1, 1fr);
+}
+// .main-div{
+//     width: fit-content;
+// }
+
 }
 </style>
