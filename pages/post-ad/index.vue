@@ -117,9 +117,9 @@
                     :class="{ 'active-step': progress === 100 }"
                     >5</span
                   >
-                  <div class="">
+                  <div class="vertical-progress-bar">
                     <div
-                      class=""
+                      class="vertical-progress-bar-fill"
                       :style="{ height: `${progress === 100 ? 100 : 0}%` }"
                     ></div>
                   </div>
@@ -415,52 +415,11 @@
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
                   <div class="max-w-6xl mx-auto">
-                    <!-- Dynamic Form Component -->
-                    <div
-                      id="mapModal"
-                      v-if="this.adType !== 'Recruiter'"
-                      class="map-modal google-map styled-input"
-                    >
-                      <h5 class="text-center">Select Address</h5>
-                      <div>
-                        <googleMap
-                          ref="googleMapComponent"
-                          @mapEvent="handleMapEvent"
-                        ></googleMap>
-                      </div>
-                    </div>
-                    <form1
-                      v-if="
-                        this.selectedCategoryDetails?.category_title ===
-                          'Spaces' ||
-                        selectedCategoryDetails?.category_title ===
-                          'Used Equipments' ||
-                        selectedCategoryDetails?.category_title ===
-                          'Shared Spaces'
-                      "
-                      ref="form1Ref"
+                    <!-- Personal Details Component -->
+                    <personal-details
+                      ref="personalDetailsRef"
                       :dataFromParent="adDetails"
-                    ></form1>
-                    <form2
-                      v-if="
-                        this.selectedCategoryDetails?.category_title ===
-                          'Market Deals' ||
-                        selectedCategoryDetails?.category_title ===
-                          'Foods Factory/Home Chef'
-                      "
-                      ref="form2Ref"
-                      :dataFromParent="adDetails"
-                    ></form2>
-                    <form3
-                      v-if="this.adType === 'Applicant'"
-                      ref="form3Ref"
-                      :dataFromParent="adDetails"
-                    ></form3>
-                    <form4
-                      v-if="this.adType === 'Recruiter'"
-                      ref="form4Ref"
-                      :dataFromParent="adDetails"
-                    ></form4>
+                    ></personal-details>
                   </div>
                 </section>
               </div>
