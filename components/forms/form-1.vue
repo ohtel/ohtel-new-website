@@ -105,35 +105,7 @@
           </div> -->
     <!-- Modal for Google Map -->
 
-    <div class="main-radio">
-      <div class="styled-input w-50">
-        <h5>Seller or Buyer</h5>
-        <div>
-          <div class="d-flex justify-content-center radio-options">
-            <div class="radio-option">
-              <input
-                type="radio"
-                id="Seller"
-                value="Seller"
-                v-model="adDetails.sellerOrBuyer"
-                class="styled-radio"
-              />
-              <label for="Seller" class="radio-label">Seller</label>
-            </div>
-            <div class="radio-option">
-              <input
-                type="radio"
-                id="Buyer"
-                value="Buyer"
-                v-model="adDetails.sellerOrBuyer"
-                class="styled-radio"
-              />
-              <label for="Buyer" class="radio-label">Buyer</label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </template>
 

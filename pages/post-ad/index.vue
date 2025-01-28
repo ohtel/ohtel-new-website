@@ -117,9 +117,9 @@
                     :class="{ 'active-step': progress === 100 }"
                     >5</span
                   >
-                  <div class="vertical-progress-bar">
+                  <div class="">
                     <div
-                      class="vertical-progress-bar-fill"
+                      class=""
                       :style="{ height: `${progress === 100 ? 100 : 0}%` }"
                     ></div>
                   </div>
@@ -278,13 +278,13 @@
           </div>
           <div v-if="progress === 60">
             <div class="flex flex-col items-center h-48">
-              <div class="content-box">
+              <div class="content-box subcategory-card">
                 <section class="category-section py-12 px-6 bg-gray-50 div-grid">
                
                <div
                  v-for="card in step3Cards"
                  :key="card.id"
-                 :class="['', { 'selected-card-subcategory': selectedStep3Card === card.id }]"
+                 :class="['card-subcategory', { 'selected-card-subcategory': selectedStep3Card === card.id }]"
                  @click="selectStep3Card(card.id)"
                >
                  <!-- Image -->
@@ -334,7 +334,7 @@
                       v-if="this.adType !== 'Recruiter'"
                       class="map-modal google-map styled-input"
                     >
-                      <h5 class="text-center">Select Address adtype{{ this.adType }}</h5>
+                      <h5 class="text-center">Select Address </h5>
                       <div>
                         <googleMap
                           ref="googleMapComponent"
@@ -345,12 +345,12 @@
                     <div
                       v-xif="this.adType !== 'Recruiter'
                       "
-                      class="form-row"
+                      class="form-row d-flex justify-space-between mb-2"
                     >
                       <label>Address: </label>
                       <textarea
                         disabled
-                        class="styled-input"
+                        class="styled-input address-class"
                         v-model="adDetails.address"
                         placeholder="please select address from map"
                       ></textarea>
@@ -847,6 +847,10 @@ export default {
   font-size: 1rem;
   color: #374151;
 }
+.subcategory-card{
+    height: 600px;
+    overflow-y: auto;
+}
 
 .next-button,
 .submit-button {
@@ -921,11 +925,17 @@ export default {
 }
 .selected-card {
   border: 1px solid #161c2d !important;
+  padding: 9px;
+}
+.card-subcategory {
+  border: 1px solid #ffffff !important;
+  padding: 9px;
 }
 .selected-card-subcategory {
   border: 1px solid #161c2d !important;
   border-radius: 30px;
   padding: 9px;
+
 }
 .div-grid {
   display: grid;
@@ -960,5 +970,8 @@ export default {
   // .main-div{
   //     width: fit-content;
   // }
+}
+.address-class{
+    width: 67.5%;
 }
 </style>
