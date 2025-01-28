@@ -138,19 +138,42 @@
                 <div class="step-number-container">
                   <span
                     class="step-number"
-                    :class="{ 'active-step': progress === 120 }"
+                    :class="{ 'active-step': progress >= 120 }"
                     >6</span
                   >
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress === 120 ? 100 : 0}%` }"
+                      :style="{ height: `${progress >= 120 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
                 <div class="justify-items-left">
                   <span class="step-count">Step 6:</span>
                   <div class="step-title">Select Subscription Plan</div>
+                </div>
+              </div>
+            </Step>
+          </StepItem>
+          <div class="step-line" :class="{ active: progress >= 120 }"></div>
+          <StepItem value="7">
+            <Step>
+              <div class="step-header">
+                <div class="step-number-container">
+                  <span
+                    class="step-number"
+                    :class="{ 'active-step': progress === 140 }"
+                    >7</span
+                  >
+                  <div>
+                    <div
+                      :style="{ height: `${progress === 140 ? 100 : 0}%` }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="justify-items-left">
+                  <span class="step-count">Step 7:</span>
+                  <div class="step-title">Review & Publish</div>
                 </div>
               </div>
             </Step>
@@ -340,7 +363,6 @@
               <button
                 label="Next"
                 class="next-button"
-                :disabled="!selectedStep3Card"
                 @click="handleNextStep(4)"
               >
                 Next
@@ -448,18 +470,22 @@
                 </section>
               </div>
             </div>
-            <div class="flex justify-between py-4">
-              <Button
+            <div class="d-flex justify-space-between py-4">
+              <button
                 label="Back"
                 class="back-button"
                 severity="secondary"
                 @click="handleBackStep(4)"
-              />
-              <Button
+              >
+                Back
+              </button>
+              <button
                 label="Next"
                 class="next-button"
                 @click="handleNextStep(6)"
-              />
+              >
+                Next
+              </button>
             </div>
           </div>
           <div v-if="progress === 120">
@@ -509,12 +535,57 @@
                 Back
               </button>
               <button
-                label="Submit"
-                class="submit-button"
+                label="Next"
+                class="next-button"
                 :disabled="!selectedSubscriptionPlan"
-                @click="handleSubmit"
+                @click="handleNextStep(7)"
               >
-                Submit
+                Next
+              </button>
+            </div>
+          </div>
+          <div v-if="progress === 140">
+            <div class="flex flex-col items-center h-48">
+              <div class="content-box">
+                <section class="category-section py-12 px-6 bg-gray-50">
+                  <div class="max-w-6xl mx-auto">
+                    <!-- Review & Publish -->
+                    <h3 class="text-2xl font-bold mb-4">Review Your Ad</h3>
+                    <div class="review-section">
+                      <p><strong>Category:</strong> {{ selectedCategoryDetails?.category_title }}</p>
+                      <p><strong>Ad Type:</strong> {{ adType }}</p>
+                      <p><strong>Sub Category:</strong> {{ adDetails.subCategory }}</p>
+                      <p><strong>Title:</strong> {{ adDetails.title }}</p>
+                      <p><strong>Description:</strong> {{ adDetails.description }}</p>
+                      <p><strong>Address:</strong> {{ adDetails.address }}</p>
+                      <p><strong>Price:</strong> {{ adDetails.price }}</p>
+                      <p><strong>Expiry Date:</strong> {{ adDetails.expiryDate }}</p>
+                      <p><strong>Personal Information:</strong></p>
+                      <ul>
+                        <li><strong>Name:</strong> {{ adDetails.fullName }}</li>
+                        <li><strong>Contact:</strong> {{ adDetails.contact }}</li>
+                        <li><strong>Email:</strong> {{ adDetails.email }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+            <div class="d-flex justify-space-between py-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(6)"
+              >
+                Back
+              </button>
+              <button
+                label="Publish"
+                class="submit-button"
+                @click="handlePublish"
+              >
+                Publish
               </button>
             </div>
           </div>
@@ -582,6 +653,9 @@ export default {
         subCategoryTitle: "",
         subSubCategoryTitle: "",
         levelType: "",
+        fullName: "",
+        contact: "",
+        email: "",
       },
       cards: [],
       step2Cards: [],
@@ -605,7 +679,9 @@ export default {
           ? 80
           : step === 5
           ? 100
-          : 120;
+          : step === 6
+          ? 120
+          : 140;
       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top
       if (step === 3) {
         this.fetchStep3Cards();
@@ -625,6 +701,8 @@ export default {
         this.selectedStep3Card = null;
       } else if (step === 3) {
         this.selectedStep4Card = null;
+      } else if (step === 4) {
+        this.selectedStep5Card = null;
       }
       this.progress =
         step === 1
@@ -637,7 +715,9 @@ export default {
           ? 80
           : step === 5
           ? 100
-          : 120;
+          : step === 6
+          ? 120
+          : 140;
     },
     handleSubmit() {
       const personalDetailsRef = this.$refs.personalDetailsRef;
@@ -647,6 +727,10 @@ export default {
         // Implement the submit logic here
       }
       console.log("Form submitted");
+    },
+    handlePublish() {
+      // Implement the publish logic here
+      console.log("Ad published");
     },
     selectCategory(data) {
       this.selectedCategoryDetails = data;
