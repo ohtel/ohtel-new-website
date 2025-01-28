@@ -114,19 +114,43 @@
                 <div class="step-number-container">
                   <span
                     class="step-number"
-                    :class="{ 'active-step': progress === 100 }"
+                    :class="{ 'active-step': progress >= 100 }"
                     >5</span
                   >
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress === 100 ? 100 : 0}%` }"
+                      :style="{ height: `${progress >= 100 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
                 <div class="justify-items-left">
                   <span class="step-count">Step 5:</span>
                   <div class="step-title">Personal Informations</div>
+                </div>
+              </div>
+            </Step>
+          </StepItem>
+          <div class="step-line" :class="{ active: progress >= 100 }"></div>
+          <StepItem value="6">
+            <Step>
+              <div class="step-header">
+                <div class="step-number-container">
+                  <span
+                    class="step-number"
+                    :class="{ 'active-step': progress === 120 }"
+                    >6</span
+                  >
+                  <div class="vertical-progress-bar">
+                    <div
+                      class="vertical-progress-bar-fill"
+                      :style="{ height: `${progress === 120 ? 100 : 0}%` }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="justify-items-left">
+                  <span class="step-count">Step 6:</span>
+                  <div class="step-title">Select Subscription Plan</div>
                 </div>
               </div>
             </Step>
@@ -432,10 +456,66 @@
                 @click="handleBackStep(4)"
               />
               <Button
+                label="Next"
+                class="next-button"
+                @click="handleNextStep(6)"
+              />
+            </div>
+          </div>
+          <div v-if="progress === 120">
+            <div class="flex flex-col items-center h-48">
+              <div class="content-box">
+                <section class="category-section py-12 px-6 bg-gray-50">
+                  <div class="max-w-6xl mx-auto">
+                    <!-- Subscription Plan Selection -->
+                    <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                      <div
+                        v-for="plan in subscriptionPlans"
+                        :key="plan.id"
+                        :class="[
+                          'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
+                          { 'selected-card': selectedSubscriptionPlan === plan.id },
+                        ]"
+                        @click="selectSubscriptionPlan(plan.id)"
+                      >
+                        <!-- Content -->
+                        <div class="ml-4 text-left">
+                          <h3 class="category-card-title">
+                            {{ plan.plan_name }}
+                          </h3>
+                          <p class="category-subtitle">
+                            {{ plan.plan_description }}
+                          </p>
+                          <p class="category-subtitle">
+                            Price: {{ plan.plan_price }} (Discount: {{ plan.discount_price }})
+                          </p>
+                          <p class="category-subtitle">
+                            Validity: {{ plan.validity_days }} days
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+            <div class="d-flex justify-space-between py-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(5)"
+              >
+                Back
+              </button>
+              <button
                 label="Submit"
                 class="submit-button"
+                :disabled="!selectedSubscriptionPlan"
                 @click="handleSubmit"
-              />
+              >
+                Submit
+              </button>
             </div>
           </div>
         </div>
@@ -483,6 +563,7 @@ export default {
       selectedStep3Card: null,
       selectedStep4Card: null,
       selectedStep5Card: null,
+      selectedSubscriptionPlan: null,
       adDetails: {
         category: "",
         sellerOrBuyer: "Seller",
@@ -507,6 +588,7 @@ export default {
       step3Cards: [],
       step4Cards: [],
       step5Cards: [],
+      subscriptionPlans: [],
     };
   },
   methods: {
@@ -521,7 +603,9 @@ export default {
           ? 60
           : step === 4
           ? 80
-          : 100;
+          : step === 5
+          ? 100
+          : 120;
       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top
       if (step === 3) {
         this.fetchStep3Cards();
@@ -529,6 +613,8 @@ export default {
         this.fetchStep4Cards();
       } else if (step === 5) {
         this.fetchStep5Cards();
+      } else if (step === 6) {
+        this.fetchSubscriptionPlans();
       }
     },
     handleBackStep(step) {
@@ -549,7 +635,9 @@ export default {
           ? 60
           : step === 4
           ? 80
-          : 100;
+          : step === 5
+          ? 100
+          : 120;
     },
     handleSubmit() {
       const personalDetailsRef = this.$refs.personalDetailsRef;
@@ -561,16 +649,19 @@ export default {
       console.log("Form submitted");
     },
     selectCategory(data) {
-      debugger;
       this.selectedCategoryDetails = data;
       this.selectedCategory = data.id;
+      this.adDetails.category = data.id
       this.updateStep2Cards(data);
     },
     selectStep2Card(data) {
+        debugger
       this.adType = data.title;
       this.selectedStep2Card = data.id;
+      this.adDetails.sellerOrBuyer = data.id===2 ? "Seller" : "Buyer";
     },
     selectStep3Card(id) {
+        this.adDetails.subCategory = id;
       this.selectedStep3Card = id;
     },
     selectStep4Card(id) {
@@ -579,8 +670,10 @@ export default {
     selectStep5Card(id) {
       this.selectedStep5Card = id;
     },
+    selectSubscriptionPlan(id) {
+      this.selectedSubscriptionPlan = id;
+    },
     async fetchStep3Cards() {
-        debugger
       try {
         const token = localStorage.getItem("accessToken");
         let type = this.selectedStep2Card === 2 ? "Seller" : "Buyer";
@@ -635,6 +728,20 @@ export default {
         this.step5Cards = data.result.data;
       } catch (error) {
         console.error("Error fetching step 5 cards:", error);
+      }
+    },
+    async fetchSubscriptionPlans() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch(`https://demo.ohtel.in/api/subscription/get_subscription_list/${this.adDetails.category}/${this.adType}/`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        this.subscriptionPlans = data.result;
+      } catch (error) {
+        console.error("Error fetching subscription plans:", error);
       }
     },
     async fetchCategories() {
@@ -801,7 +908,7 @@ export default {
 }
 
 .content-box {
-  padding: 2rem;
+//   padding: 2rem;
   width: 100%;
   font-size: 1rem;
   color: #374151;
