@@ -126,7 +126,6 @@ methods: {
 
 <style scoped>
 .fieldset-class {
-  background-color: #f4f4f4;
   border-radius: 1%;
 }
 .form-legend {

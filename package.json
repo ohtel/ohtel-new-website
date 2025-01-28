@@ -24,7 +24,8 @@
     "vue": "latest",
     "vue-router": "latest",
     "vue-slider-component": "^2.8.16",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "sass": "^1.43.4"
   },
   "devDependencies": {
     "sass-embedded": "^1.83.4"
