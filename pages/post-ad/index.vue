@@ -2,7 +2,7 @@
   <div class="main-section">
     <headerSection />
     <div
-      class="card p-6 bg-gray-50 rounded-lg shadow-lg max-w-3xl mx-auto main-div"
+      class="card p-6 max-w-3xl mx-auto main-div"
     >
       <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
         Post Your Ad
@@ -24,7 +24,7 @@
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress >= 20 ? 100 : 0}%` }"
+                      :style="{ height: `${progress > 20 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
@@ -48,7 +48,7 @@
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress >= 40 ? 100 : 0}%` }"
+                      :style="{ height: `${progress > 40 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
@@ -72,7 +72,7 @@
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress >= 60 ? 100 : 0}%` }"
+                      :style="{ height: `${progress > 60 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
@@ -96,7 +96,7 @@
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress >= 80 ? 100 : 0}%` }"
+                      :style="{ height: `${progress > 80 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
@@ -120,7 +120,7 @@
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress >= 100 ? 100 : 0}%` }"
+                      :style="{ height: `${progress > 100 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
@@ -144,7 +144,7 @@
                   <div class="vertical-progress-bar">
                     <div
                       class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress >= 120 ? 100 : 0}%` }"
+                      :style="{ height: `${progress > 120 ? 100 : 0}%` }"
                     ></div>
                   </div>
                 </div>
@@ -363,6 +363,7 @@
               <button
                 label="Next"
                 class="next-button"
+                :disabled="!selectedStep3Card"
                 @click="handleNextStep(4)"
               >
                 Next
@@ -449,7 +450,6 @@
               <button
                 label="Next"
                 class="next-button"
-                :disabled="!selectedStep4Card"
                 @click="handleNextStep(5)"
               >
                 Next
@@ -487,6 +487,7 @@
                 Next
               </button>
             </div>
+
           </div>
           <div v-if="progress === 120">
             <div class="flex flex-col items-center h-48">

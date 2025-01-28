@@ -109,7 +109,7 @@ body {
     width: 100%;
     padding: 10px;
     font-size: 14px;
-    border: 2px solid #ddd;
+    border: 1px solid #ddd;
     border-radius: 8px;
     outline: none;
     transition: border-color 0.3s ease;
