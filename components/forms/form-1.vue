@@ -83,7 +83,7 @@
         </div>
       </div>
     </div>
-    <div v-if="adDetails.images.length" class="styled-input">
+    <div v-if="adDetails.images.length" class="styled-input dashed">
       <h5 class="text-center">Selected Images</h5>
       <div class="image-preview">
         <div
@@ -374,5 +374,9 @@ legend {
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
+}
+.dashed{
+  border-radius: var(--radi-mlg, 8px);
+  border: 1px dashed var(--Primary, #47509B);
 }
 </style>
