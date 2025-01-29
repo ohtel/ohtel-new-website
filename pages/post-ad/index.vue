@@ -766,7 +766,7 @@ export default {
           type = this.selectedStep2Card === 2 ? "Recruiter" : "Applicant";
         }
         const response = await fetch(
-          `https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.adType}`,
+          `${BASE_URL}${ENDPOINTS.SUB_CATEGORY}?category_id=${this.selectedCategory}&type=${this.adType}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -780,45 +780,14 @@ export default {
       }
     },
     async fetchStep4Cards() {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const response = await fetch(
-          `https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${this.selectedCategory}&type=${this.adType}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await response.json();
-        this.step4Cards = data.result.data;
-      } catch (error) {
-        console.error("Error fetching step 4 cards:", error);
-      }
     },
     async fetchStep5Cards() {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const response = await fetch(
-          `https://demo.ohtel.in/api/master/get_sub_category_list/?category_id=${
-            this.selectedCategory
-          }&type=${this.selectedStep2Card === 2 ? "Seller" : "Buyer"}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await response.json();
-        this.step5Cards = data.result.data;
-      } catch (error) {
-        console.error("Error fetching step 5 cards:", error);
-      }
+
     },
     async fetchSubscriptionPlans() {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await fetch(`https://demo.ohtel.in/api/subscription/get_subscription_list/${this.adDetails.category}/${this.adType}/`, {
+        const response = await fetch(`${BASE_URL}${ENDPOINTS.SUBSCRIPTION_PLAN}${this.adDetails.category}/${this.adType}/`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -833,7 +802,7 @@ export default {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await fetch(
-          "https://demo.ohtel.in/api/master/app_homepage_api/",
+          `${BASE_URL}${ENDPOINTS.CATEGORY}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -946,7 +915,7 @@ export default {
   background: #e5e7eb;
   position: absolute;
   left: 50%;
-  top: 28px;
+  top: 30px;
   transform: translateX(-50%);
   border-radius: 2px;
   overflow: hidden;
