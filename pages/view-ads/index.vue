@@ -25,10 +25,10 @@
 <rect width="24" height="24" fill="white"/>
 </clipPath>
 </defs>
-</svg>Restaurant without bar</span>
+</svg>All Ads</span>
       </nav>
 
-      <h1 class="page-title">Restaurant without bar</h1>
+      <h1 class="page-title">All Ads</h1>
 
       <div class="ads-container">
         <!-- Filters Section -->

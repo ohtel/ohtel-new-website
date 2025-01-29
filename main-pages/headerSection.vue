@@ -17,8 +17,8 @@
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/about')}" class="nav-title" @click="navigateTo('/main-dashboard/about')">About</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/contact_us')}" class="nav-title" @click="navigateTo('/main-dashboard/contact_us')">Contact Us</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/blogs')}" class="nav-title" @click="navigateTo('/main-dashboard/blogs')">Blogs</a></li>
-            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Services</a></li>
-            <li v-if="isUserLoggedIn"><a class="nav-title" href="#">Contact</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/view-ads')}" class="nav-title"  @click="navigateTo('/view-ads')">View Ads</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/profile')}" class="nav-title"  @click="navigateTo('/profile')">Profile</a></li>
             <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
               <span class="location-icon"><img src="/assets/images/location-icon.svg" alt=""></span>
               <span class="location-name nav-title">{{ locationName }}</span>
@@ -42,8 +42,8 @@
         <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/about')}" class="nav-title" @click="navigateTo('/main-dashboard/about')">About</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/contact_us')}" class="nav-title" @click="navigateTo('/main-dashboard/contact_us')">Contact Us</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/blogs')}" class="nav-title" @click="navigateTo('/main-dashboard/blogs')">Blogs</a></li>
-        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Services</a></li>
-        <li v-if="isUserLoggedIn"><a class="nav-title" href="#" @click="closeMobileMenu">Contact</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/view-ads')}" class="nav-title"  @click="navigateTo('/view-ads')">View Ads</a></li>
+            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/profile')}" class="nav-title"  @click="navigateTo('/profile')">Profile</a></li>
         <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
           <span class="location-icon"><img src="/assets/images/location-icon.svg" alt=""></span>
           <span class="location-name nav-title">{{ locationName }}</span>
@@ -250,7 +250,10 @@
   }
 
   .nav-title.active {
-    color: #47509B; /* Highlight color */
+    color: #A20584; 
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
   }
   
   .location {
