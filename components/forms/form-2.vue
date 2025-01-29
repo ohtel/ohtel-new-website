@@ -600,9 +600,9 @@ button {
   background-color: #ffffff;
 }
 .form-row {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
   margin-bottom: 10px;
 }
 .modal-overlay {

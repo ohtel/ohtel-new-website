@@ -1091,7 +1091,7 @@ export default {
   //     width: fit-content;
   // }
 }
-.address-class{
-    width: 67.5%;
-}
+// .address-class{
+//     width: 67.5%;
+// }
 </style>
