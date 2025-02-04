@@ -392,7 +392,7 @@
                     <div
                       v-xif="this.adType !== 'Recruiter'
                       "
-                      class="form-row d-flex justify-space-between mb-2"
+                      class="form-row justify-space-between mb-2"
                     >
                       <label>Address: </label>
                       <textarea
