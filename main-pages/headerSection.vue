@@ -182,6 +182,14 @@
   
       // Method to navigate to a specific route
       const navigateTo = (path) => {
+        const storedMapCenter = JSON.parse(sessionStorage.getItem('mapCenter'));
+        const storedLocationName = sessionStorage.getItem('locationName');
+
+        // Check if location data is already available
+        if (!storedMapCenter || !storedLocationName) {
+          fetchLocation(); // Fetch location if not available
+        }
+
         router.push(path);
         closeMobileMenu();
       };
@@ -199,6 +207,15 @@
   
       // Ensure localStorage is accessed only on the client side
       onMounted(() => {
+        // Clear location data from localStorage on refresh
+        const clearLocationData = () => {
+          localStorage.removeItem('mapCenter');
+          localStorage.removeItem('locationName');
+        };
+
+        // Add event listener for beforeunload to clear local storage
+        window.addEventListener('beforeunload', clearLocationData);
+
         const storedUserInfo = localStorage.getItem('user-info');
         if (storedUserInfo) {
           userInfo.value = JSON.parse(storedUserInfo);
@@ -209,8 +226,13 @@
           locationName.value = storedLocationName;
           mapCenter.value = JSON.parse(storedMapCenter);
         } else {
-          fetchLocation();
+          fetchLocation(); // Fetch location if not available in local storage
         }
+
+        // Cleanup the event listener on component unmount
+        return () => {
+          window.removeEventListener('beforeunload', clearLocationData);
+        };
       });
   
       return {
