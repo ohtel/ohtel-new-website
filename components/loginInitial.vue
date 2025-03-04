@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="center-section">
-      <h1>Admin Login</h1>
+      <h1>Login</h1>
       <p>Welcome Back! Sign in to continue</p>
 
       <!-- Mobile Number Input with Icon -->
@@ -10,12 +10,11 @@
           <img src="../assets/images/login/username_icon.svg" alt="Mobile Icon" />
         </span>
         <input
-          type="tel"
+          type="text"
           class="password-input form-control"
           v-model="email"
-          placeholder="Enter your mobile number"
-          @input="validateMobileNumber"
-          maxlength="10"
+          placeholder="Enter your mobile number or Email"
+          @input="validateInput"
         />
       </div>
 
@@ -55,6 +54,11 @@
       <div v-if="loginError" class="alert alert-danger mt-2">
         {{ loginError }}
       </div>
+
+      <!-- Skip Login Button -->
+      <button @click="skipLogin" class="btn btn-outline-secondary w-100 mt-3">
+        Skip Login
+      </button>
 
       <!-- Google Login -->
       <button @click="signInWithGoogle" class="btn btn-primary google-login-button w-100">
@@ -106,16 +110,12 @@ export default {
     };
   },
   methods: {
-    validateMobileNumber(event) {
+    validateInput(event) {
       const value = event.target.value;
-      if (!/^\d*$/.test(value)) {
-        event.target.value = value.replace(/\D/g, '');
-        this.email = event.target.value;
-      }
-      if (value.length > 10) {
-        event.target.value = value.slice(0, 10);
-        this.email = event.target.value;
-      }
+      this.email = value;
+    },
+    isEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     },
     isNumber(event) {
       if (!/^\d*$/.test(event.key)) {
@@ -148,9 +148,12 @@ export default {
       this.loginError = '';
 
       if (!this.email) {
-        this.emailError = 'Mobile Number is required.';
+        this.emailError = 'Mobile Number or Email is required.';
+      } else if (this.isEmail(this.email)) {
+        // Email validation passed
+        return true;
       } else if (!/^\d{10}$/.test(this.email)) {
-        this.emailError = 'Please enter a valid 10-digit mobile number.';
+        this.emailError = 'Please enter a valid 10-digit mobile number or email address.';
       }
 
       return !this.emailError;
@@ -162,17 +165,28 @@ export default {
       }
 
       try {
-        const payload = {
-          phone: this.email,
-        };
-        const response = await axios.get(
-          `${BASE_URL}${ENDPOINTS.OTP_SEND}?phone=${this.email}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        let response;
+        if (this.isEmail(this.email)) {
+          // Send OTP to email
+          response = await axios.get(
+            `${BASE_URL}send-otp-to-email/?email=${this.email}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+        } else {
+          // Send OTP to mobile
+          response = await axios.get(
+            `${BASE_URL}${ENDPOINTS.OTP_SEND}?phone=${this.email}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+        }
 
         console.log('OTP sent:', response.data);
         this.showOtpSection = true;
@@ -183,19 +197,36 @@ export default {
     },
     async verifyOtp() {
       try {
-        const payload = {
-          phone: this.email,
-          otp: this.otp.join(''),
-        };
-        const response = await axios.post(
-          `${BASE_URL}${ENDPOINTS.VALIDATE_OTP}`,
-          payload,
-          {
-            headers: {
-              'Content-Type': 'application/json',
+        let response;
+        if (this.isEmail(this.email)) {
+          // Verify email OTP
+          response = await axios.post(
+            `${BASE_URL}email-validate-otp/`,
+            {
+              email: this.email,
+              otp: this.otp.join(''),
             },
-          }
-        );
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+        } else {
+          // Verify mobile OTP
+          response = await axios.post(
+            `${BASE_URL}${ENDPOINTS.VALIDATE_OTP}`,
+            {
+              phone: this.email,
+              otp: this.otp.join(''),
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+        }
 
         console.log('OTP Verified:', response.data);
         localStorage.setItem('accessToken', response.data.token);
@@ -227,6 +258,10 @@ export default {
         // Simulate resending OTP
         console.log('OTP Resent');
       }
+    },
+    skipLogin() {
+      // Handle skip login - you can add any necessary logic here
+      this.$router.push('/main-dashboard');
     },
     async signInWithGoogle() {
       try {
