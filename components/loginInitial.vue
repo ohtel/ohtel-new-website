@@ -55,10 +55,7 @@
         {{ loginError }}
       </div>
 
-      <!-- Skip Login Button -->
-      <button @click="skipLogin" class="btn btn-outline-secondary w-100 mt-3">
-        Skip Login
-      </button>
+    
 
       <!-- Google Login -->
       <button @click="signInWithGoogle" class="btn btn-primary google-login-button w-100">
@@ -66,6 +63,10 @@
           <img src="../assets/images/login/google_image.svg" alt="" />
         </span>
         Signin Via Google
+      </button>
+        <!-- Skip Login Button -->
+        <button @click="skipLogin" class="btn btn-outline-secondary w-100 mt-3">
+        Skip Login
       </button>
     </div>
   </div>
@@ -259,9 +260,24 @@ export default {
         console.log('OTP Resent');
       }
     },
-    skipLogin() {
-      // Handle skip login - you can add any necessary logic here
-      this.$router.push('/main-dashboard');
+    async skipLogin() {
+      try {
+        // Clear all data from local storage
+        localStorage.clear();
+
+        const response = await axios.get(`${BASE_URL}user/guest_user/`, {}, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log('Guest login successful:', response.data);
+        localStorage.setItem('accessToken', response.data.result);
+        localStorage.setItem('user', response.data.detail);
+        this.$router.push('/main-dashboard');
+      } catch (error) {
+        this.loginError = error.response?.data?.detail || 'Failed to login as guest';
+      }
     },
     async signInWithGoogle() {
       try {

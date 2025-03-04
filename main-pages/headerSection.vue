@@ -26,6 +26,12 @@
             <li v-if="isUserLoggedIn">
               <button class="login-button" @click="postAds()">Post Ad </button>
             </li>
+            <li v-if="isUserLoggedIn && isGuestUser">
+              <button class="login-outline-button" @click="navigateToLogin()">Login</button>
+            </li>
+            <li v-if="isUserLoggedIn && !isGuestUser">
+              <button class="login-outline-button" @click="logout()">Logout</button>
+            </li>
           </ul>
         </nav>
       </div>
@@ -50,6 +56,12 @@
         </li>
         <li v-if="isUserLoggedIn">
           <button class="login-button" @click="postAds">Post Ad </button>
+        </li>
+        <li v-if="isUserLoggedIn && isGuestUser">
+          <button class="login-outline-button" @click="navigateToLogin()">Login</button>
+        </li>
+        <li v-if="isUserLoggedIn && !isGuestUser">
+          <button class="login-outline-button" @click="logout()">Logout</button>
         </li>
       </ul>
     </div>
@@ -80,6 +92,12 @@
       const isUserLoggedIn = computed(() => {
         const accessToken = localStorage.getItem('accessToken');
         return  !!accessToken;
+      });
+  
+      // Computed property to check if the user is a guest user
+      const isGuestUser = computed(() => {
+        const user = localStorage.getItem('user');
+        return user && user.includes('GUEST_USER');
       });
   
       // Method to handle login button click
@@ -168,6 +186,17 @@
         closeMobileMenu();
       };
   
+      // Method to handle login button click
+      const navigateToLogin = () => {
+        window.location.href = '/';
+      };
+  
+      // Method to handle logout
+      const logout = () => {
+        localStorage.clear();
+        window.location.href = '/';
+      };
+  
       // Ensure localStorage is accessed only on the client side
       onMounted(() => {
         const storedUserInfo = localStorage.getItem('user-info');
@@ -187,8 +216,11 @@
       return {
         userInfo,
         isUserLoggedIn,
+        isGuestUser,
         handleLogin,
         postAds,
+        navigateToLogin,
+        logout,
         locationName,
         showMap,
         openGoogleMap,
@@ -208,7 +240,7 @@
   <style scoped>
   .header-main {
     border-bottom: 0.5px solid #d8cece;
-    padding: 20px 10%;
+    padding: 20px 2%;
     display: flex;
     justify-content: space-between; /* Align items to the edges */
     align-items: center; /* Vertically center items */
@@ -281,6 +313,23 @@
   .login-button:hover {
     background-color: #9a1f6b; /* Darker shade on hover */
     color: #ffffff;
+  }
+  
+  .login-outline-button {
+    padding: 9px 35px;
+    font-size: 20px;
+    font-weight: 600;
+    flex: 1 0 0;
+    color: #A20584;
+    background-color: transparent;
+    border: 2px solid #A20584;
+    align-self: stretch;
+    border-radius: 12px;
+    margin-left: 10px;
+  }
+  
+  .login-outline-button:hover {
+    background-color: rgba(162, 5, 132, 0.1);
   }
   
   .menu-toggle {
