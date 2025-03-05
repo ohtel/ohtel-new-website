@@ -84,6 +84,33 @@
             </Step>
           </StepItem>
           <div class="step-line" :class="{ active: progress >= 60 }"></div>
+          
+          <!-- New Sub-Sub-Category Step -->
+          <StepItem value="3.5" v-if="showSubSubCategoryStep">
+            <Step>
+              <div class="step-header">
+                <div class="step-number-container">
+                  <span
+                    class="step-number"
+                    :class="{ 'active-step': progress === 70 }"
+                    >3.5</span
+                  >
+                  <div class="vertical-progress-bar">
+                    <div
+                      class="vertical-progress-bar-fill"
+                      :style="{ height: `${progress > 70 ? 100 : 0}%` }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="justify-items-left">
+                  <span class="step-count">Step 3.5:</span>
+                  <div class="step-title">Select Sub-Sub-Category</div>
+                </div>
+              </div>
+            </Step>
+          </StepItem>
+          <div class="step-line" v-if="showSubSubCategoryStep" :class="{ active: progress >= 70 }"></div>
+          
           <StepItem value="4">
             <Step>
               <div class="step-header">
@@ -370,6 +397,47 @@
               </button>
             </div>
           </div>
+          <div v-if="progress === 70">
+            <div class="flex flex-col items-center h-48">
+              <div class="content-box subcategory-card">
+                <section class="category-section py-12 px-6 bg-gray-50 div-grid">
+               
+                  <div
+                    v-for="subSubCat in subSubCategories"
+                    :key="subSubCat.id"
+                    :class="['card-subcategory', { 'selected-card-subcategory': selectedSubSubCategory === subSubCat.id }]"
+                    @click="selectSubSubCategory(subSubCat)"
+                  >
+                    <!-- Content -->
+                    <div class="ml-4 text-left">
+                      <h3 class="subcategory-card-title">
+                        {{ subSubCat.sub_sub_category_title }}
+                      </h3>
+                    </div>
+                  </div>
+            
+                </section>
+              </div>
+            </div>
+            <div class="d-flex justify-space-between py-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(3)"
+              >
+                Back
+              </button>
+              <button
+                label="Next"
+                class="next-button"
+                :disabled="!selectedSubSubCategory"
+                @click="handleNextStep(4)"
+              >
+                Next
+              </button>
+            </div>
+          </div>
           <div v-if="progress === 80">
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
@@ -562,6 +630,7 @@
                       <p><strong>Category ID:</strong> {{ selectedCategoryDetails?.id }}</p>
                       <p><strong>Ad Type:</strong> {{ adType }}</p>
                       <p><strong>Sub Category:</strong> {{ adDetails.subCategory }}</p>
+                      <p v-if="adDetails.subSubCategory"><strong>Sub-Sub Category:</strong> {{ adDetails.subSubCategoryTitle }}</p>
                       <p><strong>Title:</strong> {{ adDetails.title }}</p>
                       <p><strong>Description:</strong> {{ adDetails.description }}</p>
                       <p v-if="adDetails.address"><strong>Address:</strong> {{ adDetails.address }}</p>
@@ -649,6 +718,9 @@ export default {
       selectedStep3Card: null,
       selectedStep4Card: null,
       selectedStep5Card: null,
+      selectedSubSubCategory: null,
+      showSubSubCategoryStep: false,
+      subSubCategories: [],
       selectedSubscriptionPlan: null,
       adDetails: {
         category: "",
@@ -683,6 +755,14 @@ export default {
   methods: {
     handleNextStep(step) {
       debugger;
+      // If transitioning from step 3 to 4, check if we need to show sub-sub-category
+      if (step === 4 && this.showSubSubCategoryStep && this.progress === 60) {
+        // We're moving from sub-category to sub-sub-category selection
+        this.progress = 70; // Set progress to sub-sub-category selection step
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      
       this.progress =
         step === 1
           ? 20
@@ -710,10 +790,20 @@ export default {
     },
     handleBackStep(step) {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      
+      // If we're at sub-sub-category step and going back to step 3
+      if (this.progress === 70 && step === 3) {
+        this.selectedSubSubCategory = null; // Clear sub-sub-category selection
+        this.progress = 60; // Go back to sub-category selection
+        return;
+      }
+      
       if (step === 1) {
         this.selectedStep2Card = null;
       } else if (step === 2) {
         this.selectedStep3Card = null;
+        this.selectedSubSubCategory = null; // Also clear sub-sub-category when going back to step 2
+        this.showSubSubCategoryStep = false;
       } else if (step === 3) {
         this.selectedStep4Card = null;
       } else if (step === 4) {
@@ -772,7 +862,9 @@ export default {
           ...formData,
           ...personalDetailsData,
           categoryId: this.selectedCategoryDetails?.id,
-          subscriptionPlanId: this.selectedSubscriptionPlan
+          subscriptionPlanId: this.selectedSubscriptionPlan,
+          subCategory: this.adDetails.subCategory,
+          subSubCategory: this.adDetails.subSubCategory || null
         };
         
         console.log("Publishing ad with data:", completeData);
@@ -821,8 +913,22 @@ export default {
       this.adDetails.sellerOrBuyer = data.id===2 ? "Seller" : "Buyer";
     },
     selectStep3Card(id) {
-        this.adDetails.subCategory = id;
+      this.adDetails.subCategory = id;
       this.selectedStep3Card = id;
+      
+      // Check if this sub-category has sub-sub-categories
+      const selectedSubCategory = this.step3Cards.find(cat => cat.id === id);
+      if (selectedSubCategory && selectedSubCategory.sub_sub_category_list && selectedSubCategory.sub_sub_category_list.length > 0) {
+        // This sub-category has sub-sub-categories, store them
+        this.subSubCategories = selectedSubCategory.sub_sub_category_list;
+        this.showSubSubCategoryStep = true;
+        console.log("Found sub-sub-categories:", this.subSubCategories);
+      } else {
+        this.subSubCategories = [];
+        this.showSubSubCategoryStep = false;
+        this.selectedSubSubCategory = null;
+        console.log("No sub-sub-categories found for this sub-category");
+      }
     },
     selectStep4Card(id) {
       this.selectedStep4Card = id;
@@ -850,6 +956,13 @@ export default {
         );
         const data = await response.json();
         this.step3Cards = data.result.data;
+        console.log("Fetched sub-categories:", this.step3Cards);
+        
+        // Log which sub-categories have sub-sub-categories
+        this.step3Cards.forEach(cat => {
+          const hasSubSub = cat.sub_sub_category_list && cat.sub_sub_category_list.length > 0;
+          console.log(`Sub-category ${cat.id} (${cat.sub_category_title}) has ${hasSubSub ? cat.sub_sub_category_list.length : 0} sub-sub-categories`);
+        });
       } catch (error) {
         console.error("Error fetching step 3 cards:", error);
       }
@@ -919,6 +1032,12 @@ export default {
         this.defaultLocation.lng = eventData.locationInformation.lng;
       }
      
+    },
+    selectSubSubCategory(subSubCat) {
+      this.selectedSubSubCategory = subSubCat.id;
+      this.adDetails.subSubCategory = subSubCat.id;
+      this.adDetails.subSubCategoryTitle = subSubCat.sub_sub_category_title;
+      console.log("Selected sub-sub-category:", subSubCat);
     },
   },
   created() {
