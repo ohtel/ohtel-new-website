@@ -8,7 +8,7 @@
         Post Your Ad
       </h1>
       <p class="text-gray-500 mb-10 text-center">
-        Ready to Scale? Let’s Build Something Great Together!
+        Ready to Scale? Let's Build Something Great Together!
       </p>
       <div class="stepper-content-wrapper">
         <Stepper value="1" class="custom-stepper">
@@ -404,22 +404,17 @@
                     </div>
                     <form1
                       v-if="
-                        this.selectedCategoryDetails?.category_title ===
-                          'Spaces' ||
-                        selectedCategoryDetails?.category_title ===
-                          'Used Equipments' ||
-                        selectedCategoryDetails?.category_title ===
-                          'Shared Spaces'
+                        this.selectedCategoryDetails?.id === 1 ||
+                        this.selectedCategoryDetails?.id === 7 ||
+                        this.selectedCategoryDetails?.id === 8
                       "
                       ref="form1Ref"
                       :dataFromParent="adDetails"
                     ></form1>
                     <form2
                       v-if="
-                        this.selectedCategoryDetails?.category_title ===
-                          'Market Deals' ||
-                        selectedCategoryDetails?.category_title ===
-                          'Foods Factory/Home Chef'
+                        this.selectedCategoryDetails?.id === 5 ||
+                        this.selectedCategoryDetails?.id === 6
                       "
                       ref="form2Ref"
                       :dataFromParent="adDetails"
@@ -434,6 +429,16 @@
                       ref="form4Ref"
                       :dataFromParent="adDetails"
                     ></form4>
+                    <form5
+                      v-if="this.selectedCategoryDetails?.id === 11"
+                      ref="form5Ref"
+                      :dataFromParent="adDetails"
+                    ></form5>
+                    <form6
+                      v-if="this.selectedCategoryDetails?.id === 12"
+                      ref="form6Ref"
+                      :dataFromParent="adDetails"
+                    ></form6>
                   </div>
                 </section>
               </div>
@@ -554,13 +559,18 @@
                     <h3 class="text-2xl font-bold mb-4">Review Your Ad</h3>
                     <div class="review-section">
                       <p><strong>Category:</strong> {{ selectedCategoryDetails?.category_title }}</p>
+                      <p><strong>Category ID:</strong> {{ selectedCategoryDetails?.id }}</p>
                       <p><strong>Ad Type:</strong> {{ adType }}</p>
                       <p><strong>Sub Category:</strong> {{ adDetails.subCategory }}</p>
                       <p><strong>Title:</strong> {{ adDetails.title }}</p>
                       <p><strong>Description:</strong> {{ adDetails.description }}</p>
-                      <p><strong>Address:</strong> {{ adDetails.address }}</p>
-                      <p><strong>Price:</strong> {{ adDetails.price }}</p>
-                      <p><strong>Expiry Date:</strong> {{ adDetails.expiryDate }}</p>
+                      <p v-if="adDetails.address"><strong>Address:</strong> {{ adDetails.address }}</p>
+                      <p v-if="adDetails.price"><strong>Price:</strong> {{ adDetails.price }}</p>
+                      <p v-if="adDetails.expiryDate"><strong>Expiry Date:</strong> {{ adDetails.expiryDate }}</p>
+                      <p v-if="adDetails.vendorName"><strong>Vendor:</strong> {{ adDetails.vendorName }}</p>
+                      <p v-if="adDetails.productBrand"><strong>Brand:</strong> {{ adDetails.productBrand }}</p>
+                      <p v-if="adDetails.materialType"><strong>Material Type:</strong> {{ adDetails.materialType }}</p>
+                      
                       <p><strong>Personal Information:</strong></p>
                       <ul>
                         <li><strong>Name:</strong> {{ adDetails.fullName }}</li>
@@ -608,6 +618,8 @@ import form1 from "../components/forms/form-1.vue";
 import form2 from "../components/forms/form-2.vue";
 import form3 from "../components/forms/form-3.vue";
 import form4 from "../components/forms/form-4.vue";
+import form5 from "../components/forms/form-5.vue";
+import form6 from "../components/forms/form-6.vue";
 import googleMap from "../components/googleMap.vue";
 import personalDetails from "../../components/forms/presonal-details.vue";
 import { BASE_URL, ENDPOINTS } from '../environment.js';
@@ -622,6 +634,8 @@ export default {
     form2,
     form3,
     form4,
+    form5,
+    form6,
     googleMap,
     personalDetails,
     BASE_URL,
@@ -730,13 +744,74 @@ export default {
       console.log("Form submitted");
     },
     handlePublish() {
-      // Implement the publish logic here
-      console.log("Ad published");
+      // Collect data from the appropriate form based on category
+      try {
+        let formData = {};
+        
+        // Determine which form to use based on category
+        if (this.selectedCategoryDetails?.id === 1 || 
+            this.selectedCategoryDetails?.id === 7 || 
+            this.selectedCategoryDetails?.id === 8) {
+          formData = this.$refs.form1Ref.getFormData();
+        } else if (this.selectedCategoryDetails?.id === 5 || 
+                   this.selectedCategoryDetails?.id === 6) {
+          formData = this.$refs.form2Ref.getFormData();
+        } else if (this.adType === 'Applicant') {
+          formData = this.$refs.form3Ref.getFormData();
+        } else if (this.adType === 'Recruiter') {
+          formData = this.$refs.form4Ref.getFormData();
+        } else if (this.selectedCategoryDetails?.id === 11) {
+          formData = this.$refs.form5Ref.getFormData();
+        } else if (this.selectedCategoryDetails?.id === 12) {
+          formData = this.$refs.form6Ref.getFormData();
+        }
+        
+        // Merge form data with personal details
+        const personalDetailsData = this.$refs.personalDetailsRef.getFormData();
+        const completeData = {
+          ...formData,
+          ...personalDetailsData,
+          categoryId: this.selectedCategoryDetails?.id,
+          subscriptionPlanId: this.selectedSubscriptionPlan
+        };
+        
+        console.log("Publishing ad with data:", completeData);
+        // Implement the API call to publish the ad
+        this.submitAdToApi(completeData);
+      } catch (error) {
+        console.error("Error in publish process:", error);
+      }
+    },
+    
+    async submitAdToApi(adData) {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(`${BASE_URL}${ENDPOINTS.CREATE_AD}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(adData)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+          alert("Ad published successfully!");
+          this.$router.push('/my-ads');
+        } else {
+          alert("Failed to publish ad: " + result.message);
+        }
+      } catch (error) {
+        console.error("API error:", error);
+        alert("An error occurred while publishing your ad.");
+      }
     },
     selectCategory(data) {
       this.selectedCategoryDetails = data;
       this.selectedCategory = data.id;
-      this.adDetails.category = data.id
+      this.adDetails.category = data.id;
+      console.log("Selected category details:", data, "Category ID:", data.id);
       this.updateStep2Cards(data);
     },
     selectStep2Card(data) {
