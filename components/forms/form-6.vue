@@ -270,8 +270,7 @@ export default {
 <style scoped>
 /* Reuse the same styles from form-5.vue */
 .form-row {
-  display: flex;
-  justify-content: space-between;
+ 
   align-items: center;
   margin-bottom: 10px;
 }
