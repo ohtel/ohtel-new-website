@@ -931,6 +931,12 @@ export default {
     handleBackStep(step) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       
+      // If we're at step 4 (progress === 80) and sub-sub-category step exists
+      if (this.progress === 80 && this.showSubSubCategoryStep) {
+        this.progress = 70; // Go back to sub-sub-category step
+        return;
+      }
+      
       // If we're at sub-sub-category step and going back to step 3
       if (this.progress === 70 && step === 3) {
         this.selectedSubSubCategory = null; // Clear sub-sub-category selection
@@ -949,6 +955,7 @@ export default {
       } else if (step === 4) {
         this.selectedStep5Card = null;
       }
+      
       this.progress =
         step === 1
           ? 20
