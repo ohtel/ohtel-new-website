@@ -416,24 +416,27 @@
                 Back
               </button>
             </div>
-            <div class="flex flex-col items-center h-48">
+            <div class="flex flex-col items-center">
               <div class="content-box subcategory-card">
-                <section class="category-section py-12 px-6 bg-gray-50 div-grid">
-               
-                  <div
-                    v-for="subSubCat in subSubCategories"
-                    :key="subSubCat.id"
-                    :class="['card-subcategory', { 'selected-card-subcategory': selectedSubSubCategory === subSubCat.id }]"
-                    @click="selectSubSubCategory(subSubCat)"
-                  >
-                    <!-- Content -->
-                    <div class="ml-4 text-left">
-                      <h3 class="subcategory-card-title">
-                        {{ subSubCat.sub_sub_category_title }}
-                      </h3>
+                <section class="category-section py-12 px-6 bg-gray-50">
+                  <h3 class="text-xl font-bold mb-6 text-center">Select Sub-Sub-Category</h3>
+                  <div class="div-grid">
+                    <div
+                      v-for="subSubCat in subSubCategories"
+                      :key="subSubCat.id"
+                      :class="[
+                        'card-subcategory cursor-pointer',
+                        { 'selected-card-subcategory': selectedSubSubCategory === subSubCat.id }
+                      ]"
+                      @click="selectSubSubCategory(subSubCat)"
+                    >
+                      <div class="text-center p-4">
+                        <h3 class="subcategory-card-title">
+                          {{ subSubCat.applicant_role_title || subSubCat.sub_sub_category_title || subSubCat.title }}
+                        </h3>
+                      </div>
                     </div>
                   </div>
-            
                 </section>
               </div>
             </div>
@@ -1256,25 +1259,49 @@ export default {
       this.handleNextStep(3);
     },
     selectStep3Card(id) {
-        this.adDetails.subCategory = id;
-      this.selectedStep3Card = id;
-      
-      // Check if this sub-category has sub-sub-categories
+      // Find the selected sub-category with its full data
       const selectedSubCategory = this.step3Cards.find(cat => cat.id === id);
-      if (selectedSubCategory && selectedSubCategory.sub_sub_category_list && selectedSubCategory.sub_sub_category_list.length > 0) {
-        // This sub-category has sub-sub-categories, store them
-        this.subSubCategories = selectedSubCategory.sub_sub_category_list;
-        this.showSubSubCategoryStep = true;
-        console.log("Found sub-sub-categories:", this.subSubCategories);
-        // Advance to sub-sub-category step
-        this.handleNextStep(4);
-      } else {
-        this.subSubCategories = [];
-        this.showSubSubCategoryStep = false;
-        this.selectedSubSubCategory = null;
-        console.log("No sub-sub-categories found for this sub-category");
-        // Advance directly to step 4 if no sub-sub-categories
-        this.handleNextStep(4);
+      console.log("Selected sub-category full data:", selectedSubCategory);
+      
+      if (selectedSubCategory) {
+        // Store the sub-category ID and title
+        this.adDetails.subCategory = selectedSubCategory.id;
+        this.adDetails.subCategoryTitle = selectedSubCategory.sub_category_title;
+        this.selectedStep3Card = selectedSubCategory.id;
+        
+        // Check if this sub-category has either levels or sub_sub_category_list
+        const hasLevels = selectedSubCategory.levels && selectedSubCategory.levels.length > 0;
+        const hasSubSub = selectedSubCategory.sub_sub_category_list && selectedSubCategory.sub_sub_category_list.length > 0;
+        
+        if (hasLevels || hasSubSub) {
+          console.log("Sub-sub-categories or levels found");
+          
+          // If it has levels, transform them to match the sub-sub-category format
+          if (hasLevels) {
+            this.subSubCategories = selectedSubCategory.levels.map(level => ({
+              id: level.code,
+              applicant_role_title: level.title,
+              title: level.title,
+              sub_sub_category_title: level.title
+            }));
+          } else {
+            // Use the existing sub_sub_category_list
+            this.subSubCategories = selectedSubCategory.sub_sub_category_list;
+          }
+          
+          console.log("Processed sub-sub-categories:", this.subSubCategories);
+          this.showSubSubCategoryStep = true;
+          // Update progress to show sub-sub-category step
+          this.progress = 70;
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          console.log("No sub-sub-categories or levels found");
+          this.subSubCategories = [];
+          this.showSubSubCategoryStep = false;
+          this.selectedSubSubCategory = null;
+          // Move to the next step since there are no sub-sub-categories
+          this.handleNextStep(4);
+        }
       }
     },
     selectStep4Card(id) {
@@ -1395,7 +1422,10 @@ export default {
     selectSubSubCategory(subSubCat) {
       this.selectedSubSubCategory = subSubCat.id;
       this.adDetails.subSubCategory = subSubCat.id;
-      this.adDetails.subSubCategoryTitle = subSubCat.sub_sub_category_title;
+      // Get the title from any of the possible fields
+      this.adDetails.subSubCategoryTitle = subSubCat.applicant_role_title || 
+                                         subSubCat.sub_sub_category_title || 
+                                         subSubCat.title;
       console.log("Selected sub-sub-category:", subSubCat);
       // Automatically advance to next step
       this.handleNextStep(4);
@@ -1605,12 +1635,43 @@ export default {
 .card-subcategory {
   border: 1px solid #ffffff !important;
   padding: 9px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 16px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 }
 .selected-card-subcategory {
-  border: 1px solid #161c2d !important;
-  border-radius: 30px;
+  border: 2px solid #47509b !important;
+  border-radius: 16px;
   padding: 9px;
-
+  background-color: rgba(71, 80, 155, 0.05);
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.subcategory-card {
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 1rem;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
 }
 .div-grid {
   display: grid;
