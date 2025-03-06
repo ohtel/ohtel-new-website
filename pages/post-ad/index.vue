@@ -507,6 +507,8 @@
                       ref="form6Ref"
                       :dataFromParent="adDetails"
                     ></form6>
+                    
+                  
                   </div>
                 </section>
               </div>
@@ -651,6 +653,8 @@
                 </section>
               </div>
             </div>
+            <!-- Add personalDetails component -->
+            <!-- <personalDetails ref="personalDetailsRef" :dataFromParent="adDetails"></personalDetails> -->
             <div class="d-flex justify-space-between py-4">
               <button
                 label="Back"
@@ -837,27 +841,40 @@ export default {
       // Collect data from the appropriate form based on category
       try {
         let formData = {};
+        let formRef = null;
         
         // Determine which form to use based on category
         if (this.selectedCategoryDetails?.id === 1 || 
             this.selectedCategoryDetails?.id === 7 || 
             this.selectedCategoryDetails?.id === 8) {
-          formData = this.$refs.form1Ref.getFormData();
+          formRef = this.$refs.form1Ref;
         } else if (this.selectedCategoryDetails?.id === 5 || 
                    this.selectedCategoryDetails?.id === 6) {
-          formData = this.$refs.form2Ref.getFormData();
+          formRef = this.$refs.form2Ref;
         } else if (this.adType === 'Applicant') {
-          formData = this.$refs.form3Ref.getFormData();
+          formRef = this.$refs.form3Ref;
         } else if (this.adType === 'Recruiter') {
-          formData = this.$refs.form4Ref.getFormData();
+          formRef = this.$refs.form4Ref;
         } else if (this.selectedCategoryDetails?.id === 11) {
-          formData = this.$refs.form5Ref.getFormData();
+          formRef = this.$refs.form5Ref;
         } else if (this.selectedCategoryDetails?.id === 12) {
-          formData = this.$refs.form6Ref.getFormData();
+          formRef = this.$refs.form6Ref;
         }
         
-        // Merge form data with personal details
-        const personalDetailsData = this.$refs.personalDetailsRef.getFormData();
+        // Check if form reference exists before calling getFormData
+        if (formRef && typeof formRef.getFormData === 'function') {
+          formData = formRef.getFormData();
+        } else {
+          console.warn('No valid form reference found for the current category/type');
+        }
+        
+        // Check if personal details reference exists
+        const personalDetailsRef = this.$refs.personalDetailsRef;
+        if (!personalDetailsRef) {
+          throw new Error('Personal details form reference is missing');
+        }
+        
+        const personalDetailsData = personalDetailsRef.getFormData();
         const completeData = {
           ...formData,
           ...personalDetailsData,
@@ -872,6 +889,8 @@ export default {
         this.submitAdToApi(completeData);
       } catch (error) {
         console.error("Error in publish process:", error);
+        // Show user-friendly error message
+        alert("There was an error processing your ad. Please check all required fields and try again.");
       }
     },
     

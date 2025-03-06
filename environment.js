@@ -48,7 +48,8 @@ export const ENDPOINTS = {
     VALIDATE_OTP:'phone-otp-validate/',
     CATEGORY:'master/app_homepage_api/' ,
     SUB_CATEGORY:'master/get_sub_category_list/',
-    SUBSCRIPTION_PLAN:'subscription/get_subscription_list/'
+    SUBSCRIPTION_PLAN:'subscription/get_subscription_list/',
+    CREATE_AD:'ads/create-ad/'
     
 
   };
