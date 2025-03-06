@@ -92,7 +92,7 @@
                 <div class="step-number-container">
                   <span
                     class="step-number"
-                    :class="{ 'active-step': progress === 70 }"
+                    :class="{ 'active-step': progress >= 70 }"
                     >3.5</span
                   >
                   <div class="vertical-progress-bar">
