@@ -508,7 +508,6 @@
                       :dataFromParent="adDetails"
                     ></form6>
                     
-                  
                   </div>
                 </section>
               </div>
@@ -622,20 +621,21 @@
           </div>
           <div v-if="progress === 140">
             <div class="flex flex-col items-center h-48">
-              <div class="content-box">
+              <div class="content-box review-section">
                 <section class="category-section py-12 px-6 bg-gray-50">
                   <div class="max-w-6xl mx-auto">
-                    <!-- Review & Publish -->
-                    <h3 class="text-2xl font-bold mb-4">Review Your Ad</h3>
-                    <div class="review-section">
+                    <h2 class="text-2xl font-bold">Review Your Ad</h2>
+                    <div class="review-details mt-6">
                       <p><strong>Category:</strong> {{ selectedCategoryDetails?.category_title }}</p>
                       <p><strong>Category ID:</strong> {{ selectedCategoryDetails?.id }}</p>
                       <p><strong>Ad Type:</strong> {{ adType }}</p>
                       <p><strong>Sub Category:</strong> {{ adDetails.subCategory }}</p>
                       <p v-if="adDetails.subSubCategory"><strong>Sub-Sub Category:</strong> {{ adDetails.subSubCategoryTitle }}</p>
-                      <p><strong>Title:</strong> {{ adDetails.title }}</p>
+                      <p><strong>Ad Title:</strong> {{ adDetails.title }}</p>
                       <p><strong>Description:</strong> {{ adDetails.description }}</p>
                       <p v-if="adDetails.address"><strong>Address:</strong> {{ adDetails.address }}</p>
+                      <p v-if="adDetails.city"><strong>City:</strong> {{ adDetails.city }}</p>
+                      <p v-if="adDetails.state"><strong>State:</strong> {{ adDetails.state }}</p>
                       <p v-if="adDetails.price"><strong>Price:</strong> {{ adDetails.price }}</p>
                       <p v-if="adDetails.expiryDate"><strong>Expiry Date:</strong> {{ adDetails.expiryDate }}</p>
                       <p v-if="adDetails.vendorName"><strong>Vendor:</strong> {{ adDetails.vendorName }}</p>
@@ -647,14 +647,25 @@
                         <li><strong>Name:</strong> {{ adDetails.fullName }}</li>
                         <li><strong>Contact:</strong> {{ adDetails.contact }}</li>
                         <li><strong>Email:</strong> {{ adDetails.email }}</li>
+                        <li v-if="adDetails.organizationName"><strong>Organization:</strong> {{ adDetails.organizationName }}</li>
                       </ul>
                     </div>
+                    
+                    <!-- Add contact details section -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                      <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+                      <p v-if="adDetails.fullName"><strong>Name:</strong> {{ adDetails.fullName }}</p>
+                      <p v-if="adDetails.contact"><strong>Phone:</strong> {{ adDetails.contact }}</p>
+                      <p v-if="adDetails.email"><strong>Email:</strong> {{ adDetails.email }}</p>
+                      <p v-if="adDetails.organizationName"><strong>Organization:</strong> {{ adDetails.organizationName }}</p>
+                    </div>
+                    
+                    <!-- Add personal details component (hidden) -->
+                    <personal-details ref="personalDetailsRef" :dataFromParent="adDetails" style="display: none;"></personal-details>
                   </div>
                 </section>
               </div>
             </div>
-            <!-- Add personalDetails component -->
-            <!-- <personalDetails ref="personalDetailsRef" :dataFromParent="adDetails"></personalDetails> -->
             <div class="d-flex justify-space-between py-4">
               <button
                 label="Back"
@@ -665,8 +676,8 @@
                 Back
               </button>
               <button
-                label="Publish"
-                class="submit-button"
+                label="Next"
+                class="next-button"
                 @click="handlePublish"
               >
                 Publish
@@ -747,6 +758,17 @@ export default {
         fullName: "",
         contact: "",
         email: "",
+        // Additional fields for spaces/equipment categories
+        organizationName: "",
+        otherSubCategoryText: "",
+        canBeContactedViaCall: true,
+        canBeContactedViaEmail: true,
+        canBeContactedViaMessage: false,
+        canBeCalledForInterview: false
+      },
+      defaultLocation: {
+        lat: null,
+        lng: null
       },
       cards: [],
       step2Cards: [],
@@ -761,10 +783,103 @@ export default {
       debugger;
       // If transitioning from step 3 to 4, check if we need to show sub-sub-category
       if (step === 4 && this.showSubSubCategoryStep && this.progress === 60) {
-        // We're moving from sub-category to sub-sub-category selection
+        // We're moving from sub-category to sub-sub-category
         this.progress = 70; // Set progress to sub-sub-category selection step
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
+      }
+      
+      // If moving from step 4 (Additional Info) to step 5, collect form data
+      if (step === 5 && this.progress === 80) {
+        let formRef = null;
+        
+        // Determine which form to use based on category ID
+        if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form1Ref;
+        } else if ([5, 6].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form2Ref;
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+          formRef = this.$refs.form3Ref;
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+          formRef = this.$refs.form4Ref;
+        } else if ([11].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form5Ref;
+        } else if ([12].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form6Ref;
+        }
+        
+        // Get form data if form reference exists
+        if (formRef && typeof formRef.getFormData === 'function') {
+          const formData = formRef.getFormData();
+          console.log("Step 4 to 5: Form data collected:", formData);
+          
+          // Update adDetails with values from the form
+          if (formData.title) this.adDetails.title = formData.title;
+          if (formData.description) this.adDetails.description = formData.description;
+          if (formData.price !== undefined) this.adDetails.price = formData.price;
+          if (formData.area !== undefined) this.adDetails.area = formData.area;
+          if (formData.dealType) this.adDetails.dealType = formData.dealType;
+          
+          console.log("Updated adDetails:", this.adDetails);
+          console.log("Area value after update:", this.adDetails.area);
+          console.log("Price value after update:", this.adDetails.price);
+        } else {
+          console.warn("Could not get form data when moving from step 4 to 5");
+        }
+      }
+      
+      // If moving from step 5 (personal details) to step 6, collect personal details data
+      if (step === 6 && this.progress === 100) {
+        const personalDetailsRef = this.$refs.personalDetailsRef;
+        if (personalDetailsRef && typeof personalDetailsRef.getFormData === 'function') {
+          const personalData = personalDetailsRef.getFormData();
+          console.log("Collected personal details:", personalData);
+          
+          // Update adDetails with personal information
+          this.adDetails.fullName = personalData.fullName;
+          this.adDetails.contact = personalData.contact;
+          this.adDetails.email = personalData.email;
+          this.adDetails.organizationName = personalData.organizationName;
+          this.adDetails.preferredContactMethodsPhone = personalData.preferredContactMethodsPhone;
+          this.adDetails.preferredContactMethodsEmail = personalData.preferredContactMethodsEmail;
+        } else {
+          console.warn("Could not get personal details data");
+        }
+      }
+      
+      // If moving from step 6 (subscription plan) to step 7, ensure we have all form data
+      if (step === 7 && this.progress === 120) {
+        let formRef = null;
+        
+        // Determine which form to use based on category ID
+        if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form1Ref;
+        } else if ([5, 6].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form2Ref;
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+          formRef = this.$refs.form3Ref;
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+          formRef = this.$refs.form4Ref;
+        } else if ([11].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form5Ref;
+        } else if ([12].includes(this.selectedCategoryDetails?.id)) {
+          formRef = this.$refs.form6Ref;
+        }
+        
+        // Check form data again to ensure we have the latest values
+        if (formRef && typeof formRef.getFormData === 'function') {
+          const formData = formRef.getFormData();
+          console.log("Step 6 to 7: Form data verified:", formData);
+          
+          // Update adDetails with values from the form
+          if (formData.title) this.adDetails.title = formData.title;
+          if (formData.description) this.adDetails.description = formData.description;
+          if (formData.price) this.adDetails.price = formData.price;
+          if (formData.area) this.adDetails.area = formData.area;
+          if (formData.dealType) this.adDetails.dealType = formData.dealType;
+          
+          console.log("Before review step - Updated adDetails:", this.adDetails);
+        }
       }
       
       this.progress =
@@ -837,81 +952,269 @@ export default {
       }
       console.log("Form submitted");
     },
-    handlePublish() {
-      // Collect data from the appropriate form based on category
+    async handlePublish() {
       try {
-        let formData = {};
+        console.log("Starting publish process...");
+        // Get the appropriate form reference based on the selected category
         let formRef = null;
         
-        // Determine which form to use based on category
-        if (this.selectedCategoryDetails?.id === 1 || 
-            this.selectedCategoryDetails?.id === 7 || 
-            this.selectedCategoryDetails?.id === 8) {
+        // Determine which form to use based on category ID
+        if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form1Ref;
-        } else if (this.selectedCategoryDetails?.id === 5 || 
-                   this.selectedCategoryDetails?.id === 6) {
+        } else if ([5, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if (this.adType === 'Applicant') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if (this.adType === 'Recruiter') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
-        } else if (this.selectedCategoryDetails?.id === 11) {
+        } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
-        } else if (this.selectedCategoryDetails?.id === 12) {
+        } else if ([12].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form6Ref;
         }
-        
-        // Check if form reference exists before calling getFormData
+
+        // Get form data if form reference exists
+        let formData = {};
         if (formRef && typeof formRef.getFormData === 'function') {
           formData = formRef.getFormData();
+          console.log("Form data collected:", formData);
+          
+          // Update adDetails with form values to ensure they're present
+          if (formData.title) this.adDetails.title = formData.title;
+          if (formData.description) this.adDetails.description = formData.description;
         } else {
-          console.warn('No valid form reference found for the current category/type');
+          console.warn(`Form reference is missing or getFormData method not available for category ID ${this.selectedCategoryDetails?.id}`);
         }
-        
-        // Check if personal details reference exists
+
+        // Try to get personal details from the component if available
+        let personalDetails = {};
         const personalDetailsRef = this.$refs.personalDetailsRef;
-        if (!personalDetailsRef) {
-          throw new Error('Personal details form reference is missing');
-        }
         
-        const personalDetailsData = personalDetailsRef.getFormData();
+        if (personalDetailsRef && typeof personalDetailsRef.getFormData === 'function') {
+          personalDetails = personalDetailsRef.getFormData();
+          console.log("Personal details collected from component:", personalDetails);
+        } else {
+          // If component is not available, use existing data from adDetails
+          console.warn("Personal details component reference is missing, using existing data from adDetails");
+          personalDetails = {
+            fullName: this.adDetails.fullName || '',
+            contact: this.adDetails.contact || '',
+            email: this.adDetails.email || '',
+            organizationName: this.adDetails.organizationName || '',
+            preferredContactMethodsPhone: this.adDetails.preferredContactMethodsPhone || false,
+            preferredContactMethodsEmail: this.adDetails.preferredContactMethodsEmail || false
+          };
+        }
+
+        console.log("Before combining data - Current adDetails:", this.adDetails);
+
+        // Combine all data
         const completeData = {
           ...formData,
-          ...personalDetailsData,
-          categoryId: this.selectedCategoryDetails?.id,
-          subscriptionPlanId: this.selectedSubscriptionPlan,
-          subCategory: this.adDetails.subCategory,
-          subSubCategory: this.adDetails.subSubCategory || null
+          title: this.adDetails.title || formData.title,
+          description: this.adDetails.description || formData.description,
+          price: (this.adDetails.price !== undefined) ? this.adDetails.price : (formData.price || ''),
+          area: (this.adDetails.area !== undefined) ? this.adDetails.area : (formData.area || ''),
+          address: this.adDetails.address,
+          category: this.selectedCategoryDetails?.id,
+          subCategory: this.adDetails.subCategory || null,
+          subSubCategory: this.adDetails.subSubCategory || null,
+          coordinates: this.adDetails.coordinates || {
+            latitude: this.adDetails.defaultLocation?.lat || null,
+            longitude: this.adDetails.defaultLocation?.lng || null
+          },
+          city: this.adDetails.city || '',
+          state: this.adDetails.state || '',
+          fullName: personalDetails.fullName,
+          contact: personalDetails.contact,
+          email: personalDetails.email,
+          organizationName: personalDetails.organizationName,
+          preferredContactMethodsPhone: personalDetails.preferredContactMethodsPhone,
+          preferredContactMethodsEmail: personalDetails.preferredContactMethodsEmail
         };
+
+        console.log("Complete data for submission:", completeData);
+        console.log("Title value being submitted:", completeData.title);
+        console.log("Description value being submitted:", completeData.description);
+        console.log("Area value being submitted:", completeData.area);
+        console.log("Price value being submitted:", completeData.price);
         
-        console.log("Publishing ad with data:", completeData);
-        // Implement the API call to publish the ad
-        this.submitAdToApi(completeData);
+        // Submit the ad to the API
+        await this.submitAdToApi(completeData);
+        
+        // Show success message
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Your ad has been published successfully!',
+          life: 3000
+        });
+        
+        // Navigate to success page or home
+        this.$router.push('/');
       } catch (error) {
         console.error("Error in publish process:", error);
-        // Show user-friendly error message
-        alert("There was an error processing your ad. Please check all required fields and try again.");
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'An error occurred while publishing your ad.',
+          life: 5000
+        });
       }
     },
     
     async submitAdToApi(adData) {
       try {
-        const token = localStorage.getItem("accessToken");
-        const response = await fetch(`${BASE_URL}${ENDPOINTS.CREATE_AD}`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(adData)
-        });
+        console.log("submitAdToApi - Data received:", adData);
+        console.log("submitAdToApi - Title:", adData.title);
+        console.log("submitAdToApi - Description:", adData.description);
         
-        const result = await response.json();
-        if (result.success) {
-          alert("Ad published successfully!");
-          this.$router.push('/my-ads');
+        const token = localStorage.getItem("accessToken");
+        
+        // Different endpoint and payload structure for categories 1, 2, 5
+        if (this.selectedCategoryDetails?.id === 1 || 
+            this.selectedCategoryDetails?.id === 2 || 
+            this.selectedCategoryDetails?.id === 5) {
+          
+          // Create FormData for handling binary image uploads
+          const formData = new FormData();
+          
+          // Add coordinates data
+          if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
+            const coordinates = {
+              longitude: this.defaultLocation.lng,
+              latitude: this.defaultLocation.lat
+            };
+            
+            formData.append('coordinate', JSON.stringify(coordinates));
+            formData.append('ad_city_cordinate', JSON.stringify(coordinates));
+            formData.append('location', JSON.stringify({point: coordinates}));
+          }
+          
+          // Add required fields for spaces/equipment categories
+          formData.append('main_category', this.selectedCategoryDetails.id);
+          formData.append('ad_type', this.adType || 'Seller');
+          
+          // Use the correct field names for city, state, title and description
+          formData.append('ad_city', adData.city || '');
+          formData.append('state', adData.state || '');
+          
+          // Ensure title and description are passed correctly
+          const adTitle = adData.title || '';
+          const adDescription = adData.description || '';
+          
+          // Ensure area and price are passed correctly
+          const area = adData.area || '';
+          const price = adData.price || '';
+          
+          console.log("FormData values being set:");
+          console.log("ad_name:", adTitle);
+          console.log("ad_description:", adDescription);
+          console.log("area:", area);
+          console.log("price:", price);
+          
+          formData.append('ad_name', adTitle);
+          formData.append('ad_description', adDescription);
+          formData.append('area', area);
+          formData.append('price', price);
+          
+          formData.append('sub_category', this.adDetails.subCategory);
+          
+          // Add sub-sub-category if available
+          if (this.adDetails.subSubCategory) {
+            formData.append('sub_sub_category', this.adDetails.subSubCategory);
+          }
+          
+          formData.append('deal_type', adData.dealType || 'Rent');
+          formData.append('address', this.adDetails.address || '');
+          
+          // Convert expiry date to ISO format if available
+          if (adData.expiryDate) {
+            const expiryDate = new Date(adData.expiryDate);
+            formData.append('expiry', expiryDate.toISOString());
+          }
+          
+          // Add other fields
+          if (adData.otherSubCategoryText) {
+            formData.append('other_sub_category_text', adData.otherSubCategoryText);
+          }
+          
+          // Handle image uploads
+          if (adData.images && adData.images.length > 0) {
+            adData.images.forEach(image => {
+              formData.append('image_ids', image);
+            });
+          }
+          
+          // Add contact information using the correct field names
+          formData.append('contact_person', adData.fullName || '');
+          formData.append('contact_number', adData.contact || '');
+          formData.append('contact_email', adData.email || '');
+          formData.append('organization_name', adData.organizationName || '');
+          
+          // Contact preferences
+          formData.append('can_be_contacted_via_call', adData.preferredContactMethodsPhone !== false);
+          formData.append('can_be_contacted_via_email', adData.preferredContactMethodsEmail !== false);
+          formData.append('can_be_contacted_via_message', adData.canBeContactedViaMessage === true);
+          formData.append('can_be_called_for_interview', adData.canBeCalledForInterview === true);
+          
+          // Log all FormData entries for debugging
+          console.log("FormData entries:");
+          for (let entry of formData.entries()) {
+            console.log(entry[0], ":", entry[1]);
+          }
+          
+          // Send the request to the specific endpoint
+          const response = await fetch(`${BASE_URL}web/ads/post-ads-under-sus/`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              // Don't set Content-Type for FormData, browser will set it with the boundary
+            },
+            body: formData
+          });
+          
+          const result = await response.json();
+          if (result.success) {
+            alert("Ad published successfully!");
+            this.$router.push('/my-ads');
+          } else {
+            alert("Failed to publish ad: " + (result.message || 'Unknown error'));
+          }
         } else {
-          alert("Failed to publish ad: " + result.message);
+          // Original endpoint for other categories
+          
+          // Ensure the correct field names are used in the JSON payload for all categories
+          const jsonPayload = {
+            ...adData,
+            ad_city: adData.city,
+            state: adData.state,
+            ad_name: adData.title,
+            ad_description: adData.description,
+            area: adData.area,
+            price: adData.price
+          };
+          
+          console.log("JSON Payload for non-special categories:", jsonPayload);
+          console.log("Area in JSON payload:", jsonPayload.area);
+          console.log("Price in JSON payload:", jsonPayload.price);
+          
+          const response = await fetch(`${BASE_URL}${ENDPOINTS.CREATE_AD}`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonPayload)
+          });
+          
+          const result = await response.json();
+          if (result.success) {
+            alert("Ad published successfully!");
+            this.$router.push('/my-ads');
+          } else {
+            alert("Failed to publish ad: " + result.message);
+          }
         }
       } catch (error) {
         console.error("API error:", error);
@@ -1039,18 +1342,30 @@ export default {
       ];
     },
     handleMapEvent(eventData) {
-        this.adDetails.address = eventData.address;
+      this.adDetails.address = eventData.address;
+      
+      // Store city and state if available
+      if (eventData.city) {
+        this.adDetails.city = eventData.city;
+        console.log("City updated from map:", this.adDetails.city);
+      }
+      
+      if (eventData.state) {
+        this.adDetails.state = eventData.state;
+        console.log("State updated from map:", this.adDetails.state);
+      }
+      
       if (eventData.mapClosed) {
         this.showMap = false;
       }
-      if (this.initialData) {
-        this.defaultLocation.lat = this.setLocationValue.lat;
-        this.defaultLocation.lng = this.setLocationValue.lng;
-      } else {
+      
+      // Store location coordinates properly
+      if (eventData.locationInformation) {
         this.defaultLocation.lat = eventData.locationInformation.lat;
         this.defaultLocation.lng = eventData.locationInformation.lng;
+        
+        console.log("Updated location coordinates:", this.defaultLocation);
       }
-     
     },
     selectSubSubCategory(subSubCat) {
       this.selectedSubSubCategory = subSubCat.id;

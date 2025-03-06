@@ -2,6 +2,15 @@
   <div>
     <Toaster ref="toaster" />
     <div class="form-row">
+      <label>Ad Title:</label>
+      <input
+        class="styled-input"
+        type="text"
+        v-model="adDetails.title"
+        placeholder="Enter ad title"
+      />
+    </div>
+    <div class="form-row">
       <label>Deal Type:</label>
       <select class="styled-input" v-model="adDetails.dealType">
         <option value="" disabled>Select Deal Type</option>
@@ -32,7 +41,7 @@
       <input
         class="styled-input"
         type="number"
-        v-model="adDetails.area"
+        v-model.number="adDetails.area"
         placeholder="Enter area in sq ft"
         @input="validateField('area', 'Area cannot be negative.')"
       />
@@ -42,9 +51,9 @@
       <input
         class="styled-input"
         type="number"
-        v-model="adDetails.price"
+        v-model.number="adDetails.price"
         placeholder="Enter price"
-        @input="validateField('price', 'price cannot be negative.')"
+        @input="validateField('price', 'Price cannot be negative.')"
       />
     </div>
     <div class="form-row">
@@ -164,11 +173,14 @@ export default {
   mounted() {
     if (this.dataFromParent) {
       console.log("this.dataFromParent", this.dataFromParent);
+      this.adDetails.title = this.dataFromParent.title;
       this.adDetails.dealType = this.dataFromParent.dealType;
       this.adDetails.price = this.dataFromParent.price;
       this.adDetails.area = this.dataFromParent.area;
       this.adDetails.description = this.dataFromParent.description;
       this.adDetails.sellerOrBuyer = this.dataFromParent.sellerOrBuyer;
+      this.adDetails.city = this.dataFromParent.city;
+      this.adDetails.state = this.dataFromParent.state;
       this.uploaded_image_ids = this.dataFromParent.uploaded_image_ids;
       this.adDetails.ad_id = this.dataFromParent.ad_id;
       this.adDetails.category = this.dataFromParent.category;
@@ -246,8 +258,22 @@ export default {
       this.$refs.inputRef.click();
     },
     getFormData() {
-      // Return form data to the parent
-      return this.adDetails;
+      // Ensure price and area are properly formatted 
+      const formattedData = {
+        ...this.adDetails,
+        price: this.adDetails.price ? this.adDetails.price.toString() : '',
+        area: this.adDetails.area ? this.adDetails.area.toString() : '',
+      };
+      
+      // Log the data being returned to help with debugging
+      console.log("form-1.vue getFormData() called, returning:", formattedData);
+      console.log("form-1.vue title:", formattedData.title);
+      console.log("form-1.vue description:", formattedData.description);
+      console.log("form-1.vue area:", formattedData.area);
+      console.log("form-1.vue price:", formattedData.price);
+      
+      // Return formatted form data to the parent
+      return formattedData;
     },
   },
 };

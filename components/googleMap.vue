@@ -141,7 +141,48 @@ export default {
         (results, status) => {
           if (status === google.maps.GeocoderStatus.OK) {
             const location = results[0].geometry.location;
-            this.setLocation(location.lat(), location.lng());
+            const lat = location.lat();
+            const lng = location.lng();
+            
+            // Update map and marker
+            this.defaultLocation = { lat, lng };
+            const position = { lat, lng };
+            if (position) {
+              this.marker.setPosition(position);
+              this.map.setCenter(position);
+            }
+            
+            // Extract city and state from address components
+            let city = '';
+            let state = '';
+            
+            if (results[0].address_components) {
+              for (let component of results[0].address_components) {
+                // Extract city
+                if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
+                  city = component.long_name;
+                }
+                
+                // Extract state
+                if (component.types.includes('administrative_area_level_1')) {
+                  state = component.long_name;
+                }
+              }
+            }
+            
+            console.log("Selected Address:", results[0].formatted_address);
+            console.log("Selected City:", city);
+            console.log("Selected State:", state);
+            
+            // Emit event with all location data
+            const eventData = {
+              mapClosed: false,
+              address: results[0].formatted_address,
+              city: city,
+              state: state,
+              locationInformation: this.defaultLocation,
+            };
+            this.$emit("mapEvent", eventData);
           }
         }
       );
@@ -186,6 +227,27 @@ export default {
         if (status === google.maps.GeocoderStatus.OK && results[0]) {
           this.address = results[0].formatted_address;
           console.log("Address updated:", this.address);
+          
+          // Extract city and state from address components
+          let city = '';
+          let state = '';
+          
+          if (results[0].address_components) {
+            for (let component of results[0].address_components) {
+              // Extract city
+              if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
+                city = component.long_name;
+              }
+              
+              // Extract state
+              if (component.types.includes('administrative_area_level_1')) {
+                state = component.long_name;
+              }
+            }
+          }
+          
+          console.log("Extracted city:", city);
+          console.log("Extracted state:", state);
         } else {
           alert("No address found for this location.");
         }
@@ -193,19 +255,51 @@ export default {
     },
     confirmLocation() {
       const position = this.marker.getPosition(); // Get the marker's current position
-      this.reverseGeocode(position.lat(), position.lng()); // Perform reverse geocoding for the marker's position
-
-      // Use a timeout to ensure reverse geocoding completes before emitting the event
-      setTimeout(() => {
-        const eventData = {
-          mapClosed: true,
-          address: this.address || "Location not found", // Fallback if no address
-          locationInformation: { lat: position.lat(), lng: position.lng() },
-        };
-        this.$emit("mapEvent", eventData);
-        this.searchQuery = "";
-        this.showMap = false;
-      }, 200); // Adjust the timeout to ensure geocoding has time to update the address
+      
+      // Perform reverse geocoding for the marker's position
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: { lat: position.lat(), lng: position.lng() } }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results[0]) {
+          this.address = results[0].formatted_address;
+          
+          // Extract city and state from address components
+          let city = '';
+          let state = '';
+          
+          if (results[0].address_components) {
+            for (let component of results[0].address_components) {
+              // Extract city
+              if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
+                city = component.long_name;
+              }
+              
+              // Extract state
+              if (component.types.includes('administrative_area_level_1')) {
+                state = component.long_name;
+              }
+            }
+          }
+          
+          console.log("Confirmed Address:", this.address);
+          console.log("Confirmed City:", city);
+          console.log("Confirmed State:", state);
+          
+          // Emit the event with all the location data
+          const eventData = {
+            mapClosed: true,
+            address: this.address || "Location not found",
+            city: city,
+            state: state,
+            locationInformation: { lat: position.lat(), lng: position.lng() },
+          };
+          
+          this.$emit("mapEvent", eventData);
+          this.searchQuery = "";
+          this.showMap = false;
+        } else {
+          alert("No address found for this location.");
+        }
+      });
     },
   },
 };
