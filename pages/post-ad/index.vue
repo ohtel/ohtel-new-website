@@ -263,14 +263,16 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-end float-right py-4">
-              <Button
+            <div class="d-flex justify-space-between py-4">
+              <div></div>
+              <button
                 label="Next"
                 class="next-button"
                 :disabled="!selectedCategory"
                 @click="handleNextStep(2)"
-                >Next</Button
               >
+                Next
+              </button>
             </div>
           </div>
           <div v-if="progress === 40">
@@ -1227,12 +1229,15 @@ export default {
       this.adDetails.category = data.id;
       console.log("Selected category details:", data, "Category ID:", data.id);
       this.updateStep2Cards(data);
+      // Automatically advance to next step
+      this.handleNextStep(2);
     },
     selectStep2Card(data) {
-        debugger
       this.adType = data.title;
       this.selectedStep2Card = data.id;
       this.adDetails.sellerOrBuyer = data.id===2 ? "Seller" : "Buyer";
+      // Automatically advance to next step
+      this.handleNextStep(3);
     },
     selectStep3Card(id) {
       this.adDetails.subCategory = id;
@@ -1245,11 +1250,15 @@ export default {
         this.subSubCategories = selectedSubCategory.sub_sub_category_list;
         this.showSubSubCategoryStep = true;
         console.log("Found sub-sub-categories:", this.subSubCategories);
+        // Advance to sub-sub-category step
+        this.handleNextStep(4);
       } else {
         this.subSubCategories = [];
         this.showSubSubCategoryStep = false;
         this.selectedSubSubCategory = null;
         console.log("No sub-sub-categories found for this sub-category");
+        // Advance directly to step 4 if no sub-sub-categories
+        this.handleNextStep(4);
       }
     },
     selectStep4Card(id) {
@@ -1342,7 +1351,7 @@ export default {
       ];
     },
     handleMapEvent(eventData) {
-      this.adDetails.address = eventData.address;
+        this.adDetails.address = eventData.address;
       
       // Store city and state if available
       if (eventData.city) {
@@ -1372,6 +1381,8 @@ export default {
       this.adDetails.subSubCategory = subSubCat.id;
       this.adDetails.subSubCategoryTitle = subSubCat.sub_sub_category_title;
       console.log("Selected sub-sub-category:", subSubCat);
+      // Automatically advance to next step
+      this.handleNextStep(4);
     },
   },
   created() {
