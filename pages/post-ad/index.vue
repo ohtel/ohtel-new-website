@@ -208,6 +208,9 @@
         </Stepper>
         <div class="step-content">
           <div v-if="progress === 20">
+            <div class="d-flex justify-content-start mb-4">
+              <div></div>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
@@ -263,8 +266,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <div></div>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -276,6 +278,16 @@
             </div>
           </div>
           <div v-if="progress === 40">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(1)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
@@ -333,15 +345,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(1)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -353,6 +357,16 @@
             </div>
           </div>
           <div v-if="progress === 60">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(2)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box subcategory-card">
                 <section class="category-section py-12 px-6 bg-gray-50 div-grid">
@@ -380,15 +394,7 @@
          </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(2)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -400,6 +406,16 @@
             </div>
           </div>
           <div v-if="progress === 70">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(3)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box subcategory-card">
                 <section class="category-section py-12 px-6 bg-gray-50 div-grid">
@@ -421,15 +437,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(3)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -441,6 +449,16 @@
             </div>
           </div>
           <div v-if="progress === 80">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(3)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
@@ -514,15 +532,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(3)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -533,6 +543,16 @@
             </div>
           </div>
           <div v-if="progress === 100">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(4)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
@@ -546,15 +566,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(4)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -566,6 +578,16 @@
 
           </div>
           <div v-if="progress === 120">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(5)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
@@ -602,15 +624,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(5)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -622,6 +636,16 @@
             </div>
           </div>
           <div v-if="progress === 140">
+            <div class="d-flex justify-content-start mb-4">
+              <button
+                label="Back"
+                class="back-button"
+                severity="secondary"
+                @click="handleBackStep(6)"
+              >
+                Back
+              </button>
+            </div>
             <div class="flex flex-col items-center h-48">
               <div class="content-box review-section">
                 <section class="category-section py-12 px-6 bg-gray-50">
@@ -668,15 +692,7 @@
                 </section>
               </div>
             </div>
-            <div class="d-flex justify-space-between py-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(6)"
-              >
-                Back
-              </button>
+            <div class="d-flex justify-content-end py-4">
               <button
                 label="Next"
                 class="next-button"
@@ -1240,7 +1256,7 @@ export default {
       this.handleNextStep(3);
     },
     selectStep3Card(id) {
-      this.adDetails.subCategory = id;
+        this.adDetails.subCategory = id;
       this.selectedStep3Card = id;
       
       // Check if this sub-category has sub-sub-categories
@@ -1633,4 +1649,24 @@ export default {
 // .address-class{
 //     width: 67.5%;
 // }
+.justify-content-start {
+  justify-content: flex-start !important;
+}
+
+.justify-content-end {
+  justify-content: flex-end !important;
+}
+
+.mb-4 {
+  margin-bottom: 1rem !important;
+}
+
+.py-4 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
 </style>
