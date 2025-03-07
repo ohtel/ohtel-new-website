@@ -466,6 +466,30 @@
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
                   <div class="max-w-6xl mx-auto">
+                    <!-- Add Other Sub Category Input if needed -->
+                    <div v-if="adDetails.isOtherSubCategory" class="form-group mb-4">
+                      <label class="form-label">Enter Sub Category Name</label>
+                      <input
+                        type="text"
+                        v-model="adDetails.otherSubCategoryText"
+                        class="form-control styled-input"
+                        placeholder="Enter sub category name"
+                        required
+                      />
+                    </div>
+
+                    <!-- Add Other Sub-Sub Category Input if needed -->
+                    <div v-if="adDetails.isOtherSubSubCategory" class="form-group mb-4">
+                      <label class="form-label">Enter Sub-Sub Category Name</label>
+                      <input
+                        type="text"
+                        v-model="adDetails.otherSubSubCategoryText"
+                        class="form-control styled-input"
+                        placeholder="Enter sub-sub category name"
+                        required
+                      />
+                    </div>
+
                     <!-- Dynamic Form Component -->
                     <div
                       id="mapModal"
@@ -785,7 +809,10 @@ export default {
         canBeContactedViaCall: true,
         canBeContactedViaEmail: true,
         canBeContactedViaMessage: false,
-        canBeCalledForInterview: false
+        canBeCalledForInterview: false,
+        isOtherSubCategory: false,
+        isOtherSubSubCategory: false,
+        otherSubSubCategoryText: "",
       },
       defaultLocation: {
         lat: null,
@@ -931,15 +958,26 @@ export default {
     handleBackStep(step) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       
-      // If we're at step 4 (progress === 80) and sub-sub-category step exists
-      if (this.progress === 80 && this.showSubSubCategoryStep) {
-        this.progress = 70; // Go back to sub-sub-category step
-        return;
+      // If we're at step 4 (progress === 80) and going back
+      if (this.progress === 80) {
+        // Clear the "Others" input fields when going back from step 4
+        this.adDetails.otherSubCategoryText = "";
+        this.adDetails.otherSubSubCategoryText = "";
+        
+        // If sub-sub-category step exists, go back to it
+        if (this.showSubSubCategoryStep) {
+          this.progress = 70;
+          return;
+        }
       }
       
       // If we're at sub-sub-category step and going back to step 3
       if (this.progress === 70 && step === 3) {
         this.selectedSubSubCategory = null; // Clear sub-sub-category selection
+        this.adDetails.subSubCategory = null;
+        this.adDetails.subSubCategoryTitle = "";
+        this.adDetails.isOtherSubSubCategory = false;
+        this.adDetails.otherSubSubCategoryText = "";
         this.progress = 60; // Go back to sub-category selection
         return;
       }
@@ -948,8 +986,18 @@ export default {
         this.selectedStep2Card = null;
       } else if (step === 2) {
         this.selectedStep3Card = null;
-        this.selectedSubSubCategory = null; // Also clear sub-sub-category when going back to step 2
+        this.selectedSubSubCategory = null;
         this.showSubSubCategoryStep = false;
+        // Clear sub-category related data
+        this.adDetails.subCategory = null;
+        this.adDetails.subCategoryTitle = "";
+        this.adDetails.isOtherSubCategory = false;
+        this.adDetails.otherSubCategoryText = "";
+        // Clear sub-sub-category related data
+        this.adDetails.subSubCategory = null;
+        this.adDetails.subSubCategoryTitle = "";
+        this.adDetails.isOtherSubSubCategory = false;
+        this.adDetails.otherSubSubCategoryText = "";
       } else if (step === 3) {
         this.selectedStep4Card = null;
       } else if (step === 4) {
@@ -1276,6 +1324,9 @@ export default {
         this.adDetails.subCategoryTitle = selectedSubCategory.sub_category_title;
         this.selectedStep3Card = selectedSubCategory.id;
         
+        // Check if this is "Others" sub-category
+        this.adDetails.isOtherSubCategory = selectedSubCategory.sub_category_title === "Others";
+        
         // Check if this sub-category has either levels or sub_sub_category_list
         const hasLevels = selectedSubCategory.levels && selectedSubCategory.levels.length > 0;
         const hasSubSub = selectedSubCategory.sub_sub_category_list && selectedSubCategory.sub_sub_category_list.length > 0;
@@ -1430,9 +1481,14 @@ export default {
       this.selectedSubSubCategory = subSubCat.id;
       this.adDetails.subSubCategory = subSubCat.id;
       // Get the title from any of the possible fields
-      this.adDetails.subSubCategoryTitle = subSubCat.applicant_role_title || 
-                                         subSubCat.sub_sub_category_title || 
-                                         subSubCat.title;
+      const title = subSubCat.applicant_role_title || 
+                   subSubCat.sub_sub_category_title || 
+                   subSubCat.title;
+      this.adDetails.subSubCategoryTitle = title;
+      
+      // Check if this is "Others" sub-sub-category
+      this.adDetails.isOtherSubSubCategory = title === "Others";
+      
       console.log("Selected sub-sub-category:", subSubCat);
       // Automatically advance to next step
       this.handleNextStep(4);
