@@ -867,6 +867,7 @@ export default {
           if (formData.price !== undefined) this.adDetails.price = formData.price;
           if (formData.area !== undefined) this.adDetails.area = formData.area;
           if (formData.dealType) this.adDetails.dealType = formData.dealType;
+          if (formData.files) this.adDetails.images = formData.files;
           
           console.log("Updated adDetails:", this.adDetails);
           console.log("Area value after update:", this.adDetails.area);
@@ -1031,7 +1032,6 @@ export default {
     async handlePublish() {
       try {
         console.log("Starting publish process...");
-        // Get the appropriate form reference based on the selected category
         let formRef = null;
         
         // Determine which form to use based on category ID
@@ -1055,36 +1055,18 @@ export default {
           formData = formRef.getFormData();
           console.log("Form data collected:", formData);
           
-          // Update adDetails with form values to ensure they're present
+          // Update adDetails with form values
           if (formData.title) this.adDetails.title = formData.title;
           if (formData.description) this.adDetails.description = formData.description;
-        } else {
-          console.warn(`Form reference is missing or getFormData method not available for category ID ${this.selectedCategoryDetails?.id}`);
+          
+          // Handle files specifically
+          if (formData.files && formData.files.length > 0) {
+            console.log("Files found in form data:", formData.files);
+            this.adDetails.images = formData.files;
+          }
         }
 
-        // Try to get personal details from the component if available
-        let personalDetails = {};
-        const personalDetailsRef = this.$refs.personalDetailsRef;
-        
-        if (personalDetailsRef && typeof personalDetailsRef.getFormData === 'function') {
-          personalDetails = personalDetailsRef.getFormData();
-          console.log("Personal details collected from component:", personalDetails);
-        } else {
-          // If component is not available, use existing data from adDetails
-          console.warn("Personal details component reference is missing, using existing data from adDetails");
-          personalDetails = {
-            fullName: this.adDetails.fullName || '',
-            contact: this.adDetails.contact || '',
-            email: this.adDetails.email || '',
-            organizationName: this.adDetails.organizationName || '',
-            preferredContactMethodsPhone: this.adDetails.preferredContactMethodsPhone || false,
-            preferredContactMethodsEmail: this.adDetails.preferredContactMethodsEmail || false
-          };
-        }
-
-        console.log("Before combining data - Current adDetails:", this.adDetails);
-
-        // Combine all data
+        // When calling submitAdToApi, make sure to pass the files
         const completeData = {
           ...formData,
           title: this.adDetails.title || formData.title,
@@ -1101,21 +1083,15 @@ export default {
           },
           city: this.adDetails.city || '',
           state: this.adDetails.state || '',
-          fullName: personalDetails.fullName,
-          contact: personalDetails.contact,
-          email: personalDetails.email,
-          organizationName: personalDetails.organizationName,
-          preferredContactMethodsPhone: personalDetails.preferredContactMethodsPhone,
-          preferredContactMethodsEmail: personalDetails.preferredContactMethodsEmail
+          fullName: this.adDetails.fullName || '',
+          contact: this.adDetails.contact || '',
+          email: this.adDetails.email || '',
+          organizationName: this.adDetails.organizationName || '',
+          preferredContactMethodsPhone: this.adDetails.preferredContactMethodsPhone || false,
+          preferredContactMethodsEmail: this.adDetails.preferredContactMethodsEmail || false,
+          images: this.adDetails.images || [], // Make sure images are included
         };
 
-        console.log("Complete data for submission:", completeData);
-        console.log("Title value being submitted:", completeData.title);
-        console.log("Description value being submitted:", completeData.description);
-        console.log("Area value being submitted:", completeData.area);
-        console.log("Price value being submitted:", completeData.price);
-        
-        // Submit the ad to the API
         await this.submitAdToApi(completeData);
         
         // Show success message
@@ -1142,9 +1118,6 @@ export default {
     async submitAdToApi(adData) {
       try {
         console.log("submitAdToApi - Data received:", adData);
-        console.log("submitAdToApi - Title:", adData.title);
-        console.log("submitAdToApi - Description:", adData.description);
-        
         const token = localStorage.getItem("accessToken");
         
         // Different endpoint and payload structure for categories 1, 2, 5
@@ -1170,30 +1143,12 @@ export default {
           // Add required fields for spaces/equipment categories
           formData.append('main_category', this.selectedCategoryDetails.id);
           formData.append('ad_type', this.adType || 'Seller');
-          
-          // Use the correct field names for city, state, title and description
           formData.append('ad_city', adData.city || '');
           formData.append('state', adData.state || '');
-          
-          // Ensure title and description are passed correctly
-          const adTitle = adData.title || '';
-          const adDescription = adData.description || '';
-          
-          // Ensure area and price are passed correctly
-          const area = adData.area || '';
-          const price = adData.price || '';
-          
-          console.log("FormData values being set:");
-          console.log("ad_name:", adTitle);
-          console.log("ad_description:", adDescription);
-          console.log("area:", area);
-          console.log("price:", price);
-          
-          formData.append('ad_name', adTitle);
-          formData.append('ad_description', adDescription);
-          formData.append('area', area);
-          formData.append('price', price);
-          
+          formData.append('ad_name', adData.title || '');
+          formData.append('ad_description', adData.description || '');
+          formData.append('area', adData.area || '');
+          formData.append('price', adData.price || '');
           formData.append('sub_category', this.adDetails.subCategory);
           
           // Add sub-sub-category if available
@@ -1203,26 +1158,46 @@ export default {
           
           formData.append('deal_type', adData.dealType || 'Rent');
           formData.append('address', this.adDetails.address || '');
-          
-          // Convert expiry date to ISO format if available
-          if (adData.expiryDate) {
-            const expiryDate = new Date(adData.expiryDate);
-            formData.append('expiry', expiryDate.toISOString());
-          }
-          
-          // Add other fields
-          if (adData.otherSubCategoryText) {
-            formData.append('other_sub_category_text', adData.otherSubCategoryText);
-          }
-          
-          // Handle image uploads
+
+          // Handle images
           if (adData.images && adData.images.length > 0) {
-            adData.images.forEach(image => {
-              formData.append('image_ids', image);
-            });
+            console.log("Processing images for upload, count:", adData.images.length);
+            
+            // If images are already File objects
+            if (adData.images[0] instanceof File) {
+              adData.images.forEach((file, index) => {
+                formData.append('image_ids', file);
+                console.log(`Appending image file ${index + 1} to FormData`);
+              });
+            }
+            // If images are base64 strings
+            else if (typeof adData.images[0] === 'string') {
+              for (let i = 0; i < adData.images.length; i++) {
+                const base64String = adData.images[i];
+                // Extract the actual base64 data
+                const base64Data = base64String.split(',')[1];
+                
+                // Convert base64 to blob
+                const byteCharacters = atob(base64Data);
+                const byteArrays = [];
+                
+                for (let j = 0; j < byteCharacters.length; j++) {
+                  byteNumbers[j] = byteCharacters.charCodeAt(j);
+                }
+                
+                const byteArray = new Uint8Array(byteNumbers);
+                byteArrays.push(byteArray);
+              }
+              
+              const blob = new Blob(byteArrays, { type: 'image/png' });
+              const file = new File([blob], `image_${i + 1}.png`, { type: 'image/png' });
+              
+              formData.append('image_ids', file);
+              console.log(`Appending converted image ${i + 1} to FormData`);
+            }
           }
           
-          // Add contact information using the correct field names
+          // Add contact information
           formData.append('contact_person', adData.fullName || '');
           formData.append('contact_number', adData.contact || '');
           formData.append('contact_email', adData.email || '');
@@ -1234,10 +1209,18 @@ export default {
           formData.append('can_be_contacted_via_message', adData.canBeContactedViaMessage === true);
           formData.append('can_be_called_for_interview', adData.canBeCalledForInterview === true);
           
+          // Add plan_id
+          if (this.selectedSubscriptionPlan) {
+            formData.append('plan_id', this.selectedSubscriptionPlan);
+          }
+          
           // Log all FormData entries for debugging
           console.log("FormData entries:");
           for (let entry of formData.entries()) {
-            console.log(entry[0], ":", entry[1]);
+            const value = entry[1] instanceof File ? 
+              `File: ${entry[1].name} (${entry[1].size} bytes)` : 
+              entry[1];
+            console.log(entry[0], ":", value);
           }
           
           // Send the request to the specific endpoint
@@ -1245,7 +1228,7 @@ export default {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
-              // Don't set Content-Type for FormData, browser will set it with the boundary
+              // Don't set Content-Type for FormData, browser will set it with boundary
             },
             body: formData
           });
@@ -1255,7 +1238,7 @@ export default {
             alert("Ad published successfully!");
             this.$router.push('/my-ads');
           } else {
-            alert("Failed to publish ad: " + (result.message || 'Unknown error'));
+            throw new Error(result.message || 'Unknown error');
           }
         } else {
           // Original endpoint for other categories
