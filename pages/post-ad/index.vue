@@ -1120,12 +1120,10 @@ export default {
         console.log("submitAdToApi - Data received:", adData);
         const token = localStorage.getItem("accessToken");
         
-        // Different endpoint and payload structure for categories 1, 2, 5
         if (this.selectedCategoryDetails?.id === 1 || 
             this.selectedCategoryDetails?.id === 2 || 
             this.selectedCategoryDetails?.id === 5) {
           
-          // Create FormData for handling binary image uploads
           const formData = new FormData();
           
           // Add coordinates data
@@ -1228,22 +1226,53 @@ export default {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
-              // Don't set Content-Type for FormData, browser will set it with boundary
             },
             body: formData
           });
           
-          const result = await response.json();
-          if (result.success) {
-            alert("Ad published successfully!");
-            this.$router.push('/my-ads');
-          } else {
-            throw new Error(result.message || 'Unknown error');
-          }
-        } else {
-          // Original endpoint for other categories
+          console.log("API Response Status:", response.status);
           
-          // Ensure the correct field names are used in the JSON payload for all categories
+          // Specifically check for 201 status code
+          if (response.status === 201) {
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            // Show success message using toast
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your ad has been published successfully!',
+              life: 3000
+            });
+            
+            // Navigate to my-ads page
+            this.$router.push('/my-ads');
+            return;
+          }
+          // Check for other success status codes
+          else if (response.status >= 200 && response.status < 300) {
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            // Show success message using toast
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your ad has been published successfully!',
+              life: 3000
+            });
+            
+            // Navigate to my-ads page
+            this.$router.push('/my-ads');
+            return;
+          }
+          
+          // If we get here, there was an error
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to publish ad');
+          
+        } else {
+          // For other categories
           const jsonPayload = {
             ...adData,
             ad_city: adData.city,
@@ -1254,10 +1283,6 @@ export default {
             price: adData.price
           };
           
-          console.log("JSON Payload for non-special categories:", jsonPayload);
-          console.log("Area in JSON payload:", jsonPayload.area);
-          console.log("Price in JSON payload:", jsonPayload.price);
-          
           const response = await fetch(`${BASE_URL}${ENDPOINTS.CREATE_AD}`, {
             method: 'POST',
             headers: {
@@ -1267,17 +1292,60 @@ export default {
             body: JSON.stringify(jsonPayload)
           });
           
-          const result = await response.json();
-          if (result.success) {
-            alert("Ad published successfully!");
+          console.log("API Response Status:", response.status);
+          
+          // Specifically check for 201 status code
+          if (response.status === 201) {
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            // Show success message using toast
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your ad has been published successfully!',
+              life: 3000
+            });
+            
+            // Navigate to my-ads page
             this.$router.push('/my-ads');
-          } else {
-            alert("Failed to publish ad: " + result.message);
+            return;
           }
+          // Check for other success status codes
+          else if (response.status >= 200 && response.status < 300) {
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            // Show success message using toast
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your ad has been published successfully!',
+              life: 3000
+            });
+            
+            // Navigate to my-ads page
+            this.$router.push('/my-ads');
+            return;
+          }
+          
+          // If we get here, there was an error
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to publish ad');
         }
       } catch (error) {
         console.error("API error:", error);
-        alert("An error occurred while publishing your ad.");
+        
+        // Show error message using toast
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'An error occurred while publishing your ad.',
+          life: 5000
+        });
+        
+        // Re-throw the error to be handled by the calling function
+        throw error;
       }
     },
     selectCategory(data) {
