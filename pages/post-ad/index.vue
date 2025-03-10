@@ -520,15 +520,15 @@
                     <form1
                       v-if="
                         this.selectedCategoryDetails?.id === 1 ||
-                        this.selectedCategoryDetails?.id === 7 ||
-                        this.selectedCategoryDetails?.id === 8
+                        this.selectedCategoryDetails?.id === 2 ||
+                        this.selectedCategoryDetails?.id === 5
                       "
                       ref="form1Ref"
                       :dataFromParent="adDetails"
                     ></form1>
                     <form2
                       v-if="
-                        this.selectedCategoryDetails?.id === 5 ||
+                        this.selectedCategoryDetails?.id === 4 ||
                         this.selectedCategoryDetails?.id === 6
                       "
                       ref="form2Ref"
