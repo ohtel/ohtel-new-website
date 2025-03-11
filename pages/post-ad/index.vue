@@ -1362,7 +1362,7 @@ export default {
             }));
             
             console.log("Mapped product details:", productDetails);
-            formData.append('product_details', JSON.stringify(productDetails));
+            formData.append('product_list', JSON.stringify(productDetails));
             
             // Handle product images and catalogs
             this.formData.products.forEach((product, index) => {
