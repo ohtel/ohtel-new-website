@@ -263,12 +263,12 @@ export default {
       adDetails: {
         title: "",
         description: "",
-        fileUpload: [],
-        products: [], // Array to hold products
+        fileUpload: null,
+        fileUploadName: "",
+        products: [],
         sellerOrBuyer: "Seller",
         images: [],
         files: [],
-        fileUploadName:'',
         productForm: {
           productName: "",
           link: "",
@@ -276,58 +276,54 @@ export default {
           unit_type: "",
           mrp: "",
           offerPrice: "",
-          image: [],
-          pdf: [],
-        },
+          image: null,
+          pdf: null,
+          imageName: "",
+          pdfFile: ""
+        }
       },
       showProductModal: false,
       isEditing: false,
-
-      editIndex: null, // To track the product being edited
-      uploaded_image_ids: [],
+      editIndex: null,
+      uploaded_image_ids: []
     };
   },
   props: {
     dataFromParent: [],
   },
   mounted() {
-  if (this.dataFromParent) {
-    // Map `adDetails` fields
-    this.adDetails.description = this.dataFromParent.description;
-    this.adDetails.dealType = this.dataFromParent.dealType;
-    this.adDetails.price = this.dataFromParent.price;
-    this.adDetails.area = this.dataFromParent.area;
-    this.adDetails.sellerOrBuyer = this.dataFromParent.sellerOrBuyer;
-    this.uploaded_image_ids = this.dataFromParent.uploaded_image_ids;
-    this.adDetails.ad_id = this.dataFromParent.ad_id;
-    this.adDetails.category = this.dataFromParent.category;
-    this.adDetails.fileUploadName=this.dataFromParent.document_uploaded,
+    if (this.dataFromParent) {
+      // Map basic fields
+      this.adDetails.title = this.dataFromParent.title || "";
+      this.adDetails.description = this.dataFromParent.description || "";
+      this.adDetails.sellerOrBuyer = this.dataFromParent.sellerOrBuyer || "Seller";
+      this.uploaded_image_ids = this.dataFromParent.uploaded_image_ids || [];
+      this.adDetails.ad_id = this.dataFromParent.ad_id;
+      this.adDetails.category = this.dataFromParent.category;
+      this.adDetails.fileUploadName = this.dataFromParent.document_uploaded || "";
 
-    console.log("this.dataFromParent", this.dataFromParent);
-    console.log("product list items", this.dataFromParent.product_list);
-// Handle `product_list` with multiple items
-if (Array.isArray(this.dataFromParent.product_list)) {
-      // Map each product into the `products` array
-      this.adDetails.products = this.dataFromParent.product_list.map((product) => ({
-        productName: product.name || "",
-        link: product.url || "",
-        units: product.unit || "",
-        unit_type: product.unit_available || "",
-        mrp: product.price || "",
-        offerPrice: product.offer_price || "",
-        image: product.image ? [product.image] : [],
-        imageName: product.image ? product.image.split('/').pop() : "", 
-        pdf: product.catalog ? [product.catalog] : [],
-        pdfFile: product.catalog ? product.catalog.split('/').pop() : "",
-        id: product.id||'',
-      }));
-      console.log("this.adDetails.products", this.adDetails.products);
-      this.adDetails.productForm = this.adDetails.products;
+      console.log("form-2.vue mounted - dataFromParent:", this.dataFromParent);
+      console.log("form-2.vue mounted - product list:", this.dataFromParent.product_list);
+
+      // Handle product list
+      if (Array.isArray(this.dataFromParent.product_list)) {
+        this.adDetails.products = this.dataFromParent.product_list.map((product) => ({
+          productName: product.name || "",
+          link: product.url || "",
+          units: product.unit || "",
+          unit_type: product.unit_available || "",
+          mrp: product.price || "",
+          offerPrice: product.offer_price || "",
+          image: product.image ? [product.image] : null,
+          imageName: product.image ? product.image.split('/').pop() : "", 
+          pdf: product.catalog ? [product.catalog] : null,
+          pdfFile: product.catalog ? product.catalog.split('/').pop() : "",
+          id: product.id || ""
+        }));
+        console.log("form-2.vue mounted - mapped products:", this.adDetails.products);
+      }
     }
-  }
-
-  console.log("this.adDetails123", this.adDetails);
-},
+  },
   methods: {
     extractFileName(fileUploadName){
       // return fileUploadName
@@ -501,32 +497,39 @@ if (Array.isArray(this.dataFromParent.product_list)) {
         mrp: "",
         offerPrice: "",
         link: "",
-        imageName: null,
-        pdfFile: null,
+        imageName: "",
+        pdfFile: "",
         image: null,
         pdf: null,
       };
     },
     getFormData() {
-      // Return all necessary form data
-      const formData = {
-        title: this.adDetails.title,
-        description: this.adDetails.description,
+      // Format the data similar to form-1
+      const formattedData = {
+        title: this.adDetails.title || '',
+        description: this.adDetails.description || '',
         products: this.adDetails.products.map(product => ({
-          productName: product.productName,
+          productName: product.productName || '',
           link: product.link || '',
-          units: product.units,
-          unit_type: product.unit_type,
-          mrp: product.mrp,
-          offerPrice: product.offerPrice,
-          image: product.image,
-          pdf: product.pdf
+          units: product.units ? product.units.toString() : '',
+          unit_type: product.unit_type || '',
+          mrp: product.mrp ? product.mrp.toString() : '',
+          offerPrice: product.offerPrice ? product.offerPrice.toString() : '',
+          image: product.image || null,
+          pdf: product.pdf || null
         })),
-        files: this.adDetails.files,
-        fileUpload: this.adDetails.fileUpload
+        files: this.adDetails.files || [],
+        fileUpload: this.adDetails.fileUpload || null
       };
-      console.log("Form 2 returning data:", formData);
-      return formData;
+
+      // Add debug logging similar to form-1
+      console.log("form-2.vue getFormData() called, returning:", formattedData);
+      console.log("form-2.vue title:", formattedData.title);
+      console.log("form-2.vue description:", formattedData.description);
+      console.log("form-2.vue products:", formattedData.products);
+      console.log("form-2.vue files:", formattedData.files);
+
+      return formattedData;
     },
   },
 };

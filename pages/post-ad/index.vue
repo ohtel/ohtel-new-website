@@ -824,6 +824,7 @@ export default {
       step4Cards: [],
       step5Cards: [],
       subscriptionPlans: [],
+      formData: null,
     };
   },
   methods: {
@@ -858,16 +859,16 @@ export default {
         
         // Get form data if form reference exists
         if (formRef && typeof formRef.getFormData === 'function') {
-          const formData = formRef.getFormData();
-          console.log("Step 4 to 5: Form data collected:", formData);
+          this.formData = formRef.getFormData();
+          console.log("Step 4 to 5: Form data collected:", this.formData);
           
           // Update adDetails with values from the form
-          if (formData.title) this.adDetails.title = formData.title;
-          if (formData.description) this.adDetails.description = formData.description;
-          if (formData.price !== undefined) this.adDetails.price = formData.price;
-          if (formData.area !== undefined) this.adDetails.area = formData.area;
-          if (formData.dealType) this.adDetails.dealType = formData.dealType;
-          if (formData.files) this.adDetails.images = formData.files;
+          if (this.formData.title) this.adDetails.title = this.formData.title;
+          if (this.formData.description) this.adDetails.description = this.formData.description;
+          if (this.formData.price !== undefined) this.adDetails.price = this.formData.price;
+          if (this.formData.area !== undefined) this.adDetails.area = this.formData.area;
+          if (this.formData.dealType) this.adDetails.dealType = this.formData.dealType;
+          if (this.formData.files) this.adDetails.images = this.formData.files;
           
           console.log("Updated adDetails:", this.adDetails);
           console.log("Area value after update:", this.adDetails.area);
@@ -903,11 +904,11 @@ export default {
         // Determine which form to use based on category ID
         if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form1Ref;
-        } else if ([5, 6].includes(this.selectedCategoryDetails?.id)) {
+        } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        } else if ([8].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        } else if ([7].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
         } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
@@ -1279,6 +1280,7 @@ export default {
           
           // Get form2 data first
           const form2Ref = this.$refs.form2Ref;
+          console.log("form2Ref:", form2Ref);
           let form2Data = null;
           if (form2Ref && typeof form2Ref.getFormData === 'function') {
             form2Data = form2Ref.getFormData();
@@ -1346,9 +1348,9 @@ export default {
           formData.append('can_be_called_for_interview', adData.canBeCalledForInterview === true);
           
           // Add product details from form2
-          if (form2Data && form2Data.products) {
-            console.log("Products from form2:", form2Data.products);
-            const productDetails = form2Data.products.map(product => ({
+          if (this.formData && this.formData.products) {
+            console.log("Products from form2:", this.formData.products);
+            const productDetails = this.formData.products.map(product => ({
               name: product.productName,
               url: product.link || '',
               unit: product.units,
@@ -1363,7 +1365,7 @@ export default {
             formData.append('product_details', JSON.stringify(productDetails));
             
             // Handle product images and catalogs
-            form2Data.products.forEach((product, index) => {
+            this.formData.products.forEach((product, index) => {
               // Handle product image
               if (product.image) {
                 // If image is a File object
