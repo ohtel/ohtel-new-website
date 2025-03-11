@@ -844,11 +844,11 @@ export default {
         // Determine which form to use based on category ID
         if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form1Ref;
-        } else if ([5, 6].includes(this.selectedCategoryDetails?.id)) {
+        } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        } else if ([8].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        } else if ([7].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
         } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
@@ -1037,11 +1037,11 @@ export default {
         // Determine which form to use based on category ID
         if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form1Ref;
-        } else if ([5, 6].includes(this.selectedCategoryDetails?.id)) {
+        } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        } else if ([8].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        } else if ([7].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
         } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
@@ -1271,35 +1271,154 @@ export default {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to publish ad');
           
-        } else {
-          // For other categories
-          const jsonPayload = {
-            ...adData,
-            ad_city: adData.city,
-            state: adData.state,
-            ad_name: adData.title,
-            ad_description: adData.description,
-            area: adData.area,
-            price: adData.price
-          };
+        }
+        if (this.selectedCategoryDetails?.id === 4 || 
+            this.selectedCategoryDetails?.id === 6) {
+          debugger;
+          const formData = new FormData();
           
-          const response = await fetch(`${BASE_URL}${ENDPOINTS.CREATE_AD}`, {
+          // Get form2 data first
+          const form2Ref = this.$refs.form2Ref;
+          let form2Data = null;
+          if (form2Ref && typeof form2Ref.getFormData === 'function') {
+            form2Data = form2Ref.getFormData();
+            console.log("Form 2 data collected:", form2Data);
+            
+            // Verify the data we're about to send
+            console.log("Title from form2:", form2Data?.title);
+            console.log("Description from form2:", form2Data?.description);
+            
+            if (!form2Data?.title || !form2Data?.description) {
+              console.warn("Warning: Title or description is empty in form2Data");
+            }
+          } else {
+            console.warn("Could not get form2 data - form2Ref or getFormData not available");
+          }
+
+          // Add coordinates data
+          if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
+            const coordinates = {
+              longitude: this.defaultLocation.lng,
+              latitude: this.defaultLocation.lat
+            };
+            
+            formData.append('coordinate', JSON.stringify(coordinates));
+            formData.append('ad_city_cordinate', JSON.stringify(coordinates));
+            formData.append('location', JSON.stringify({point: coordinates}));
+          }
+          
+          
+          formData.append('ad_name', adData.title || '');
+          formData.append('ad_description', adData.description || '');
+          
+          // Add required fields from parent component (index.vue)
+          formData.append('main_category', this.selectedCategoryDetails.id);
+          formData.append('ad_type', this.adType || 'Seller');
+          formData.append('ad_city', adData.city || '');
+          formData.append('state', adData.state || '');
+          formData.append('sub_category', this.adDetails.subCategory);
+          
+          // Add sub-sub-category if available
+          if (this.adDetails.subSubCategory) {
+            formData.append('sub_sub_category', this.adDetails.subSubCategory);
+          }
+          
+          formData.append('address', this.adDetails.address || '');
+
+          // Handle images
+          if (adData.images && adData.images.length > 0) {
+            console.log("Processing images for upload, count:", adData.images.length);
+            adData.images.forEach((file, index) => {
+              formData.append('image_ids', file);
+            });
+          }
+
+          // Add contact information
+          formData.append('contact_person', adData.fullName || '');
+          formData.append('contact_number', adData.contact || '');
+          formData.append('contact_email', adData.email || '');
+          formData.append('organization_name', adData.organizationName || '');
+          
+          // Contact preferences
+          formData.append('can_be_contacted_via_call', adData.preferredContactMethodsPhone !== false);
+          formData.append('can_be_contacted_via_email', adData.preferredContactMethodsEmail !== false);
+          formData.append('can_be_contacted_via_message', adData.canBeContactedViaMessage === true);
+          formData.append('can_be_called_for_interview', adData.canBeCalledForInterview === true);
+          
+          // Add product details from form2
+          if (form2Data && form2Data.products) {
+            console.log("Products from form2:", form2Data.products);
+            const productDetails = form2Data.products.map(product => ({
+              name: product.productName,
+              url: product.link || '',
+              unit: product.units,
+              unit_available: product.unit_type,
+              price: product.mrp,
+              offer_price: product.offerPrice || '',
+              image: null,
+              catalog: null
+            }));
+            
+            console.log("Mapped product details:", productDetails);
+            formData.append('product_details', JSON.stringify(productDetails));
+            
+            // Handle product images and catalogs
+            form2Data.products.forEach((product, index) => {
+              // Handle product image
+              if (product.image) {
+                // If image is a File object
+                if (product.image instanceof File) {
+                  formData.append(`product_image_${index}`, product.image);
+                }
+                // If image is an array containing a File object
+                else if (Array.isArray(product.image) && product.image.length > 0) {
+                  formData.append(`product_image_${index}`, product.image[0]);
+                }
+              }
+
+              // Handle product catalog (PDF)
+              if (product.pdf) {
+                // If pdf is a File object
+                if (product.pdf instanceof File) {
+                  formData.append(`product_catalog_${index}`, product.pdf);
+                }
+                // If pdf is an array containing a File object
+                else if (Array.isArray(product.pdf) && product.pdf.length > 0) {
+                  formData.append(`product_catalog_${index}`, product.pdf[0]);
+                }
+              }
+            });
+          }
+          
+          // Add plan_id if available
+          if (this.selectedSubscriptionPlan) {
+            formData.append('plan_id', this.selectedSubscriptionPlan);
+          }
+          
+          // Log FormData entries for debugging
+          console.log("FormData entries:");
+          for (let entry of formData.entries()) {
+            const value = entry[1] instanceof File ? 
+              `File: ${entry[1].name} (${entry[1].size} bytes)` : 
+              entry[1];
+            console.log(entry[0], ":", value);
+          }
+          
+          // Send request to market and deals endpoint
+          const response = await fetch(`${BASE_URL}web/ads/post-ads-under-mf/`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(jsonPayload)
+            body: formData
           });
           
           console.log("API Response Status:", response.status);
           
-          // Specifically check for 201 status code
-          if (response.status === 201) {
+          if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
             const result = await response.json();
             console.log("API Response:", result);
             
-            // Show success message using toast
             this.$toast.add({
               severity: 'success',
               summary: 'Success',
@@ -1307,29 +1426,11 @@ export default {
               life: 3000
             });
             
-            // Navigate to my-ads page
-            this.$router.push('/my-ads');
-            return;
-          }
-          // Check for other success status codes
-          else if (response.status >= 200 && response.status < 300) {
-            const result = await response.json();
-            console.log("API Response:", result);
-            
-            // Show success message using toast
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Your ad has been published successfully!',
-              life: 3000
-            });
-            
-            // Navigate to my-ads page
             this.$router.push('/my-ads');
             return;
           }
           
-          // If we get here, there was an error
+          // Handle error
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to publish ad');
         }

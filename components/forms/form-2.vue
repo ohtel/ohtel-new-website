@@ -1,6 +1,17 @@
 <template>
   <div>
     <Toaster ref="toaster" />
+    <!-- Title Field -->
+    <div class="form-row">
+      <label>Title:</label>
+      <input
+        class="styled-input"
+        type="text"
+        v-model="adDetails.title"
+        placeholder="Enter title"
+        required
+      />
+    </div>
     <!-- Product Form -->
     <div class="form-row">
       <label>Description:</label>
@@ -250,6 +261,7 @@ export default {
   data() {
     return {
       adDetails: {
+        title: "",
         description: "",
         fileUpload: [],
         products: [], // Array to hold products
@@ -496,8 +508,25 @@ if (Array.isArray(this.dataFromParent.product_list)) {
       };
     },
     getFormData() {
-      // Return form data to the parent
-      return this.adDetails;
+      // Return all necessary form data
+      const formData = {
+        title: this.adDetails.title,
+        description: this.adDetails.description,
+        products: this.adDetails.products.map(product => ({
+          productName: product.productName,
+          link: product.link || '',
+          units: product.units,
+          unit_type: product.unit_type,
+          mrp: product.mrp,
+          offerPrice: product.offerPrice,
+          image: product.image,
+          pdf: product.pdf
+        })),
+        files: this.adDetails.files,
+        fileUpload: this.adDetails.fileUpload
+      };
+      console.log("Form 2 returning data:", formData);
+      return formData;
     },
   },
 };
