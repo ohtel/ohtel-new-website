@@ -1120,16 +1120,18 @@ export default {
 
         await this.submitAdToApi(completeData);
         
-        // Show success message
-        this.toast.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Your ad has been published successfully!',
-          life: 3000
-        });
+        // Remove duplicate success toast from here since it's already shown in submitAdToApi
+        // this.toast.add({
+        //   severity: 'success',
+        //   summary: 'Success',
+        //   detail: 'Your ad has been published successfully!',
+        //   life: 5000 // Display for 5 seconds
+        // });
         
-        // Navigate to success page or home
-        // this.$router.push('/');
+        // Delay the redirection to allow the toast to be visible
+        // setTimeout(() => {
+        //   this.$router.push('/main-dashboard');
+        // }, 3000); // Redirect after 3 seconds
       } catch (error) {
         console.error("Error in publish process:", error);
         this.toast.add({
@@ -1289,10 +1291,13 @@ export default {
               severity: 'success',
               summary: 'Success',
               detail: 'Your ad has been published successfully!',
-              life: 3000
+              life: 5000
             });
             
-            this.$router.push('/main-dashboard');
+            // Delay redirection for 4 seconds
+            setTimeout(() => {
+              this.$router.push('/view-ads');
+            }, 2000);
             return;
           }
           
@@ -1464,10 +1469,13 @@ export default {
               severity: 'success',
               summary: 'Success',
               detail: 'Your ad has been published successfully!',
-              life: 3000
+              life: 5000
             });
             
-            
+            // Delay redirection for 4 seconds
+            setTimeout(() => {
+              this.$router.push('/view-ads');
+            }, 2000);
             return;
           }
           
@@ -1630,10 +1638,13 @@ export default {
               severity: 'success',
               summary: 'Success',
               detail: 'Your application has been submitted successfully!',
-              life: 3000
+              life: 5000
             });
             
-            this.$router.push('/main-dashboard');
+            // Delay redirection for 4 seconds
+            setTimeout(() => {
+              this.$router.push('/view-ads');
+            }, 2000);
             return;
           } catch (error) {
             console.error("API error:", error);
