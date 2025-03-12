@@ -1223,7 +1223,7 @@ export default {
           }
           
           // Send the request to the specific endpoint
-          const response = await fetch(`${BASE_URL}web/ads/post-ads-under-sus/`, {
+          const response = await fetch(`${BASE_URL}${ENDPOINTS.POST_ADS_UNDER_SUS}`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -1407,7 +1407,7 @@ export default {
           }
           
           // Send request to market and deals endpoint
-          const response = await fetch(`${BASE_URL}web/ads/post-ads-under-mf/`, {
+          const response = await fetch(`${BASE_URL}${ENDPOINTS.POST_ADS_UNDER_MF}`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

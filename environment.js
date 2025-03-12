@@ -49,7 +49,11 @@ export const ENDPOINTS = {
     CATEGORY:'master/app_homepage_api/' ,
     SUB_CATEGORY:'master/get_sub_category_list/',
     SUBSCRIPTION_PLAN:'subscription/get_subscription_list/',
-    CREATE_AD:'ads/create-ad/'
+    CREATE_AD:'ads/create-ad/',
+    POST_ADS_UNDER_MF:'web/ads/post-ads-under-mf/',
+    POST_ADS_UNDER_SUS:'web/ads/post-ads-under-sus/',
+    POST_ADS_UNDER_RECRUITER:'web/ads/post-ads-under-recruiter/',
+    POST_ADS_UNDER_APPLICANT:'web/ads/post-ads-under-applicant',
     
 
   };
