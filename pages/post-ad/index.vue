@@ -1386,8 +1386,8 @@ export default {
             const productDetails = this.formData.products.map(product => ({
               name: product.productName,
               url: product.link || '',
-              unit: product.units,
-              unit_available: product.unit_type,
+              unit: product.unit_type,
+              unit_available: product.units,
               price: product.mrp,
               offer_price: product.offerPrice || '',
               image: null,
@@ -1396,7 +1396,7 @@ export default {
             
             console.log("Mapped product details:", productDetails);
             formData.append('product_list', JSON.stringify(productDetails));
-            
+            formData.append('product_length', productDetails.length);
             // Handle product images and catalogs
             this.formData.products.forEach((product, index) => {
               // Handle product image
