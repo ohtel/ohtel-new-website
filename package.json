@@ -20,12 +20,13 @@
     "multi-range-slider-vue": "^1.1.4",
     "nuxt": "^3.13.0",
     "pinia": "^2.2.4",
-    "primevue": "^4.2.5",
+    "primeicons": "^7.0.0",
+    "primevue": "^3.53.1",
+    "sass": "^1.43.4",
     "vue": "latest",
     "vue-router": "latest",
     "vue-slider-component": "^2.8.16",
-    "vuex": "^4.1.0",
-    "sass": "^1.43.4"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "sass-embedded": "^1.83.4"

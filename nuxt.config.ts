@@ -5,6 +5,9 @@ export default defineNuxtConfig({
     '@/assets/css/global.css', // Your global CSS
     'bootstrap/dist/css/bootstrap.css', // Bootstrap CSS
     '@fortawesome/fontawesome-free/css/all.css', // Font Awesome CSS
+    'primevue/resources/themes/lara-light-blue/theme.css',
+    'primevue/resources/primevue.css',
+    'primeicons/primeicons.css'
   ],
   modules: ['@pinia/nuxt'], // Register Pinia
   plugins: [
@@ -27,4 +30,7 @@ export default defineNuxtConfig({
       ],
     },
   },
+  build: {
+    transpile: ['primevue']
+  }
 });

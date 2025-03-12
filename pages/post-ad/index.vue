@@ -1,5 +1,6 @@
 <template>
   <div class="main-section">
+    <Toast />
     <headerSection />
     <div
       class="card p-6 max-w-3xl mx-auto main-div"
@@ -752,6 +753,7 @@ import form6 from "../components/forms/form-6.vue";
 import googleMap from "../components/googleMap.vue";
 import personalDetails from "../../components/forms/presonal-details.vue";
 import { BASE_URL, ENDPOINTS } from '../environment.js';
+import { useToast } from "primevue/usetoast";
 
 export default {
   components: {
@@ -769,6 +771,10 @@ export default {
     personalDetails,
     BASE_URL,
     ENDPOINTS,
+  },
+  setup() {
+    const toast = useToast();
+    return { toast };
   },
   data() {
     return {
@@ -1030,8 +1036,27 @@ export default {
       }
       console.log("Form submitted");
     },
+    verifyToken() {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        this.toast.add({
+          severity: 'error',
+          summary: 'Authentication Error',
+          detail: 'Please login to continue',
+          life: 5000
+        });
+        this.$router.push('/login');
+        return false;
+      }
+      return true;
+    },
     async handlePublish() {
       try {
+        // Verify token before proceeding
+        if (!this.verifyToken()) {
+          return;
+        }
+        
         console.log("Starting publish process...");
         let formRef = null;
         
@@ -1096,7 +1121,7 @@ export default {
         await this.submitAdToApi(completeData);
         
         // Show success message
-        this.$toast.add({
+        this.toast.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Your ad has been published successfully!',
@@ -1104,10 +1129,10 @@ export default {
         });
         
         // Navigate to success page or home
-        this.$router.push('/');
+        // this.$router.push('/');
       } catch (error) {
         console.error("Error in publish process:", error);
-        this.$toast.add({
+        this.toast.add({
           severity: 'error',
           summary: 'Error',
           detail: error.message || 'An error occurred while publishing your ad.',
@@ -1120,6 +1145,17 @@ export default {
       try {
         console.log("submitAdToApi - Data received:", adData);
         const token = localStorage.getItem("accessToken");
+        
+        if (!token) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Authentication Error',
+            detail: 'Please login to continue',
+            life: 5000
+          });
+          this.$router.push('/login');
+          return;
+        }
         
         if (this.selectedCategoryDetails?.id === 1 || 
             this.selectedCategoryDetails?.id === 2 || 
@@ -1233,38 +1269,30 @@ export default {
           
           console.log("API Response Status:", response.status);
           
-          // Specifically check for 201 status code
-          if (response.status === 201) {
-            const result = await response.json();
-            console.log("API Response:", result);
-            
-            // Show success message using toast
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Your ad has been published successfully!',
-              life: 3000
+          if (response.status === 401) {
+            this.toast.add({
+              severity: 'error',
+              summary: 'Authentication Error',
+              detail: 'Your session has expired. Please login again.',
+              life: 5000
             });
-            
-            // Navigate to my-ads page
-            this.$router.push('/my-ads');
+            this.$router.push('/login');
             return;
           }
-          // Check for other success status codes
-          else if (response.status >= 200 && response.status < 300) {
+          
+          // Specifically check for 201 status code
+          if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
             const result = await response.json();
             console.log("API Response:", result);
             
-            // Show success message using toast
-            this.$toast.add({
+            this.toast.add({
               severity: 'success',
               summary: 'Success',
               detail: 'Your ad has been published successfully!',
               life: 3000
             });
             
-            // Navigate to my-ads page
-            this.$router.push('/my-ads');
+            this.$router.push('/main-dashboard');
             return;
           }
           
@@ -1417,18 +1445,29 @@ export default {
           
           console.log("API Response Status:", response.status);
           
+          if (response.status === 401) {
+            this.toast.add({
+              severity: 'error',
+              summary: 'Authentication Error',
+              detail: 'Your session has expired. Please login again.',
+              life: 5000
+            });
+            this.$router.push('/login');
+            return;
+          }
+          
           if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
             const result = await response.json();
             console.log("API Response:", result);
             
-            this.$toast.add({
+            this.toast.add({
               severity: 'success',
               summary: 'Success',
               detail: 'Your ad has been published successfully!',
               life: 3000
             });
             
-            this.$router.push('/my-ads');
+            
             return;
           }
           
@@ -1436,18 +1475,192 @@ export default {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to publish ad');
         }
+        
+        // Add form-3 handling (Applicant)
+        if (this.selectedCategoryDetails?.id === 8) {
+          debugger;
+          const formData = new FormData();
+          
+          // Get form3 data
+          const form3Ref = this.$refs.form3Ref;
+          let form3Data = null;
+          
+          if (form3Ref && typeof form3Ref.getFormData === 'function') {
+            form3Data = form3Ref.getFormData();
+            console.log("Form 3 data collected:", form3Data);
+          } else {
+            console.warn("Could not get form3 data - form3Ref or getFormData not available");
+            throw new Error("Required form data is missing");
+          }
+
+          // Get personal details
+          const personalDetailsRef = this.$refs.personalDetailsRef;
+          let personalData = null;
+          if (personalDetailsRef && typeof personalDetailsRef.getFormData === 'function') {
+            personalData = personalDetailsRef.getFormData();
+            console.log("Personal details collected:", personalData);
+          }
+
+          // Verify token exists and is valid
+          const token = localStorage.getItem("accessToken");
+          if (!token) {
+            this.toast.add({
+              severity: 'error',
+              summary: 'Authentication Error',
+              detail: 'Please login to continue',
+              life: 5000
+            });
+            this.$router.push('/login');
+            return;
+          }
+
+          // Add coordinates data
+          if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
+            const coordinates = {
+              longitude: this.defaultLocation.lng,
+              latitude: this.defaultLocation.lat
+            };
+            
+            formData.append('coordinate', JSON.stringify(coordinates));
+            formData.append('location', JSON.stringify({point: coordinates}));
+          }
+
+          // Add main category and type
+          formData.append('main_category', this.selectedCategoryDetails.id);
+          formData.append('ad_type', this.adType);
+          
+          // Add cuisine type
+          if (form3Data.cuisineType) {
+            formData.append('cuisine_type', form3Data.cuisineType);
+          }
+
+          // Handle other/sub category title if needed
+          if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText) {
+            formData.append('other', this.adDetails.otherSubCategoryText);
+          }
+
+          // Add expiry date (30 days from now)
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + 30);
+          formData.append('expiry', expiryDate.toISOString());
+
+          // Handle level type or sub-sub-category
+          if (this.adDetails.subSubCategory) {
+            if (['exec', 'mid', 'first'].includes(this.adDetails.subSubCategory)) {
+              formData.append('level_type', this.adDetails.subSubCategory);
+            } else {
+              formData.append('sub_sub_category', this.adDetails.subSubCategory);
+            }
+          }
+
+          // Handle sub-sub-category other if needed
+          if (this.adDetails.isOtherSubSubCategory && this.adDetails.otherSubSubCategoryText) {
+            formData.append('sub_sub_category_other', this.adDetails.otherSubSubCategoryText);
+          }
+
+          // Add basic ad details
+          formData.append('ad_name', form3Data.candidateName || '');
+          formData.append('sub_category', this.adDetails.subCategory);
+          formData.append('candidate_name', form3Data.candidateName || '');
+          formData.append('resume_description', form3Data.resume || '');
+          formData.append('address', this.adDetails.address || '');
+          formData.append('education', form3Data.education || '');
+          formData.append('working_experience', form3Data.workExperience || '');
+          formData.append('will_to_relocate', form3Data.relocate === 'Relocate');
+
+          // Handle file uploads
+          if (form3Data.fileUpload && form3Data.fileUpload[0]) {
+            formData.append('profile_image', form3Data.fileUpload[0]);
+          }
+          if (form3Data.uploadResume) {
+            formData.append('resume_upload', form3Data.uploadResume);
+          }
+
+          // Add contact information
+          if (personalData) {
+            formData.append('contact_person', personalData.fullName || '');
+            formData.append('contact_number', personalData.contact || '');
+            formData.append('contact_email', personalData.email || '');
+            formData.append('can_be_contacted_via_call', personalData.preferredContactMethodsPhone || false);
+            formData.append('can_be_contacted_via_email', personalData.preferredContactMethodsEmail || false);
+          }
+
+          formData.append('can_be_contacted_via_message', false);
+          formData.append('can_be_called_for_interview', false);
+          formData.append('interview_list', JSON.stringify([]));
+
+          // Log FormData entries for debugging
+          console.log("FormData entries for Applicant:");
+          for (let entry of formData.entries()) {
+            console.log(entry[0], ":", entry[1]);
+          }
+
+          try {
+            // Send request to applicant endpoint with proper error handling
+            const response = await fetch(`${BASE_URL}${ENDPOINTS.POST_ADS_UNDER_APPLICANT}`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
+              body: formData
+            });
+
+            console.log("API Response Status:", response.status);
+
+            if (response.status === 401) {
+              this.toast.add({
+                severity: 'error',
+                summary: 'Authentication Error',
+                detail: 'Your session has expired. Please login again.',
+                life: 5000
+              });
+              this.$router.push('/login');
+              return;
+            }
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || 'Failed to submit application');
+            }
+
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            this.toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your application has been submitted successfully!',
+              life: 3000
+            });
+            
+            this.$router.push('/main-dashboard');
+            return;
+          } catch (error) {
+            console.error("API error:", error);
+            if (!error.message.includes('expired')) {  // Only show error toast if it's not an auth error
+              this.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message || 'An error occurred while submitting your application.',
+                life: 5000
+              });
+            }
+            throw error;
+          }
+        }
       } catch (error) {
         console.error("API error:", error);
         
-        // Show error message using toast
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message || 'An error occurred while publishing your ad.',
-          life: 5000
-        });
+        // Only show error toast if it's not an auth error
+        if (!error.message.includes('expired')) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message || 'An error occurred while publishing your ad.',
+            life: 5000
+          });
+        }
         
-        // Re-throw the error to be handled by the calling function
         throw error;
       }
     },
