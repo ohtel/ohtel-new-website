@@ -506,7 +506,7 @@
                       </div>
                     </div>
                     <div
-                      v-xif="this.adType !== 'Recruiter'
+                      v-if="this.adType !== 'Recruiter'
                       "
                       class="form-row justify-space-between mb-2"
                     >
@@ -754,6 +754,7 @@ import googleMap from "../components/googleMap.vue";
 import personalDetails from "../../components/forms/presonal-details.vue";
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import { useToast } from "primevue/usetoast";
+import axios from 'axios';
 
 export default {
   components: {
@@ -1642,21 +1643,21 @@ export default {
         if(this.adType === 'Recruiter'){
           const formData = new FormData();
 
-        // Verify token exists and is valid
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-          this.toast.add({
-            severity: 'error',
-            summary: 'Authentication Error',
-            detail: 'Please login to continue',
-            life: 5000
-          });
-          this.$router.push('/login');
-          return;
-        }
+          // Verify token exists and is valid
+          const token = localStorage.getItem("accessToken");
+          if (!token) {
+            this.toast.add({
+              severity: 'error',
+              summary: 'Authentication Error',
+              detail: 'Please login to continue',
+              life: 5000
+            });
+            this.$router.push('/login');
+            return;
+          }
 
-         // Add coordinates data
-         if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
+          // Add coordinates data
+          if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
             const coordinates = {
               longitude: this.defaultLocation.lng,
               latitude: this.defaultLocation.lat
@@ -1670,6 +1671,99 @@ export default {
           formData.append('main_category', this.selectedCategoryDetails.id);
           formData.append('ad_type', this.adType);
 
+          // Use this.formData instead of form4Ref
+          console.log('Form Data:', this.formData);
+
+          // Add organization logo if available
+          if (this.formData.companyLogoUpload && this.formData.companyLogoUpload[0]) {
+            formData.append('organization_logo', this.formData.companyLogoUpload[0]);
+          }
+
+          // Add office address and requirements
+          formData.append('office_address', this.formData.addressOfTheBusiness || '');
+          formData.append('requirement', this.formData.staffRequirement || '');
+
+          // Add organization name and contact details
+          formData.append('organization_name', this.adDetails.organizationName || '');
+          formData.append('contact_person', this.adDetails.fullName || '');
+          formData.append('contact_number', this.adDetails.contact || '');
+          formData.append('contact_email', this.adDetails.email || '');
+
+          // Add city and state
+          formData.append('ad_city', this.adDetails.city || '');
+          formData.append('state', this.adDetails.state || '');
+
+          // Add expiry date (30 days from now)
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + 30);
+          formData.append('expiry', expiryDate.toISOString());
+
+          // Add sub category
+          formData.append('sub_category', this.adDetails.subCategory || '');
+
+          // Add ad name
+          formData.append('ad_name', this.adDetails.title || '');
+
+          // Add contact preferences
+          formData.append('can_be_contacted_via_call', this.adDetails.preferredContactMethodsPhone !== false);
+          formData.append('can_be_contacted_via_email', this.adDetails.preferredContactMethodsEmail !== false);
+          formData.append('can_be_contacted_via_message', this.formData.canBeContactedViaMessage === true);
+          formData.append('can_be_called_for_interview', this.formData.canBeCalledForInterview === true);
+
+          // Add interview list
+          if (this.formData.walkInInterviews && this.formData.walkInInterviews.length > 0) {
+            formData.append('interview_list', JSON.stringify(this.formData.walkInInterviews));
+          }
+
+          // Log FormData entries for debugging
+          console.log("FormData entries for Recruiter:");
+          for (let entry of formData.entries()) {
+            console.log(entry[0], ":", entry[1]);
+          }
+
+          try {
+            // Send request to recruiter endpoint
+            const response = await fetch(`${BASE_URL}${ENDPOINTS.POST_ADS_UNDER_RECRUITER}`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
+              body: formData
+            });
+
+            console.log("API Response Status:", response.status);
+
+            if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
+              const result = await response.json();
+              console.log("API Response:", result);
+              
+              this.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Your recruiter ad has been published successfully!',
+                life: 5000
+              });
+              
+              // Delay redirection for 4 seconds
+              setTimeout(() => {
+                this.$router.push('/view-ads');
+              }, 2000);
+              return;
+            }
+            
+            // Handle error
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to publish recruiter ad');
+          } catch (error) {
+            console.error("API error:", error);
+            this.toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message || 'An error occurred while publishing your recruiter ad.',
+              life: 5000
+            });
+            throw error;
+          }
         }
       } catch (error) {
         console.error("API error:", error);
