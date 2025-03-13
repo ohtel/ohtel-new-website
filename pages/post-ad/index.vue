@@ -1158,7 +1158,8 @@ export default {
           this.$router.push('/login');
           return;
         }
-        
+        debugger
+        console.log("selected category details", this.selectedCategoryDetails)
         if (this.selectedCategoryDetails?.id === 1 || 
             this.selectedCategoryDetails?.id === 2 || 
             this.selectedCategoryDetails?.id === 5) {
@@ -1615,21 +1616,21 @@ export default {
 
             console.log("API Response Status:", response.status);
 
-            if (response.status === 401) {
-              this.toast.add({
-                severity: 'error',
-                summary: 'Authentication Error',
-                detail: 'Your session has expired. Please login again.',
-                life: 5000
-              });
-              this.$router.push('/login');
-              return;
-            }
+            // if (response.status === 401) {
+            //   this.toast.add({
+            //     severity: 'error',
+            //     summary: 'Authentication Error',
+            //     detail: 'Your session has expired. Please login again.',
+            //     life: 5000
+            //   });
+            //   this.$router.push('/login');
+            //   return;
+            // }
 
-            if (!response.ok) {
-              const errorData = await response.json();
-              throw new Error(errorData.message || 'Failed to submit application');
-            }
+            // if (!response.ok) {
+            //   const errorData = await response.json();
+            //   throw new Error(errorData.message || 'Failed to submit application');
+            // }
 
             const result = await response.json();
             console.log("API Response:", result);
