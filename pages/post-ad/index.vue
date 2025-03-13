@@ -853,9 +853,9 @@ export default {
           formRef = this.$refs.form1Ref;
         } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if ([8].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if ([7].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
         } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
@@ -912,9 +912,9 @@ export default {
           formRef = this.$refs.form1Ref;
         } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if ([8].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if ([7].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
         } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
@@ -1065,9 +1065,9 @@ export default {
           formRef = this.$refs.form1Ref;
         } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form2Ref;
-        } else if ([8].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
           formRef = this.$refs.form3Ref;
-        } else if ([7].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
           formRef = this.$refs.form4Ref;
         } else if ([11].includes(this.selectedCategoryDetails?.id)) {
           formRef = this.$refs.form5Ref;
@@ -1486,29 +1486,8 @@ export default {
         }
         
         // Add form-3 handling (Applicant)
-        if (this.selectedCategoryDetails?.id === 8) {
-          debugger;
+        if (this.adType === 'Applicant') {
           const formData = new FormData();
-          
-          // Get form3 data
-          const form3Ref = this.$refs.form3Ref;
-          let form3Data = null;
-          
-          if (form3Ref && typeof form3Ref.getFormData === 'function') {
-            form3Data = form3Ref.getFormData();
-            console.log("Form 3 data collected:", form3Data);
-          } else {
-            console.warn("Could not get form3 data - form3Ref or getFormData not available");
-            throw new Error("Required form data is missing");
-          }
-
-          // Get personal details
-          const personalDetailsRef = this.$refs.personalDetailsRef;
-          let personalData = null;
-          if (personalDetailsRef && typeof personalDetailsRef.getFormData === 'function') {
-            personalData = personalDetailsRef.getFormData();
-            console.log("Personal details collected:", personalData);
-          }
 
           // Verify token exists and is valid
           const token = localStorage.getItem("accessToken");
@@ -1539,8 +1518,8 @@ export default {
           formData.append('ad_type', this.adType);
           
           // Add cuisine type
-          if (form3Data.cuisineType) {
-            formData.append('cuisine_type', form3Data.cuisineType);
+          if (this.formData.cuisineType) {
+            formData.append('cuisine_type', this.formData.cuisineType);
           }
 
           // Handle other/sub category title if needed
@@ -1568,35 +1547,35 @@ export default {
           }
 
           // Add basic ad details
-          formData.append('ad_name', form3Data.candidateName || '');
+          formData.append('ad_name', this.formData.candidateName || '');
           formData.append('sub_category', this.adDetails.subCategory);
-          formData.append('candidate_name', form3Data.candidateName || '');
-          formData.append('resume_description', form3Data.resume || '');
+          formData.append('candidate_name', this.formData.candidateName || '');
+          formData.append('resume_description', this.formData.resume || '');
           formData.append('address', this.adDetails.address || '');
-          formData.append('education', form3Data.education || '');
-          formData.append('working_experience', form3Data.workExperience || '');
-          formData.append('will_to_relocate', form3Data.relocate === 'Relocate');
+          formData.append('education', this.formData.education || '');
+          formData.append('working_experience', this.formData.workExperience || '');
+          formData.append('will_to_relocate', this.formData.relocate === 'Relocate');
 
           // Handle file uploads
-          if (form3Data.fileUpload && form3Data.fileUpload[0]) {
-            formData.append('profile_image', form3Data.fileUpload[0]);
+          if (this.formData.fileUpload && this.formData.fileUpload[0]) {
+            formData.append('profile_image', this.formData.fileUpload[0]);
           }
-          if (form3Data.uploadResume) {
-            formData.append('resume_upload', form3Data.uploadResume);
+          if (this.formData.uploadResume) {
+            formData.append('resume_upload', this.formData.uploadResume);
           }
 
           // Add contact information
-          if (personalData) {
-            formData.append('contact_person', personalData.fullName || '');
-            formData.append('contact_number', personalData.contact || '');
-            formData.append('contact_email', personalData.email || '');
-            formData.append('can_be_contacted_via_call', personalData.preferredContactMethodsPhone || false);
-            formData.append('can_be_contacted_via_email', personalData.preferredContactMethodsEmail || false);
-          }
-
-          formData.append('can_be_contacted_via_message', false);
-          formData.append('can_be_called_for_interview', false);
-          formData.append('interview_list', JSON.stringify([]));
+       // Add contact information
+       formData.append('contact_person', adData.fullName || '');
+          formData.append('contact_number', adData.contact || '');
+          formData.append('contact_email', adData.email || '');
+          formData.append('organization_name', adData.organizationName || '');
+          
+          // Contact preferences
+          formData.append('can_be_contacted_via_call', adData.preferredContactMethodsPhone !== false);
+          formData.append('can_be_contacted_via_email', adData.preferredContactMethodsEmail !== false);
+          formData.append('can_be_contacted_via_message', adData.canBeContactedViaMessage === true);
+          formData.append('can_be_called_for_interview', adData.canBeCalledForInterview === true);
 
           // Log FormData entries for debugging
           console.log("FormData entries for Applicant:");
@@ -1659,6 +1638,38 @@ export default {
             }
             throw error;
           }
+        }
+        if(this.adType === 'Recruiter'){
+          const formData = new FormData();
+
+        // Verify token exists and is valid
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Authentication Error',
+            detail: 'Please login to continue',
+            life: 5000
+          });
+          this.$router.push('/login');
+          return;
+        }
+
+         // Add coordinates data
+         if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
+            const coordinates = {
+              longitude: this.defaultLocation.lng,
+              latitude: this.defaultLocation.lat
+            };
+            
+            formData.append('coordinate', JSON.stringify(coordinates));
+            formData.append('location', JSON.stringify({point: coordinates}));
+          }
+
+          // Add main category and type
+          formData.append('main_category', this.selectedCategoryDetails.id);
+          formData.append('ad_type', this.adType);
+
         }
       } catch (error) {
         console.error("API error:", error);
