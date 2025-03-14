@@ -1328,8 +1328,6 @@ export default {
             if (!form2Data?.title || !form2Data?.description) {
               console.warn("Warning: Title or description is empty in form2Data");
             }
-          } else {
-            console.warn("Could not get form2 data - form2Ref or getFormData not available");
           }
 
           // Add coordinates data
@@ -1482,6 +1480,126 @@ export default {
           }
           
           // Handle error
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to publish ad');
+        } else if (this.selectedCategoryDetails?.id === 11) {
+          // Equipment and Amenities form handling
+          const form5Ref = this.$refs.form5Ref;
+          console.log("form5Ref:", form5Ref);
+          console.log("this.formdata:", this.formData);
+          let formDataFromChild = null;
+          if (form5Ref && typeof form5Ref.getFormData === 'function') {
+            formDataFromChild = form5Ref.getFormData();
+            console.log("Form 5 data collected:", formDataFromChild);
+          }
+
+          const formData = new FormData();
+          formData.append(
+            "coordinate",
+            JSON.stringify({
+              longitude: this.defaultLocation.lng,
+              latitude: this.defaultLocation.lat,
+            })
+          );
+          formData.append(
+            "location",
+            JSON.stringify({
+              point: {
+                longitude: this.defaultLocation.lng,
+                latitude: this.defaultLocation.lat,
+              },
+            })
+          );
+          formData.append("main_category", this.selectedCategory.id);
+          formData.append("ad_type", this.adDetails.sellerOrBuyer);
+          formData.append("ad_name", this.adDetails.title);
+          formData.append("sub_category", this.adDetails.subCategory);
+          
+          // Handle sub-category and sub-sub-category
+          if (this.others == true && this.adDetails.subCategoryTitle != "") {
+            formData.append("other", this.adDetails.subCategoryTitle);
+          }
+          
+          if (!this.others && this.adDetails.subSubCategory) {
+            formData.append("sub_sub_category", this.adDetails.subSubCategory);
+          }
+
+          if (this.subSubOthers == true && this.adDetails.subSubCategoryTitle != "") {
+            formData.append("sub_sub_category_other", this.adDetails.subSubCategoryTitle);
+          }
+
+          formData.append("vendor_name", this.formData.vendorName);
+          formData.append("product_brand", this.formData.productBrand);
+          formData.append("material_type", this.formData.materialType);
+          formData.append("price", this.formData.price);
+          formData.append("ad_description", this.formData.description);
+          formData.append("address", this.adDetails.address);
+
+          // Handle document and logo uploads
+          if (this.edit) {
+            if (this.formData.documentFile instanceof File) {
+              formData.append("new_equipment_pdf", this.formData.documentFile);
+            }
+            if (formDataFromChild.logoFile instanceof File) {
+              formData.append("company_logo", this.formData.logoFile);
+            }
+          }
+
+         // Add contact information
+         formData.append('contact_person', adData.fullName || '');
+          formData.append('contact_number', adData.contact || '');
+          formData.append('contact_email', adData.email || '');
+          formData.append('organization_name', adData.organizationName || '');
+          
+          // Contact preferences
+          formData.append('can_be_contacted_via_call', adData.preferredContactMethodsPhone !== false);
+          formData.append('can_be_contacted_via_email', adData.preferredContactMethodsEmail !== false);
+          formData.append('can_be_contacted_via_message', adData.canBeContactedViaMessage === true);
+          formData.append('can_be_called_for_interview', adData.canBeCalledForInterview === true);
+          
+          // Add plan_id instead of expiry date
+          if (this.selectedSubscriptionPlan) {
+            formData.append('plan_id', this.selectedSubscriptionPlan);
+          }
+
+          // Handle images
+          if (this.formData.files && this.formData.files.length > 0) {
+            this.formData.files.forEach(file => {
+              formData.append("image_ids", file);
+            });
+          }
+
+          // Log the form data for debugging
+          for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+          }
+
+          // Make the API call
+          const response = await fetch(`${BASE_URL}${ENDPOINTS.POST_ADS_UNDER_EQUIPMENT_AND_AMENITIES}`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            this.toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your ad has been published successfully!',
+              life: 5000
+            });
+            
+            setTimeout(() => {
+              this.$router.push('/view-ads');
+            }, 2000);
+            return;
+          }
+          
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to publish ad');
         }
