@@ -2,6 +2,15 @@
   <div>
     <Toaster ref="toaster" />
     <div class="form-row">
+      <label>Ad Title:</label>
+      <input
+        class="styled-input"
+        type="text"
+        v-model="adDetails.title"
+        placeholder="Enter ad title"
+      />
+    </div>
+    <div class="form-row">
       <label>Candidate Image Upload:</label>
       <input
         class="styled-input"
@@ -214,6 +223,7 @@ export default {
         preferedCity: "",
         fileUpload: [],
         cuisineType: "",
+        title: "",
       },
       cuisineList: [],
       selectedState: "",
@@ -242,7 +252,7 @@ export default {
       this.uploaded_image_ids = this.dataFromParent.uploaded_image_ids;
       this.adDetails.ad_id = this.dataFromParent.ad_id;
       this.adDetails.category = this.dataFromParent.category;
-      this.adDetails.candidateName = this.dataFromParent.candidateName; // Ensure candidate name is fetched
+      this.adDetails.candidateName = this.dataFromParent.candidateName;
       this.adDetails.education = this.dataFromParent.education;
       this.adDetails.workExperience = this.dataFromParent.experience;
       this.adDetails.cuisineType = this.dataFromParent.cuisineType;
@@ -250,6 +260,7 @@ export default {
       this.adDetails.previousSalary = this.dataFromParent.previousSalary;
       this.adDetails.preferedCity = this.dataFromParent.preferredCity;
       this.adDetails.resume = this.dataFromParent.resume;
+      this.adDetails.title = this.dataFromParent.title;
     }
   },
   methods: {

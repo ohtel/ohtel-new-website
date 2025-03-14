@@ -1,5 +1,15 @@
 <template>
+  
     <div>
+      <div class="form-row">
+              <label>Ad Title:</label>
+              <input
+                class="styled-input"
+                type="text"
+                v-model="adDetails.title"
+                placeholder="Enter ad title"
+              />
+            </div>
         <div class="d-flex add-product-fields">
       <label class="w-50">Company logo:</label>
       <input
@@ -29,6 +39,7 @@
                 placeholder="Enter details of staff requirement"
               ></textarea>
             </div>
+           
             <!-- <div class="form-row">
               <label>Price:</label>
               <input
@@ -204,7 +215,7 @@
       this.uploaded_image_ids = this.dataFromParent.uploaded_image_ids;
       this.adDetails.ad_id = this.dataFromParent.ad_id;
       this.adDetails.category = this.dataFromParent.category;
-      this.adDetails.candidateName = this.dataFromParent.candidateName; // Ensure candidate name is fetched
+      this.adDetails.candidateName = this.dataFromParent.candidateName;
       this.adDetails.education = this.dataFromParent.education;
       this.adDetails.workExperience = this.dataFromParent.experience;
       this.adDetails.cuisineType = this.dataFromParent.cuisineType;
@@ -212,6 +223,7 @@
       this.adDetails.previousSalary = this.dataFromParent.previousSalary;
       this.adDetails.preferedCity = this.dataFromParent.preferredCity;
       this.adDetails.resume = this.dataFromParent.resume;
+      this.adDetails.title = this.dataFromParent.title;
     }
     },
     methods: {
