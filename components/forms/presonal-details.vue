@@ -74,25 +74,27 @@
 </template>
 
 <script>
+import { useToast } from "primevue/usetoast";
+
 export default {
-data() {
-  return {
-    personalDetails: {
-      fullName: "",
-      contact: "",
-      email: "",
-      organizationName: "",
-      preferredContactMethod: "",
-      preferredContactMethodsEmail: false,
-      preferredContactMethodsPhone: false,
-    },
-  };
-},
-props: {
-    selectedCategory: {
-      type: String, // Expecting a string
-      required: false, // Make it optional if needed
-    },
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
+  data() {
+    return {
+      personalDetails: {
+        fullName: "",
+        contact: "",
+        email: "",
+        organizationName: "",
+        preferredContactMethodsPhone: true,
+        preferredContactMethodsEmail: true,
+      },
+      selectedCategory: null,
+    };
+  },
+  props: {
     dataFromParent: []
   },
 
@@ -120,6 +122,68 @@ methods: {
       // Return form data to the parent
       return this.personalDetails;
     },
+    validateForm() {
+      const missingFields = [];
+      const invalidFields = [];
+      
+      // Required fields for all users
+      if (!this.personalDetails.fullName) missingFields.push("Full Name");
+      
+      // Mobile number validation
+      if (!this.personalDetails.contact) {
+        missingFields.push("Contact Number");
+      } else {
+        // Indian mobile number validation (10 digits starting with 6-9)
+        const mobileRegex = /^[6-9]\d{9}$/;
+        if (!mobileRegex.test(this.personalDetails.contact)) {
+          invalidFields.push("Please enter a valid 10-digit mobile number");
+        }
+      }
+      
+      // Email validation
+      if (!this.personalDetails.email) {
+        missingFields.push("Email");
+      } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.personalDetails.email)) {
+          invalidFields.push("Please enter a valid email address");
+        }
+      }
+      
+      // Required fields for non-applicant users
+      if (this.selectedCategory && this.selectedCategory !== 'Applicant') {
+        if (!this.personalDetails.organizationName) missingFields.push("Organization Name");
+      }
+      
+      // Check if at least one contact method is selected
+      if (!this.personalDetails.preferredContactMethodsPhone && !this.personalDetails.preferredContactMethodsEmail) {
+        missingFields.push("Preferred Contact Method");
+      }
+      
+      // Show toast message if there are missing or invalid fields
+      if (missingFields.length > 0 || invalidFields.length > 0) {
+        let message = '';
+        if (missingFields.length > 0) {
+          message += `Please fill in the following fields: ${missingFields.join(", ")}`;
+        }
+        if (invalidFields.length > 0) {
+          message += message ? '\n' : '';
+          message += invalidFields.join('\n');
+        }
+        
+        this.toast.add({
+          severity: 'error',
+          summary: 'Validation Error',
+          detail: message,
+          life: 5000
+        });
+      }
+      
+      return {
+        isValid: missingFields.length === 0 && invalidFields.length === 0,
+        missingFields: [...missingFields, ...invalidFields]
+      };
+    }
 }
 }
 </script>

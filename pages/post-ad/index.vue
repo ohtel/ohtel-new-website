@@ -589,6 +589,7 @@
                     <personal-details
                       ref="personalDetailsRef"
                       :dataFromParent="adDetails"
+                      :selectedCategory="adType"
                     ></personal-details>
                   </div>
                 </section>
@@ -885,8 +886,13 @@ export default {
         }
       }
       
-      // If moving from step 5 (personal details) to step 6, collect personal details data
+      // If moving from step 5 (personal details) to step 6, validate personal details
       if (step === 6 && this.progress === 100) {
+        // Validate personal details before proceeding
+        if (!this.validateStep6()) {
+          return; // Stop if validation fails
+        }
+
         const personalDetailsRef = this.$refs.personalDetailsRef;
         if (personalDetailsRef && typeof personalDetailsRef.getFormData === 'function') {
           const personalData = personalDetailsRef.getFormData();
@@ -2094,6 +2100,25 @@ export default {
       console.log("Selected sub-sub-category:", subSubCat);
       // Automatically advance to next step
       this.handleNextStep(4);
+    },
+    validateStep6() {
+      // Get the personal details form reference
+      const personalDetailsRef = this.$refs.personalDetailsRef;
+      if (!personalDetailsRef) {
+        this.$refs.toaster.showToast("Personal details form not found", "error");
+        return false;
+      }
+
+      // Validate the personal details form
+      const validationResult = personalDetailsRef.validateForm();
+      
+      if (!validationResult.isValid) {
+        const message = `Please fill in the following fields: ${validationResult.missingFields.join(", ")}`;
+        this.$refs.toaster.showToast(message, "error");
+        return false;
+      }
+
+      return true;
     },
   },
   created() {
