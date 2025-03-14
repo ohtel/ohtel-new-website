@@ -846,8 +846,12 @@ export default {
         return;
       }
       
-      // If moving from step 4 (Additional Info) to step 5, collect form data
+      // If moving from step 4 (Additional Info) to step 5, validate form data
       if (step === 5 && this.progress === 80) {
+        if (!this.validateStep4()) {
+          return; // Stop if validation fails
+        }
+
         let formRef = null;
         
         // Determine which form to use based on category ID
@@ -2115,6 +2119,129 @@ export default {
       if (!validationResult.isValid) {
         const message = `Please fill in the following fields: ${validationResult.missingFields.join(", ")}`;
         this.$refs.toaster.showToast(message, "error");
+        return false;
+      }
+
+      return true;
+    },
+    validateStep4() {
+      let formRef = null;
+      let missingFields = [];
+      
+      // Determine which form to use based on category ID
+      if ([1, 2, 5].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form1Ref;
+        // Validate form1 fields
+        if (!formRef) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Form not found',
+            life: 5000
+          });
+          return false;
+        }
+        const formData = formRef.getFormData();
+        if (!formData.title) missingFields.push('Title');
+        if (!formData.description) missingFields.push('Description');
+        if (this.adDetails.address=='') missingFields.push('Address');
+        if (!formData.dealType) missingFields.push('Deal Type');
+        if (!formData.area) missingFields.push('Area');
+        if (!formData.price) missingFields.push('Price');
+        if (!formData.images || formData.images.length === 0) missingFields.push('At least one image');
+      } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form2Ref;
+        // Validate form2 fields
+        if (!formRef) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Form not found',
+            life: 5000
+          });
+          return false;
+        }
+        const formData = formRef.getFormData();
+        if (!formData.title) missingFields.push('Title');
+        if (!formData.description) missingFields.push('Description');
+        if (!formData.products || formData.products.length === 0) missingFields.push('At least one product');
+      } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        formRef = this.$refs.form3Ref;
+        // Validate form3 fields
+        if (!formRef) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Form not found',
+            life: 5000
+          });
+          return false;
+        }
+        const formData = formRef.getFormData();
+        if (!formData.title) missingFields.push('Title');
+        if (!formData.candidateName) missingFields.push('Candidate Name');
+        if (!formData.education) missingFields.push('Education');
+        if (!formData.workExperience) missingFields.push('Work Experience');
+        if (!formData.resume) missingFields.push('Resume');
+      } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        formRef = this.$refs.form4Ref;
+        // Validate form4 fields
+        if (!formRef) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Form not found',
+            life: 5000
+          });
+          return false;
+        }
+        const formData = formRef.getFormData();
+        if (!formData.title) missingFields.push('Title');
+        if (!formData.addressOfTheBusiness) missingFields.push('Business Address');
+        if (!formData.staffRequirement) missingFields.push('Staff Requirements');
+      } else if ([11].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form5Ref;
+        // Validate form5 fields
+        if (!formRef) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Form not found',
+            life: 5000
+          });
+          return false;
+        }
+        const formData = formRef.getFormData();
+        if (!formData.title) missingFields.push('Title');
+        if (!formData.description) missingFields.push('Description');
+        if (!formData.price) missingFields.push('Price');
+      } else if ([12].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form6Ref;
+        // Validate form6 fields
+        if (!formRef) {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Form not found',
+            life: 5000
+          });
+          return false;
+        }
+        const formData = formRef.getFormData();
+        if (!formData.name) missingFields.push('Name');
+        if (!formData.profile) missingFields.push('Profile');
+        if (!formData.companyName) missingFields.push('Company Name');
+        if (!formData.services) missingFields.push('Services');
+      }
+
+      // If there are missing fields, show error toast
+      if (missingFields.length > 0) {
+        this.toast.add({
+          severity: 'error',
+          summary: 'Validation Error',
+          detail: `Please fill in the following fields: ${missingFields.join(', ')}`,
+          life: 5000
+        });
         return false;
       }
 
