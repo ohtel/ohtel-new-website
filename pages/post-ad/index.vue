@@ -2144,6 +2144,10 @@ export default {
         const formData = formRef.getFormData();
         if (!formData.title) missingFields.push('Title');
         if (!formData.description) missingFields.push('Description');
+        console.log("adDetails.isOtherSubCategory", this.adDetails);
+        debugger
+        if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText=='') missingFields.push('Sub Category Name');
+        if (this.adDetails.isOtherSubSubCategory && this.adDetails.otherSubSubCategoryText=='') missingFields.push('Sub Sub Category Name');
         if (this.adDetails.address=='') missingFields.push('Address');
         if (!formData.dealType) missingFields.push('Deal Type');
         if (!formData.area) missingFields.push('Area');
