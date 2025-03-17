@@ -2257,10 +2257,11 @@ export default {
         }
         const formData = formRef.getFormData();
         if (!formData.title) missingFields.push('Ad Title');
-        if (!formData.name) missingFields.push('Name');
         if (!formData.profile) missingFields.push('Profile');
         if (!formData.companyName) missingFields.push('Company Name');
         if (!formData.services) missingFields.push('Services');
+        if (!formData.document_uploaded) missingFields.push('Document');
+        if (!formData.images || formData.images.length === 0) missingFields.push('At least one image');
       }
 
       // If there are missing fields, show error toast
