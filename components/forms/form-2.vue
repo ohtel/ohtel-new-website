@@ -324,6 +324,23 @@ export default {
       }
     }
   },
+  computed: {
+    isFormValid() {
+      const form = this.adDetails.productForm;
+      return (
+        form.productName &&
+        form.units &&
+        form.unit_type &&
+        form.mrp &&
+        form.link &&
+        form.units >= 0 &&
+        form.mrp >= 0 &&
+        (!form.offerPrice || form.offerPrice >= 0) &&
+        form.image &&
+        form.pdf
+      );
+    }
+  },
   methods: {
     extractFileName(fileUploadName){
       // return fileUploadName
@@ -409,21 +426,77 @@ export default {
       }
     },
     submitProductForm() {
-  if (this.isEditing) {
-    // Update existing product and ensure the id is preserved
-    this.adDetails.products[this.editIndex] = {
-      ...this.adDetails.productForm,
-      id: this.adDetails.products[this.editIndex].id, // Retain the original ID
-    };
-  } else {
-    // Add new product
-    if (this.adDetails.products.length < 20) {
-      this.adDetails.products.push({ ...this.adDetails.productForm });
-    }
-  }
-  this.closeProductModal();
-  console.log("after edit products", this.adDetails.products);
-},
+      // Validate all required fields
+      const missingFields = [];
+      const invalidFields = [];
+
+      // Required fields validation with specific messages
+      if (!this.adDetails.productForm.productName) {
+        missingFields.push('Product Name');
+        this.$refs.toaster.showToast('Please enter a product name', 'error');
+      }
+      if (!this.adDetails.productForm.units) {
+        missingFields.push('Units Available');
+        this.$refs.toaster.showToast('Please enter the number of units available', 'error');
+      }
+      if (!this.adDetails.productForm.unit_type) {
+        missingFields.push('Unit Type');
+        this.$refs.toaster.showToast('Please specify the unit type (e.g., pieces, kg, etc.)', 'error');
+      }
+      if (!this.adDetails.productForm.mrp) {
+        missingFields.push('MRP Price');
+        this.$refs.toaster.showToast('Please enter the MRP price', 'error');
+      }
+      if (!this.adDetails.productForm.link) {
+        missingFields.push('Link');
+        this.$refs.toaster.showToast('Please enter the link', 'error');
+      }
+      if (!this.adDetails.productForm.image) {
+        missingFields.push('Product Image');
+        this.$refs.toaster.showToast('Please upload a product image', 'error');
+      }
+      if (!this.adDetails.productForm.pdf) {
+        missingFields.push('Product PDF');
+        this.$refs.toaster.showToast('Please upload a product PDF', 'error');
+      }
+
+      // Numeric validation with specific messages
+      if (this.adDetails.productForm.units && this.adDetails.productForm.units < 0) {
+        invalidFields.push('Units cannot be negative');
+        this.$refs.toaster.showToast('Number of units cannot be negative', 'error');
+      }
+      if (this.adDetails.productForm.mrp && this.adDetails.productForm.mrp < 0) {
+        invalidFields.push('MRP cannot be negative');
+        this.$refs.toaster.showToast('MRP price cannot be negative', 'error');
+      }
+      if (this.adDetails.productForm.offerPrice && this.adDetails.productForm.offerPrice < 0) {
+        invalidFields.push('Offer Price cannot be negative');
+        this.$refs.toaster.showToast('Offer price cannot be negative', 'error');
+      }
+
+      // If there are any validation errors, return early
+      if (missingFields.length > 0 || invalidFields.length > 0) {
+        return;
+      }
+
+      // If validation passes, proceed with adding/updating the product
+      if (this.isEditing) {
+        // Update existing product and ensure the id is preserved
+        this.adDetails.products[this.editIndex] = {
+          ...this.adDetails.productForm,
+          id: this.adDetails.products[this.editIndex].id, // Retain the original ID
+        };
+        this.$refs.toaster.showToast('Product updated successfully', 'success');
+      } else {
+        // Add new product
+        if (this.adDetails.products.length < 20) {
+          this.adDetails.products.push({ ...this.adDetails.productForm });
+          this.$refs.toaster.showToast('Product added successfully', 'success');
+        }
+      }
+      this.closeProductModal();
+      console.log("after edit products", this.adDetails.products);
+    },
     handleImageUpload(event) {
       this.adDetails.files = Array.from(event.target.files);
       this.adDetails.files.forEach((file) => {

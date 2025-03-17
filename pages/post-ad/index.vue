@@ -2144,8 +2144,6 @@ export default {
         const formData = formRef.getFormData();
         if (!formData.title) missingFields.push('Title');
         if (!formData.description) missingFields.push('Description');
-        console.log("adDetails.isOtherSubCategory", this.adDetails);
-        debugger
         if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText=='') missingFields.push('Sub Category Name');
         if (this.adDetails.isOtherSubSubCategory && this.adDetails.otherSubSubCategoryText=='') missingFields.push('Sub Sub Category Name');
         if (this.adDetails.address=='') missingFields.push('Address');
@@ -2168,7 +2166,9 @@ export default {
         const formData = formRef.getFormData();
         if (!formData.title) missingFields.push('Title');
         if (!formData.description) missingFields.push('Description');
-        if (!formData.products || formData.products.length === 0) missingFields.push('At least one product');
+        if (this.adDetails.address=='') missingFields.push('Address');
+        if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText=='') missingFields.push('Sub Category Name');
+        if (this.adDetails.isOtherSubSubCategory && this.adDetails.otherSubSubCategoryText=='') missingFields.push('Sub Sub Category Name');
       } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
         formRef = this.$refs.form3Ref;
         // Validate form3 fields
