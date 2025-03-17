@@ -1,6 +1,17 @@
 <template>
     <div>
       <Toaster ref="toaster" />
+
+      <div class="form-row">
+        <label>Ad Title:</label>
+        <input
+          class="styled-input"
+          type="text"
+          v-model="adDetails.title"
+          placeholder="Enter ad title"
+          required
+        />
+      </div>
       <div class="form-row">
         <label>Vendor Name:</label>
         <input
@@ -10,6 +21,7 @@
           placeholder="Enter vendor name"
         />
       </div>
+  
   
       <div class="form-row">
         <label>Product Brand:</label>
@@ -389,6 +401,8 @@
         }
       },
       getFormData() {
+        // Validate title before returning form data
+       
         return {
           ...this.adDetails,
           document_uploaded: this.adDetails.documentFile,

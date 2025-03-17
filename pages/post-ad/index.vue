@@ -1552,15 +1552,14 @@ export default {
           formData.append("ad_description", this.formData.description);
           formData.append("address", this.adDetails.address);
 
-          // Handle document and logo uploads
-          if (this.edit) {
+          
             if (this.formData.documentFile instanceof File) {
               formData.append("new_equipment_pdf", this.formData.documentFile);
             }
             if (formDataFromChild.logoFile instanceof File) {
               formData.append("company_logo", this.formData.logoFile);
             }
-          }
+        
 
          // Add contact information
          formData.append('contact_person', adData.fullName || '');
@@ -2135,6 +2134,12 @@ export default {
       let formRef = null;
       let missingFields = [];
       
+      // Validate address and location coordinates for all forms
+    
+      if (!this.defaultLocation.lat || !this.defaultLocation.lng) {
+        missingFields.push('Address');
+      }
+      
       // Determine which form to use based on category ID
       if ([1, 2, 5].includes(this.selectedCategoryDetails?.id)) {
         formRef = this.$refs.form1Ref;
@@ -2224,9 +2229,20 @@ export default {
           return false;
         }
         const formData = formRef.getFormData();
-        if (!formData.title) missingFields.push('Title');
+        if (!formData) return false; // Form validation failed
+        console.log("formData", formData);
+        debugger
+        if (!formData.title) missingFields.push('Ad Title');
         if (!formData.description) missingFields.push('Description');
+        if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText=='') missingFields.push('Sub Category Name');
+        if (this.adDetails.isOtherSubSubCategory && this.adDetails.otherSubSubCategoryText=='') missingFields.push('Sub Sub Category Name');
+        if (!formData.document_uploaded) missingFields.push('Document');
+        if (!formData.logoFile) missingFields.push('Logo');
+        if (!formData.images || formData.images.length === 0) missingFields.push('At least one image');
         if (!formData.price) missingFields.push('Price');
+        if (!formData.vendorName) missingFields.push('Vendor Name');
+        if (!formData.productBrand) missingFields.push('Product Brand');
+        if (!formData.materialType) missingFields.push('Material Type');
       } else if ([12].includes(this.selectedCategoryDetails?.id)) {
         formRef = this.$refs.form6Ref;
         // Validate form6 fields
@@ -2240,6 +2256,7 @@ export default {
           return false;
         }
         const formData = formRef.getFormData();
+        if (!formData.title) missingFields.push('Ad Title');
         if (!formData.name) missingFields.push('Name');
         if (!formData.profile) missingFields.push('Profile');
         if (!formData.companyName) missingFields.push('Company Name');
