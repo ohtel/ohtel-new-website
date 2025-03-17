@@ -1208,6 +1208,11 @@ export default {
           formData.append('deal_type', adData.dealType || 'Rent');
           formData.append('address', this.adDetails.address || '');
 
+          // Handle document upload
+          if (adData.document_uploaded) {
+            formData.append('document_uploaded', adData.document_uploaded);
+          }
+
           // Handle images
           if (adData.images && adData.images.length > 0) {
             console.log("Processing images for upload, count:", adData.images.length);
@@ -1377,7 +1382,9 @@ export default {
               formData.append('image_ids', file);
             });
           }
-
+          if (this.formData.document_uploaded) {
+            formData.append('document_uploaded', this.formData.document_uploaded);
+          }
           // Add contact information
           formData.append('contact_person', adData.fullName || '');
           formData.append('contact_number', adData.contact || '');
@@ -2167,6 +2174,7 @@ export default {
         if (!formData.title) missingFields.push('Title');
         if (!formData.description) missingFields.push('Description');
         if (this.adDetails.address=='') missingFields.push('Address');
+        if (!formData.document_uploaded) missingFields.push('file upload')
         if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText=='') missingFields.push('Sub Category Name');
         if (this.adDetails.isOtherSubSubCategory && this.adDetails.otherSubSubCategoryText=='') missingFields.push('Sub Sub Category Name');
       } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {

@@ -592,7 +592,8 @@ export default {
           pdf: product.pdf || null
         })),
         files: this.adDetails.files || [],
-        fileUpload: this.adDetails.fileUpload || null
+        fileUpload: this.adDetails.fileUpload || null,
+        document_uploaded: this.adDetails.fileUpload || null
       };
 
       // Add debug logging similar to form-1
@@ -601,6 +602,7 @@ export default {
       console.log("form-2.vue description:", formattedData.description);
       console.log("form-2.vue products:", formattedData.products);
       console.log("form-2.vue files:", formattedData.files);
+      console.log("form-2.vue document_uploaded:", formattedData.document_uploaded);
 
       return formattedData;
     },
