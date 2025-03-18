@@ -55,6 +55,7 @@ export const ENDPOINTS = {
     POST_ADS_UNDER_RECRUITER:'web/ads/post-ads-under-recruiter/',
     POST_ADS_UNDER_APPLICANT:'web/ads/post-ads-under-applicant/',
     POST_ADS_UNDER_EQUIPMENT_AND_AMENITIES:'web/create-new-equipment-ad/',
+    POST_ADS_SERVICE_PROVIDER:'web/create-service-provider-ad/',
     
 
   };

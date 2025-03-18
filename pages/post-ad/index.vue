@@ -1619,6 +1619,101 @@ export default {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to publish ad');
         }
+        else if (this.selectedCategoryDetails?.id === 12) {
+          // Service Provider form handling
+          const form6Ref = this.$refs.form6Ref;
+          let formDataFromChild = null;
+          if (form6Ref && typeof form6Ref.getFormData === 'function') {
+            formDataFromChild = form6Ref.getFormData();
+          }
+
+          const formData = new FormData();
+          
+          // Add coordinates
+          formData.append(
+            "coordinate",
+            JSON.stringify({
+              longitude: this.defaultLocation.lng,
+              latitude: this.defaultLocation.lat,
+            })
+          );
+
+          // Add category information
+          formData.append("main_category", this.selectedCategoryDetails?.id);
+          formData.append("sub_category", this.adDetails.subCategory);
+          formData.append("ad_type", this.adDetails.sellerOrBuyer);
+          formData.append("ad_name", this.formData.title);
+          
+          // Add service provider details
+          formData.append("name", this.formData.name);
+          formData.append("profile", this.formData.profile);
+          formData.append("company_name", this.formData.companyName);
+          formData.append("services", this.formData.services);
+          
+          // Add address
+          formData.append("address", this.adDetails.address);
+          
+          // Add document upload
+          if (this.formData.document_uploaded) {
+            formData.append("document_upload", this.formData.document_uploaded);
+          }
+          
+          // Add contact information
+          formData.append('contact_person', this.adDetails.fullName || '');
+          formData.append('contact_number', this.adDetails.contact || '');
+          formData.append('contact_email', this.adDetails.email || '');
+          
+          // Add contact preferences
+          formData.append('can_be_contacted_via_call', this.adDetails.preferredContactMethodsPhone || false);
+          formData.append('can_be_contacted_via_email', this.adDetails.preferredContactMethodsEmail || false);
+          formData.append('can_be_contacted_via_message', this.adDetails.canBeContactedViaMessage || false);
+          
+          // Add expiry date
+         if(this.selectedSubscriptionPlan){
+          formData.append('plan_id', this.selectedSubscriptionPlan);
+         }
+          
+          // Add images
+          if (this.formData.files && this.formData.files.length > 0) {
+            this.formData.files.forEach(file => {
+              formData.append("image_ids", file);
+            });
+          }
+
+          // Log the form data for debugging
+          for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+          }
+
+          // Make the API call
+          const response = await fetch(`${BASE_URL}${ENDPOINTS.POST_ADS_SERVICE_PROVIDER}`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            this.toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your ad has been published successfully!',
+              life: 5000
+            });
+            
+            setTimeout(() => {
+              this.$router.push('/view-ads');
+            }, 2000);
+            return;
+          }
+          
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to publish ad');
+        }
         
         // Add form-3 handling (Applicant)
         if (this.adType === 'Applicant') {
@@ -2231,7 +2326,6 @@ export default {
         const formData = formRef.getFormData();
         if (!formData) return false; // Form validation failed
         console.log("formData", formData);
-        debugger
         if (!formData.title) missingFields.push('Ad Title');
         if (!formData.description) missingFields.push('Description');
         if (this.adDetails.isOtherSubCategory && this.adDetails.otherSubCategoryText=='') missingFields.push('Sub Category Name');
@@ -2259,6 +2353,7 @@ export default {
         if (!formData.title) missingFields.push('Ad Title');
         if (!formData.profile) missingFields.push('Profile');
         if (!formData.companyName) missingFields.push('Company Name');
+        if (!formData.name) missingFields.push('Name');
         if (!formData.services) missingFields.push('Services');
         if (!formData.document_uploaded) missingFields.push('Document');
         if (!formData.images || formData.images.length === 0) missingFields.push('At least one image');
