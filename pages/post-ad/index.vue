@@ -675,60 +675,285 @@
                 Back
               </button>
             </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box review-section">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
-                    <h2 class="text-2xl font-bold">Review Your Ad</h2>
-                    <div class="review-details mt-6">
-                      <p><strong>Category:</strong> {{ selectedCategoryDetails?.category_title }}</p>
-                      <p><strong>Category ID:</strong> {{ selectedCategoryDetails?.id }}</p>
-                      <p><strong>Ad Type:</strong> {{ adType }}</p>
-                      <p><strong>Sub Category:</strong> {{ adDetails.subCategory }}</p>
-                      <p v-if="adDetails.subSubCategory"><strong>Sub-Sub Category:</strong> {{ adDetails.subSubCategoryTitle }}</p>
-                      <p><strong>Ad Title:</strong> {{ adDetails.title }}</p>
-                      <p><strong>Description:</strong> {{ adDetails.description }}</p>
-                      <p v-if="adDetails.address"><strong>Address:</strong> {{ adDetails.address }}</p>
-                      <p v-if="adDetails.city"><strong>City:</strong> {{ adDetails.city }}</p>
-                      <p v-if="adDetails.state"><strong>State:</strong> {{ adDetails.state }}</p>
-                      <p v-if="adDetails.price"><strong>Price:</strong> {{ adDetails.price }}</p>
-                      <p v-if="adDetails.expiryDate"><strong>Expiry Date:</strong> {{ adDetails.expiryDate }}</p>
-                      <p v-if="adDetails.vendorName"><strong>Vendor:</strong> {{ adDetails.vendorName }}</p>
-                      <p v-if="adDetails.productBrand"><strong>Brand:</strong> {{ adDetails.productBrand }}</p>
-                      <p v-if="adDetails.materialType"><strong>Material Type:</strong> {{ adDetails.materialType }}</p>
-                      
-                      <p><strong>Personal Information:</strong></p>
-                      <ul>
-                        <li><strong>Name:</strong> {{ adDetails.fullName }}</li>
-                        <li><strong>Contact:</strong> {{ adDetails.contact }}</li>
-                        <li><strong>Email:</strong> {{ adDetails.email }}</li>
-                        <li v-if="adDetails.organizationName"><strong>Organization:</strong> {{ adDetails.organizationName }}</li>
-                      </ul>
-                    </div>
-                    
-                    <!-- Add contact details section -->
-                    <div class="mt-6 pt-6 border-t border-gray-200">
-                      <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
-                      <p v-if="adDetails.fullName"><strong>Name:</strong> {{ adDetails.fullName }}</p>
-                      <p v-if="adDetails.contact"><strong>Phone:</strong> {{ adDetails.contact }}</p>
-                      <p v-if="adDetails.email"><strong>Email:</strong> {{ adDetails.email }}</p>
-                      <p v-if="adDetails.organizationName"><strong>Organization:</strong> {{ adDetails.organizationName }}</p>
-                    </div>
-                    
-                    <!-- Add personal details component (hidden) -->
-                    <personal-details ref="personalDetailsRef" :dataFromParent="adDetails" style="display: none;"></personal-details>
+            <div class="review-container">
+              <h2 class="review-title">Review Your Ad Details</h2>
+              
+              <!-- Category Information -->
+              <div class="review-section">
+                <div class="section-header">
+                  <h3 class="section-title">Category Information</h3>
+                  <button class="edit-button" @click="handleBackStep(1)">
+                    <i class="pi pi-pencil"></i> Edit
+                  </button>
+                </div>
+                <div class="review-grid">
+                  <div class="review-item">
+                    <span class="label">Main Category:</span>
+                    <span class="value">{{ selectedCategory?.name }}</span>
                   </div>
-                </section>
+                  <div class="review-item">
+                    <span class="label">Sub Category:</span>
+                    <span class="value">{{ adDetails.subCategoryTitle || adDetails.subCategory }}</span>
+                  </div>
+                  <div v-if="adDetails.subSubCategoryTitle" class="review-item">
+                    <span class="label">Sub-Sub Category:</span>
+                    <span class="value">{{ adDetails.subSubCategoryTitle }}</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="label">Ad Type:</span>
+                    <span class="value">{{ adDetails.sellerOrBuyer }}</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                @click="handlePublish"
-              >
-                Publish
-              </button>
+
+              <!-- Location Information -->
+              <div class="review-section">
+                <div class="section-header">
+                  <h3 class="section-title">Location Information</h3>
+                  <button class="edit-button" @click="handleBackStep(4)">
+                    <i class="pi pi-pencil"></i> Edit
+                  </button>
+                </div>
+                <div class="review-grid">
+                  <div class="review-item">
+                    <span class="label">Address:</span>
+                    <span class="value">{{ adDetails.address }}</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="label">Coordinates:</span>
+                    <span class="value">{{ defaultLocation.lat }}, {{ defaultLocation.lng }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form Specific Information -->
+              <div class="review-section">
+                <div class="section-header">
+                  <h3 class="section-title">Ad Details</h3>
+                  <button class="edit-button" @click="handleBackStep(3)">
+                    <i class="pi pi-pencil"></i> Edit
+                  </button>
+                </div>
+                <div class="review-grid">
+                  <!-- Common Fields for All Categories -->
+                  <div class="review-item">
+                    <span class="label">Title:</span>
+                    <span class="value">{{ adDetails.title }}</span>
+                  </div>
+
+                  <!-- Property Category (1, 2, 5) -->
+                  <template v-if="[1, 2, 5].includes(selectedCategoryDetails?.id)">
+                    <div class="review-item">
+                      <span class="label">Description:</span>
+                      <span class="value">{{ formData.description }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Deal Type:</span>
+                      <span class="value">{{ formData.dealType }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Area:</span>
+                      <span class="value">{{ formData.area }} sq ft</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Price:</span>
+                      <span class="value">₹{{ formData.price }}</span>
+                    </div>
+                  </template>
+
+                  <!-- Product Category (4, 6) -->
+                  <template v-if="[4, 6].includes(selectedCategoryDetails?.id)">
+                    <div class="review-item">
+                      <span class="label">Description:</span>
+                      <span class="value">{{ formData.description }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Price:</span>
+                      <span class="value">₹{{ formData.price }}</span>
+                    </div>
+                    <div v-if="formData.products && formData.products.length > 0" class="review-item full-width">
+                      <span class="label">Products:</span>
+                      <div class="products-list">
+                        <div v-for="(product, index) in formData.products" :key="index" class="product-item">
+                          <div class="product-details">
+                            <span class="product-name">{{ product.productName }}</span>
+                            <span class="product-specs">
+                              Units: {{ product.units }} {{ product.unit_type }}
+                              <br>
+                              MRP: ₹{{ product.mrp }}
+                              <span v-if="product.offerPrice"> | Offer: ₹{{ product.offerPrice }}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+
+                  <!-- Job Applicant (3) -->
+                  <template v-if="[3].includes(selectedCategoryDetails?.id) && adType === 'Applicant'">
+                    <div class="review-item">
+                      <span class="label">Candidate Name:</span>
+                      <span class="value">{{ formData.candidateName }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Education:</span>
+                      <span class="value">{{ formData.education }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Work Experience:</span>
+                      <span class="value">{{ formData.workExperience }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Resume:</span>
+                      <span class="value">{{ formData.resume ? 'Uploaded' : 'Not uploaded' }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Relocation:</span>
+                      <span class="value">{{ formData.relocate }}</span>
+                    </div>
+                  </template>
+
+                  <!-- Job Recruiter (3) -->
+                  <template v-if="[3].includes(selectedCategoryDetails?.id) && adType === 'Recruiter'">
+                    <div class="review-item">
+                      <span class="label">Business Address:</span>
+                      <span class="value">{{ formData.addressOfTheBusiness }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Staff Requirements:</span>
+                      <span class="value">{{ formData.staffRequirement }}</span>
+                    </div>
+                    <div v-if="formData.walkInInterviews && formData.walkInInterviews.length > 0" class="review-item full-width">
+                      <span class="label">Walk-in Interviews:</span>
+                      <div class="interviews-list">
+                        <div v-for="(interview, index) in formData.walkInInterviews" :key="index" class="interview-item">
+                          <span>Date: {{ interview.date }}</span>
+                          <span>Time: {{ interview.time }}</span>
+                          <span>Venue: {{ interview.venue }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+
+                  <!-- Equipment and Amenities (11) -->
+                  <template v-if="[11].includes(selectedCategoryDetails?.id)">
+                    <div class="review-item">
+                      <span class="label">Vendor Name:</span>
+                      <span class="value">{{ formData.vendorName }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Product Brand:</span>
+                      <span class="value">{{ formData.productBrand }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Material Type:</span>
+                      <span class="value">{{ formData.materialType }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Price:</span>
+                      <span class="value">₹{{ formData.price }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Description:</span>
+                      <span class="value">{{ formData.description }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Document:</span>
+                      <span class="value">{{ formData.documentName || 'Not uploaded' }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Company Logo:</span>
+                      <span class="value">{{ formData.logoName || 'Not uploaded' }}</span>
+                    </div>
+                  </template>
+
+                  <!-- Service Provider (12) -->
+                  <template v-if="[12].includes(selectedCategoryDetails?.id)">
+                    <div class="review-item">
+                      <span class="label">Name:</span>
+                      <span class="value">{{ formData.name }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Profile:</span>
+                      <span class="value">{{ formData.profile }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Company Name:</span>
+                      <span class="value">{{ formData.companyName }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Services:</span>
+                      <span class="value">{{ formData.services }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Document:</span>
+                      <span class="value">{{ formData.documentName || 'Not uploaded' }}</span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Images Preview -->
+              <div class="review-section" v-if="formData.files && formData.files.length > 0">
+                <div class="section-header">
+                  <h3 class="section-title">Images</h3>
+                  <button class="edit-button" @click="handleBackStep(3)">
+                    <i class="pi pi-pencil"></i> Edit
+                  </button>
+                </div>
+                <div class="image-preview-grid">
+                  <div v-for="(file, index) in formData.files" :key="index" class="image-preview-item">
+                    <img :src="file" alt="Preview" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Document Preview -->
+              <div class="review-section" v-if="formData.document_uploaded">
+                <div class="section-header">
+                  <h3 class="section-title">Documents</h3>
+                  <button class="edit-button" @click="handleBackStep(3)">
+                    <i class="pi pi-pencil"></i> Edit
+                  </button>
+                </div>
+                <div class="document-preview">
+                  <div class="document-item">
+                    <i class="pi pi-file-pdf"></i>
+                    <span>{{ formData.documentName || 'Document' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Subscription Plan -->
+              <div class="review-section">
+                <div class="section-header">
+                  <h3 class="section-title">Subscription Plan</h3>
+                  <button class="edit-button" @click="handleBackStep(6)">
+                    <i class="pi pi-pencil"></i> Edit
+                  </button>
+                </div>
+                <div class="review-grid">
+                  <div class="review-item">
+                    <span class="label">Selected Plan:</span>
+                    <span class="value">{{ getSelectedPlanName }}</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="label">Price:</span>
+                    <span class="value">₹{{ getSelectedPlanPrice }}</span>
+                  </div>
+                  <div class="review-item">
+                    <span class="label">Validity:</span>
+                    <span class="value">{{ getSelectedPlanValidity }} days</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Publish Button -->
+              <div class="publish-section">
+                <button class="publish-button" @click="handlePublish">
+                  Publish Ad
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -2671,5 +2896,205 @@ export default {
 
 .d-flex {
   display: flex !important;
+}
+
+.review-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.review-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.review-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  color: #47509b;
+  font-size: 18px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.review-item .label {
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+}
+
+.review-item .value {
+  color: #333;
+  font-size: 16px;
+  word-break: break-word;
+}
+
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.image-preview-item {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.document-preview {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  color: #47509b;
+}
+
+.document-item i {
+  font-size: 20px;
+}
+
+.publish-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.publish-button {
+  background: #47509b;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.publish-button:hover {
+  background: #3a3f7a;
+}
+
+@media (max-width: 768px) {
+  .review-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .image-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.edit-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 1px solid #47509b;
+  border-radius: 20px;
+  color: #47509b;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+  background: #47509b;
+  color: white;
+}
+
+.edit-button i {
+  font-size: 14px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.products-list, .interviews-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.product-item, .interview-item {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #47509b;
+}
+
+.product-specs {
+  color: #666;
+  font-size: 14px;
+}
+
+.interview-item {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+
+.interview-item span {
+  color: #666;
+  font-size: 14px;
 }
 </style>
