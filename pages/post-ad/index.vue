@@ -903,7 +903,7 @@
                 </div>
                 <div class="image-preview-grid">
                   <div v-for="(file, index) in formData.files" :key="index" class="image-preview-item">
-                    <img :src="file" alt="Preview" />
+                    <img :src="getImageUrl(file)" alt="Preview" @click="openImagePreview(getImageUrl(file))" />
                   </div>
                 </div>
               </div>
@@ -917,7 +917,7 @@
                   </button>
                 </div>
                 <div class="document-preview">
-                  <div class="document-item">
+                  <div class="document-item" @click="openDocument(formData.document_uploaded)">
                     <i class="pi pi-file-pdf"></i>
                     <span>{{ formData.documentName || 'Document' }}</span>
                   </div>
@@ -2597,10 +2597,38 @@ export default {
 
       return true;
     },
+    
+    getImageUrl(file) {
+      if (file instanceof File) {
+        return URL.createObjectURL(file);
+      }
+      return file;
+    },
+    
+    openImagePreview(imageUrl) {
+      window.open(imageUrl, '_blank');
+    },
+    
+    openDocument(documentFile) {
+      if (documentFile instanceof File) {
+        const blobUrl = URL.createObjectURL(documentFile);
+        window.open(blobUrl, '_blank');
+      }
+    },
   },
   created() {
     this.fetchCategories();
   },
+  beforeDestroy() {
+    // Clean up object URLs when component is destroyed
+    if (this.formData.files) {
+      this.formData.files.forEach(file => {
+        if (file instanceof File) {
+          URL.revokeObjectURL(this.getImageUrl(file));
+        }
+      });
+    }
+  }
 };
 </script>
 
@@ -2963,12 +2991,18 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.image-preview-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .document-preview {
@@ -2985,10 +3019,16 @@ export default {
   background: #f8f9fa;
   border-radius: 6px;
   color: #47509b;
-}
-
-.document-item i {
-  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: #e9ecef;
+  }
+  
+  i {
+    font-size: 20px;
+  }
 }
 
 .publish-section {
