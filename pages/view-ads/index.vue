@@ -151,7 +151,7 @@
             </select>
           </div>
 
-          <div class="ads-grid">
+          <div v-if="ads.length > 0" class="ads-grid">
             <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
               <div class="position-relative">
                 <img :src="ad.ad_image || '/assets/images/posted.png'" :alt="ad.ad.title" class="card-img-top" />
@@ -175,6 +175,11 @@
                 <button class="btn view-details w-100" @click="viewDetails(ad.ad.id)">View Details</button>
               </div>
             </div>
+          </div>
+          <div v-else class="empty-state">
+            <!-- <img src="/assets/images/no-results.svg" alt="No results found" class="empty-state-image"> -->
+            <h3>No Ads Found</h3>
+            <p>Try adjusting your filters to see more results</p>
           </div>
         </main>
       </div>
@@ -395,9 +400,11 @@ export default {
           params.append('category', this.filters.category);
         }
         
-        // Add sub-categories if selected
+        // Add sub-categories if selected - each as a separate parameter
         if (this.filters.subCategory && this.filters.subCategory.length > 0) {
-          params.append('sub_category', this.filters.subCategory.join(','));
+          this.filters.subCategory.forEach(subCategoryId => {
+            params.append('sub_category', subCategoryId);
+          });
         }
         
         // Always add budget range values
@@ -790,5 +797,36 @@ opacity: 0.7;
 
 .reset-button:hover {
   background: #f5f5f5;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  background: #fff;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.empty-state-image {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  color: #161C2D;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
 }
 </style>
