@@ -67,14 +67,13 @@
           </div>
           
           <div class="border-class"></div>
-          <div class="filter-section">
-            <h3 @click="toggleSection('budget')">Budget <span class="arrow" :class="{ 'open': isOpen('budget') }">
+          <div v-if="filters.category!=3&&filters.category!=4&&filters.category!=6&&filters.category!=7&&filters.category!=8" class="filter-section">
+            <h3 @click="toggleSection('budget')">Budget {{filters.category}} <span class="arrow" :class="{ 'open': isOpen('budget') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span></h3>
             <div v-if="isOpen('budget')">
-              <label for="budget">Budget</label>
               <div class="slider-container">
                 <MultiRangeSlider
                   :min="minBudget"
@@ -82,10 +81,10 @@
                   :minValue="filters.budget.min"
                   :maxValue="filters.budget.max"
                   :step="1000"
-                  @input="updateBudget"
+                  @input="handleBudgetChange"
                 />
                 <div class="budget-labels">
-                  <span>{{ minBudget }}</span>
+                  <span>{{ minBudget.toLocaleString() }}</span>
                   <span>{{ filters.budget.min.toLocaleString() }} - {{ filters.budget.max.toLocaleString() }}</span>
                   <span>{{ maxBudget.toLocaleString() }}</span>
                 </div>
@@ -218,7 +217,7 @@ export default {
       filters: {
         category: null,
         subCategory: [],
-        budget: { min: 50000, max: 100000 },
+        budget: { min: 0, max: 100000 },
         area: 20000,
         radius: 10,
         sort: "date",
@@ -228,7 +227,7 @@ export default {
       defaultFilters: {
         category: null,
         subCategory: [],
-        budget: { min: 50000, max: 100000 },
+        budget: { min: 0, max: 100000 },
         area: 20000,
         radius: 10,
         sort: "date",
@@ -266,6 +265,31 @@ export default {
           headers: { Authorization: `Bearer ${token}` }
         });
         this.categories = response.data.result.category_list;
+        
+        // Add additional categories
+        const additionalCategories = [
+          {
+            id: 8,
+            category_title: "Applicant",
+            category_images: "http://localhost:8000/media/MasterCategory_images/spaces_home_cate_Mc3pDUL.png",
+            category_description: "",
+            sub_category: [],
+            short_title: "",
+            short_description: ""
+          },
+          {
+            id: 7,
+            category_title: "Recruiter",
+            category_images: "http://localhost:8000/media/MasterCategory_images/home_used_eq.png",
+            category_description: "",
+            sub_category: [],
+            short_title: "",
+            short_description: ""
+          }
+        ];
+        
+        // Add the additional categories to the existing categories array
+        this.categories = [...this.categories, ...additionalCategories];
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -333,10 +357,9 @@ export default {
         console.error("Geolocation is not supported by this browser.");
       }
     },
-    updateBudget({ minValue, maxValue }) {
+    handleBudgetChange({ minValue, maxValue }) {
       this.filters.budget.min = minValue;
       this.filters.budget.max = maxValue;
-      this.fetchFilteredAds(); // Fetch ads with new budget
     },
     viewDetails(adId) {
       this.$router.push(`/ads-details/${adId}`);
@@ -344,7 +367,7 @@ export default {
     async fetchInitialAds() {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${BASE_URL}api/web/ads/`, {
+        const response = await axios.get(`${BASE_URL}web/ads/`, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -375,7 +398,7 @@ export default {
           params.append('sub_category', this.filters.subCategory.join(','));
         }
         
-        // Add budget range
+        // Always add budget range values
         params.append('min_price', this.filters.budget.min);
         params.append('max_price', this.filters.budget.max);
         
@@ -420,7 +443,7 @@ export default {
         }
 
         console.log("Filter params:", params.toString());
-        const response = await axios.get(`${BASE_URL}/api/web/ads/?${params.toString()}`, {
+        const response = await axios.get(`${BASE_URL}web/ads/?${params.toString()}`, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -676,17 +699,24 @@ export default {
   background: #47509B !important;
   border: none !important;
   box-shadow: none !important;
+  cursor: pointer !important;
 }
 
-input[type="range"] {
-  width: 100%;
-  margin: 10px 0;
+.multi-range-slider .thumb:hover {
+  background: #3a4179 !important;
+}
+
+.multi-range-slider .range {
+  background: #47509B !important;
 }
 
 .budget-labels {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
 }
 
 .map-modal {

@@ -1,6 +1,6 @@
 // export const BASE_URL = 'https://api.ohtel.in/api/';
-export const BASE_URL = 'https://demo.ohtel.in/api/';
-// export const BASE_URL = 'https://c5hzzb2k-8000.inc1.devtunnels.ms/api/';
+// export const BASE_URL = 'https://demo.ohtel.in/api/';
+export const BASE_URL = 'https://c5hzzb2k-8000.inc1.devtunnels.ms/api/';
 
 export const ENDPOINTS = {
     LOGIN: 'admin/admin_login/',
