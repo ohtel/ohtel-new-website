@@ -367,7 +367,6 @@ export default {
       this.$router.push(`/ads-details/${adId}`);
     },
     async fetchInitialAds() {
-      debugger
       try {
         const token = localStorage.getItem('accessToken');
         const response = await axios.get(`${BASE_URL}web/ads/`, {
@@ -378,7 +377,6 @@ export default {
         });
         
         if ( response.data.results) {
-          debugger;
           this.ads = response.data.results;
         }
       } catch (error) {
