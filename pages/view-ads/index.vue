@@ -160,7 +160,14 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between">
                   <h5 class="card-title mb-2">{{ ad.ad.title }}</h5>
-                  <img src="/assets/images/love-blue.png" alt="">
+                  <div class="heart-icon" @click="toggleFavorite(ad.ad.id, ad.is_liked)">
+                    <svg v-if="ad.is_liked" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                      <path d="M24.3282 4.99269C20.9761 2.93654 18.0505 3.76514 16.293 5.08501C15.5722 5.6262 15.212 5.89679 15 5.89679C14.788 5.89679 14.4277 5.6262 13.707 5.08501C11.9495 3.76514 9.02386 2.93654 5.6718 4.99269C1.27259 7.69118 0.27715 16.5936 10.4244 24.1043C12.3571 25.5348 13.3235 26.25 15 26.25C16.6765 26.25 17.6429 25.5348 19.5756 24.1043C29.7229 16.5936 28.7274 7.69118 24.3282 4.99269Z" fill="#47509B"/>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.22172 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" stroke="black" stroke-linecap="round"/>
+                    </svg>
+                  </div>
                 </div>
                 <p class="card-text text-primary fw-bold mb-1 price-text">₹ {{ ad.price }} / month</p>
                 <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
@@ -180,6 +187,27 @@
             <!-- <img src="/assets/images/no-results.svg" alt="No results found" class="empty-state-image"> -->
             <h3>No Ads Found</h3>
             <p>Try adjusting your filters to see more results</p>
+          </div>
+
+          <!-- Add pagination controls -->
+          <div v-if="hasNextPage || currentPage > 1" class="pagination">
+            <button 
+              :disabled="currentPage === 1" 
+              @click="changePage(currentPage - 1)"
+              class="page-button"
+            >
+              Previous
+            </button>
+            <span class="page-info">
+              Page {{ currentPage }}
+            </span>
+            <button 
+              :disabled="!hasNextPage" 
+              @click="changePage(currentPage + 1)"
+              class="page-button"
+            >
+              Next
+            </button>
           </div>
         </main>
       </div>
@@ -255,6 +283,8 @@ export default {
       showMap: false,
       mapCenter: { lat: 12.9716, lng: 77.5946 }, // Default location
       locationDetails: null, // To store location details
+      currentPage: 1,
+      hasNextPage: false,
     };
   },
   async mounted() {
@@ -372,17 +402,36 @@ export default {
       this.$router.push(`/ads-details/${adId}`);
     },
     async fetchInitialAds() {
+      const params = new URLSearchParams();
+        // Add sort parameter
+        if (this.filters.sort) {
+          let sortValue = this.filters.sort;
+          // Convert sort values to match API expectations
+          switch(this.filters.sort) {
+            case 'lowToHigh':
+              sortValue = 'price_low_to_high';
+              break;
+            case 'highToLow':
+              sortValue = 'price_high_to_low';
+              break;
+            case 'date':
+              sortValue = 'new_to_old';
+              break;
+          }
+          params.append('sort', sortValue);
+        }
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${BASE_URL}web/ads/`, {
+        const response = await axios.get(`${BASE_URL}web/ads/?page=1&${params.toString()}`, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
         
-        if ( response.data.results) {
+        if (response.data) {
           this.ads = response.data.results;
+          this.hasNextPage = !!response.data.next; // Set hasNextPage based on next field
         }
       } catch (error) {
         console.error("Error fetching initial ads:", error);
@@ -394,6 +443,9 @@ export default {
         
         // Build query parameters
         const params = new URLSearchParams();
+        
+        // Add pagination parameter
+        params.append('page', this.currentPage);
         
         // Add category if selected
         if (this.filters.category) {
@@ -434,13 +486,13 @@ export default {
           // Convert sort values to match API expectations
           switch(this.filters.sort) {
             case 'lowToHigh':
-              sortValue = 'lowToHigh';
+              sortValue = 'price_low_to_high';
               break;
             case 'highToLow':
-              sortValue = 'highToLow';
+              sortValue = 'price_high_to_low';
               break;
             case 'date':
-              sortValue = 'date';
+              sortValue = 'new_to_old';
               break;
           }
           params.append('sort', sortValue);
@@ -459,18 +511,60 @@ export default {
           }
         });
         
-        if (response.data && response.data.result) {
-          this.ads = response.data.result;
+        if (response.data) {
+          this.ads = response.data.results;
+          this.hasNextPage = !!response.data.next; // Set hasNextPage based on next field
         }
       } catch (error) {
         console.error("Error fetching filtered ads:", error);
+      }
+    },
+    async changePage(page) {
+      this.currentPage = page;
+      await this.applyFilters();
+      // Scroll to top of ads list
+      const adsList = document.querySelector('.ads-list');
+      if (adsList) {
+        adsList.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
     resetFilters() {
       // Reset all filters to default values
       this.filters = JSON.parse(JSON.stringify(this.defaultFilters));
       this.subCategories = []; // Clear subcategories
+      this.currentPage = 1; // Reset to first page
+      this.hasNextPage = false; // Reset hasNextPage
       this.applyFilters(); // Apply the reset filters
+    },
+    async toggleFavorite(adId, currentStatus) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        // Find the ad to get its category_id
+        const ad = this.ads.find(ad => ad.ad.id === adId);
+        if (!ad) return;
+
+        const response = await axios.post(
+          `${BASE_URL}ads/favourite/`,
+          { 
+            ad_id: adId,
+            category_id: ad.category.id
+          },
+          {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        // Update the is_liked status in the ads array
+        const adIndex = this.ads.findIndex(ad => ad.ad.id === adId);
+        if (adIndex !== -1) {
+          this.ads[adIndex].is_liked = !currentStatus;
+        }
+      } catch (error) {
+        console.error("Error toggling favorite:", error);
+      }
     },
   },
   computed: {
@@ -828,5 +922,58 @@ opacity: 0.7;
   color: #666;
   font-size: 16px;
   margin: 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  padding: 20px 0;
+}
+
+.page-button {
+  padding: 8px 16px;
+  border: 1px solid #47509B;
+  background: #fff;
+  color: #47509B;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-button:hover:not(:disabled) {
+  background: #47509B;
+  color: #fff;
+}
+
+.page-button:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: #666;
+  font-size: 14px;
+}
+
+.heart-icon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 5px;
+}
+
+.heart-icon:hover {
+  transform: scale(1.1);
+}
+
+.heart-icon svg {
+  transition: all 0.2s ease;
+}
+
+.heart-icon:hover svg {
+  filter: brightness(1.2);
 }
 </style>

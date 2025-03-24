@@ -1752,7 +1752,7 @@ export default {
               },
             })
           );
-          formData.append("main_category", this.selectedCategory.id);
+          formData.append("main_category", this.selectedCategoryDetails?.id);
           formData.append("ad_type", this.adDetails.sellerOrBuyer);
           formData.append("ad_name", this.adDetails.title);
           formData.append("sub_category", this.adDetails.subCategory);
@@ -1781,7 +1781,7 @@ export default {
             if (this.formData.documentFile instanceof File) {
               formData.append("new_equipment_pdf", this.formData.documentFile);
             }
-            if (formDataFromChild.logoFile instanceof File) {
+            if (this.formData.logoFile instanceof File) {
               formData.append("company_logo", this.formData.logoFile);
             }
         
