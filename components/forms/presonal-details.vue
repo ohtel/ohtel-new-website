@@ -99,22 +99,29 @@ export default {
   },
 
 mounted() {
-    const userConfig = localStorage.getItem("user_config");
-    if (this.dataFromParent.length==0 && userConfig) {
-      const user = JSON.parse(userConfig);
+    const userString = localStorage.getItem("user");
+    console.log("data from personal details", userString);
+    console.log("data from parent", this.dataFromParent);
+    if (this.dataFromParent.fullName === '' && userString) {
+      const user = JSON.parse(userString);
+      console.log("Parsed user data:", user);
       // Update the personalDetails object with fetched data
-      this.personalDetails.fullName = user.name || "";
-      this.personalDetails.contact = user.phone !== "No Phone Provided" ? user.phone : "";
-      this.personalDetails.email = user.email !== "No Email Provided" ? user.email : "";
+      this.personalDetails.fullName = user.full_name || "";
+      this.personalDetails.contact = user.phone || "";
+      this.personalDetails.email = user.email || "";
+      
+      // Enable contact methods based on available data
+      this.personalDetails.preferredContactMethodsPhone = !!user.phone;
+      this.personalDetails.preferredContactMethodsEmail = !!user.email;
     }
-    else{
-      console.log("data from personal details",this.dataFromParent)
+    else {
+      console.log("data from personal details", this.dataFromParent);
       this.personalDetails.fullName = this.dataFromParent.fullName || "";
-      this.personalDetails.contact = this.dataFromParent.contact !== "No Phone Provided" ? this.dataFromParent.contact : "";
-      this.personalDetails.email = this.dataFromParent.email !== "No Email Provided" ? this.dataFromParent.email : "";
+      this.personalDetails.contact = this.dataFromParent.contact || "";
+      this.personalDetails.email = this.dataFromParent.email || "";
       this.personalDetails.organizationName = this.dataFromParent.organizationName || "";
-      this.personalDetails.preferredContactMethodsPhone =this.dataFromParent.preferredContactMethod
-      this.personalDetails.preferredContactMethodsEmail =this.dataFromParent.preferredContactMethodsEmail
+      this.personalDetails.preferredContactMethodsPhone = this.dataFromParent.preferredContactMethodsPhone;
+      this.personalDetails.preferredContactMethodsEmail = this.dataFromParent.preferredContactMethodsEmail;
     }
 },
 methods: {
