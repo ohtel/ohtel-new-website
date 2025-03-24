@@ -154,25 +154,25 @@
           <div class="ads-grid">
             <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
               <div class="position-relative">
-                <img src="/assets/images/posted.png" :alt="ad.title" class="card-img-top" />
-                <span class="ad-label">{{ ad.label }}</span>
+                <img :src="ad.ad_image || '/assets/images/posted.png'" :alt="ad.ad.title" class="card-img-top" />
+                <span class="ad-label">{{ ad.ad.type }}</span>
               </div>
               <div class="card-body">
                 <div class="d-flex justify-content-between">
-                  <h5 class="card-title mb-2">{{ ad.title }}</h5>
+                  <h5 class="card-title mb-2">{{ ad.ad.title }}</h5>
                   <img src="/assets/images/love-blue.png" alt="">
                 </div>
                 <p class="card-text text-primary fw-bold mb-1 price-text">₹ {{ ad.price }} / month</p>
-                <p class="card-text small text-muted mb-3">{{ ad.description }}</p>
+                <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
-                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.location }}
+                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.ad_info2 }}
                   </small>
-                  <small class="text-muted">{{ ad.date }}</small>
+                  <small class="text-muted">{{ ad.ad_posted_on }}</small>
                 </div>
               </div>
               <div class="card-footer bg-white border-0">
-                <button class="btn view-details w-100" @click="viewDetails(123)">View Details</button>
+                <button class="btn view-details w-100" @click="viewDetails(ad.ad.id)">View Details</button>
               </div>
             </div>
           </div>
@@ -264,7 +264,9 @@ export default {
         const response = await axios.get(`${BASE_URL}${ENDPOINTS.CATEGORY}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        this.categories = response.data.result.category_list;
+        
+        // Filter out category with id 3
+        this.categories = response.data.result.category_list.filter(category => category.id !== 3);
         
         // Add additional categories
         const additionalCategories = [
@@ -365,6 +367,7 @@ export default {
       this.$router.push(`/ads-details/${adId}`);
     },
     async fetchInitialAds() {
+      debugger
       try {
         const token = localStorage.getItem('accessToken');
         const response = await axios.get(`${BASE_URL}web/ads/`, {
@@ -374,8 +377,9 @@ export default {
           }
         });
         
-        if (response.data && response.data.result) {
-          this.ads = response.data.result;
+        if ( response.data.results) {
+          debugger;
+          this.ads = response.data.results;
         }
       } catch (error) {
         console.error("Error fetching initial ads:", error);
