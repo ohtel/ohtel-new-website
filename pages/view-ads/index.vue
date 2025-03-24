@@ -107,15 +107,18 @@
           </div>
 
           <div class="filter-section">
-            <h3 @click="toggleSection('furnishing')">Furnishing <span class="arrow" :class="{ 'open': isOpen('furnishing') }">
+            <h3 @click="toggleSection('radius')">Radius (km) <span class="arrow" :class="{ 'open': isOpen('radius') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span></h3>
-            <div v-if="isOpen('furnishing')" class="filter-options">
-              <label><input type="radio" name="furnishing" value="Furnished" /> Furnished</label>
-              <label><input type="radio" name="furnishing" value="Semi-Furnished" /> Semi-Furnished</label>
-              <label><input type="radio" name="furnishing" value="Unfurnished" /> Unfurnished</label>
+            <div v-if="isOpen('radius')">
+              <input type="range" min="1" max="50" v-model="filters.radius" />
+              <div>
+                <span>1 km</span>
+                <span>{{ filters.radius }} km</span>
+                <span>50 km</span>
+              </div>
             </div>
           </div>
 
@@ -134,17 +137,18 @@
             </div>
           </div>
 
-          <button class="apply-button">Apply</button>
+          <button class="apply-button" @click="applyFilters">Apply</button>
+          <button v-if="hasActiveFilters" class="reset-button" @click="resetFilters">Reset Filters</button>
         </aside>
 
         <!-- Ads List Section -->
         <main class="ads-list">
           <div class="sort-section">
             <span>Sort by:</span>
-            <select v-model="filters.sort">
+            <select v-model="filters.sort" @change="applyFilters">
               <option value="date">Date posted</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
             </select>
           </div>
 
@@ -214,119 +218,34 @@ export default {
       filters: {
         category: null,
         subCategory: [],
-        budget: { min: 50000, max: 100000 }, // default values
+        budget: { min: 50000, max: 100000 },
         area: 20000,
+        radius: 10,
         sort: "date",
+        type: "all_ads",
+        coordinates: null
+      },
+      defaultFilters: {
+        category: null,
+        subCategory: [],
+        budget: { min: 50000, max: 100000 },
+        area: 20000,
+        radius: 10,
+        sort: "date",
+        type: "all_ads",
+        coordinates: null
       },
       minBudget: 0,
       maxBudget: 100000,
       categories: [],
       subCategories: [],
-      ads: [
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },{
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },{
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        {
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },{
-          image: "https://via.placeholder.com/150",
-          label: "For Rent",
-          title: "Prime Restaurant",
-          description: "Fully Furnished with Cabin and 20 Workspaces",
-          price: 52000,
-          location: "Bengaluru",
-          date: "3 days ago",
-        },
-        // Add more ad objects here
-      ],
+      ads: [],
       openSections: {
         category: true,
         subcategory: true,
         budget: true,
         location: true,
-        furnishing: true,
+        radius: true,
         area: true,
       },
       showMap: false,
@@ -336,7 +255,8 @@ export default {
   },
   async mounted() {
     await this.fetchCategories();
-    this.fetchCurrentLocation(); // Fetch current location on mount
+    this.fetchCurrentLocation();
+    await this.fetchInitialAds(); // Changed to fetchInitialAds
   },
   methods: {
     async fetchCategories() {
@@ -390,7 +310,12 @@ export default {
       }
       if (eventData.address) {
         this.mapCenter = eventData.locationInformation;
-        this.locationDetails = eventData; // Store location details
+        this.locationDetails = eventData;
+        this.filters.coordinates = {
+          lat: eventData.locationInformation.lat,
+          lng: eventData.locationInformation.lng
+        };
+        this.fetchFilteredAds(); // Fetch ads with new location
       }
     },
     fetchCurrentLocation() {
@@ -411,10 +336,134 @@ export default {
     updateBudget({ minValue, maxValue }) {
       this.filters.budget.min = minValue;
       this.filters.budget.max = maxValue;
+      this.fetchFilteredAds(); // Fetch ads with new budget
     },
     viewDetails(adId) {
       this.$router.push(`/ads-details/${adId}`);
     },
+    async fetchInitialAds() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${BASE_URL}api/web/ads/`, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.data && response.data.result) {
+          this.ads = response.data.result;
+        }
+      } catch (error) {
+        console.error("Error fetching initial ads:", error);
+      }
+    },
+    async applyFilters() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        
+        // Add category if selected
+        if (this.filters.category) {
+          params.append('category', this.filters.category);
+        }
+        
+        // Add sub-categories if selected
+        if (this.filters.subCategory && this.filters.subCategory.length > 0) {
+          params.append('sub_category', this.filters.subCategory.join(','));
+        }
+        
+        // Add budget range
+        params.append('min_price', this.filters.budget.min);
+        params.append('max_price', this.filters.budget.max);
+        
+        // Add coordinates if available
+        if (this.filters.coordinates) {
+          params.append('lat', this.filters.coordinates.lat);
+          params.append('lng', this.filters.coordinates.lng);
+        } else {
+          params.append('lat', this.mapCenter.lat);
+          params.append('lng', this.mapCenter.lng);
+        }
+        
+        // Add radius
+        params.append('radius', this.filters.radius);
+        
+        // Add area if set
+        if (this.filters.area) {
+          params.append('area', this.filters.area);
+        }
+        
+        // Add sort parameter
+        if (this.filters.sort) {
+          let sortValue = this.filters.sort;
+          // Convert sort values to match API expectations
+          switch(this.filters.sort) {
+            case 'lowToHigh':
+              sortValue = 'lowToHigh';
+              break;
+            case 'highToLow':
+              sortValue = 'highToLow';
+              break;
+            case 'date':
+              sortValue = 'date';
+              break;
+          }
+          params.append('sort', sortValue);
+        }
+        
+        // Add type parameter
+        if (this.filters.type) {
+          params.append('type', this.filters.type);
+        }
+
+        console.log("Filter params:", params.toString());
+        const response = await axios.get(`${BASE_URL}/api/web/ads/?${params.toString()}`, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.data && response.data.result) {
+          this.ads = response.data.result;
+        }
+      } catch (error) {
+        console.error("Error fetching filtered ads:", error);
+      }
+    },
+    resetFilters() {
+      // Reset all filters to default values
+      this.filters = JSON.parse(JSON.stringify(this.defaultFilters));
+      this.subCategories = []; // Clear subcategories
+      this.applyFilters(); // Apply the reset filters
+    },
+  },
+  computed: {
+    hasActiveFilters() {
+      return (
+        this.filters.category !== null ||
+        this.filters.subCategory.length > 0 ||
+        this.filters.budget.min !== 50000 ||
+        this.filters.budget.max !== 100000 ||
+        this.filters.area !== 20000 ||
+        this.filters.radius !== 10 ||
+        this.filters.coordinates !== null ||
+        this.filters.sort !== 'date'
+      );
+    }
+  },
+  watch: {
+    'filters.sort': {
+      handler(newValue, oldValue) {
+        // Only trigger if the value actually changed
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    }
   },
 };
 </script>
@@ -679,5 +728,35 @@ font-size: 15px;
 font-style: normal;
 font-weight: 400;
 opacity: 0.7;
+}
+
+.filter-section input[type="range"] {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.filter-section input[type="range"] + div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+.reset-button {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  background: #fff;
+  color: #47509B;
+  padding: 10px;
+  border: 1px solid #47509B;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+.reset-button:hover {
+  background: #f5f5f5;
 }
 </style>

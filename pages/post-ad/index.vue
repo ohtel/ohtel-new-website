@@ -704,8 +704,8 @@
                     <span class="value">{{ adDetails.sellerOrBuyer }}</span>
                   </div>
                 </div>
-              </div>
-
+                    </div>
+                    
               <!-- Location Information -->
               <div class="review-section">
                 <div class="section-header">
@@ -724,8 +724,8 @@
                     <span class="value">{{ defaultLocation.lat }}, {{ defaultLocation.lng }}</span>
                   </div>
                 </div>
-              </div>
-
+                    </div>
+                    
               <!-- Form Specific Information -->
               <div class="review-section">
                 <div class="section-header">
@@ -733,20 +733,20 @@
                   <button class="edit-button" @click="handleBackStep(3)">
                     <i class="pi pi-pencil"></i> Edit
                   </button>
-                </div>
+                  </div>
                 <div class="review-grid">
                   <!-- Common Fields for All Categories -->
                   <div class="review-item">
                     <span class="label">Title:</span>
                     <span class="value">{{ adDetails.title }}</span>
-                  </div>
+              </div>
 
                   <!-- Property Category (1, 2, 5) -->
                   <template v-if="[1, 2, 5].includes(selectedCategoryDetails?.id)">
                     <div class="review-item">
                       <span class="label">Description:</span>
                       <span class="value">{{ formData.description }}</span>
-                    </div>
+            </div>
                     <div class="review-item">
                       <span class="label">Deal Type:</span>
                       <span class="value">{{ formData.dealType }}</span>
@@ -899,8 +899,8 @@
                   <h3 class="section-title">Images</h3>
                   <button class="edit-button" @click="handleBackStep(3)">
                     <i class="pi pi-pencil"></i> Edit
-                  </button>
-                </div>
+              </button>
+            </div>
                 <div class="image-preview-grid">
                   <div v-for="(file, index) in formData.files" :key="index" class="image-preview-item">
                     <img :src="getImageUrl(file)" alt="Preview" @click="openImagePreview(getImageUrl(file))" />
@@ -2100,15 +2100,15 @@ export default {
           // Verify token exists and is valid
           const token = localStorage.getItem("accessToken");
           if (!token) {
-            this.toast.add({
-              severity: 'error',
-              summary: 'Authentication Error',
+              this.toast.add({
+                severity: 'error',
+                summary: 'Authentication Error',
               detail: 'Please login to continue',
-              life: 5000
-            });
-            this.$router.push('/login');
-            return;
-          }
+                life: 5000
+              });
+              this.$router.push('/login');
+              return;
+            }
 
           // Add coordinates data
           if (this.defaultLocation && this.defaultLocation.lat && this.defaultLocation.lng) {
@@ -2188,21 +2188,21 @@ export default {
             console.log("API Response Status:", response.status);
 
             if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
-              const result = await response.json();
-              console.log("API Response:", result);
-              
-              this.toast.add({
-                severity: 'success',
-                summary: 'Success',
+            const result = await response.json();
+            console.log("API Response:", result);
+            
+            this.toast.add({
+              severity: 'success',
+              summary: 'Success',
                 detail: 'Your recruiter ad has been published successfully!',
-                life: 5000
-              });
-              
+              life: 5000
+            });
+            
               // Delay redirection for 4 seconds
-              setTimeout(() => {
+            setTimeout(() => {
                 this.$router.push('/view-ads');
               }, 2000);
-              return;
+            return;
             }
             
             // Handle error
@@ -2210,12 +2210,12 @@ export default {
             throw new Error(errorData.message || 'Failed to publish recruiter ad');
           } catch (error) {
             console.error("API error:", error);
-            this.toast.add({
-              severity: 'error',
-              summary: 'Error',
+              this.toast.add({
+                severity: 'error',
+                summary: 'Error',
               detail: error.message || 'An error occurred while publishing your recruiter ad.',
-              life: 5000
-            });
+                life: 5000
+              });
             throw error;
           }
         }
