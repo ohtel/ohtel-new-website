@@ -145,7 +145,7 @@
         <main class="ads-list">
           <div class="sort-section">
             <span>Sort by:</span>
-            <select v-model="filters.sort" @change="applyFilters">
+            <select v-model="filters.sort">
               <option value="date">Date posted</option>
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
