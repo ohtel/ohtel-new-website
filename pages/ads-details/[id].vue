@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
@@ -158,6 +158,15 @@ const restaurantAd = ref({
   location: "Bengaluru",
   date: "3 days ago",
 });
+
+const googleMapComponent = ref(null);
+
+// Add watch effect for ad location
+watch(() => ad.value.location, (newLocation) => {
+  if (googleMapComponent.value && newLocation) {
+    googleMapComponent.value.setLocation(newLocation.lat, newLocation.lng);
+  }
+}, { deep: true });
 
 const fetchAdDetails = async () => {
   try {
