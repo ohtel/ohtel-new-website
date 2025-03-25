@@ -8,7 +8,7 @@
     </nav>
     <div class="heading-section">
         <div class="main-heading">Restaurant Without Bar</div>
-        <div class="ad-id">Ad ID : 123456789</div>
+        <div class="ad-id">Ad ID : {{route.query.ad_uuid}}</div>
      </div>
     <div class="content-wrapper">
       <!-- Left Section: Ad Details -->
@@ -121,7 +121,7 @@ const route = useRoute();
 const ad = ref({
   title: 'Prime Restaurant',
   price: '₹ 52,000/- per month',
-  description: 'Don’t miss this fantastic opportunity to own a fully equipped restaurant space! Ready for you to start your business right away, with everything you need already in place.',
+  description: 'Don\'t miss this fantastic opportunity to own a fully equipped restaurant space! Ready for you to start your business right away, with everything you need already in place.',
   features: ['Fully Furnished', 'Free Wifi', '10,000 sq.ft', 'Car Parking', 'Kitchen Setup', 'Washrooms'],
   seller: { name: 'John Spencer', contact: 'Call now', image: 'https://i.ibb.co/8sv6t1Y/Ellipse-124.png' },
   location: { lat: 12.9716, lng: 77.5946 },
@@ -159,11 +159,61 @@ const restaurantAd = ref({
   date: "3 days ago",
 });
 
-const fetchAdDetails = async (id) => {
+const fetchAdDetails = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}${ENDPOINTS.ADS_DETAILS}/${id}`);
-    ad.value = response.data;
-    images.value = response.data.images.map(image => `/assets/images/${image}`);
+    const token = localStorage.getItem('accessToken');
+    const { category_id, type, ad_uuid } = route.query;
+    
+    const response = await axios.get(
+      `${BASE_URL}ads/get_ads_detail/?category_id=${category_id}&type=${type}&ad_uuid=${ad_uuid}`,
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.data && response.data.result) {
+      const adData = response.data.result.ad;
+      
+      // Update the ad ref with the API response data
+      ad.value = {
+        title: adData.ad_title,
+        price: adData.price,
+        description: adData.ad_description,
+        features: [
+          adData.vendor_name,
+          adData.product_brand,
+          adData.material_type,
+          adData.category_name,
+          adData.sub_category_name
+        ].filter(Boolean),
+        seller: { 
+          name: adData.contact_person,
+          contact: adData.contact_number || adData.contact_email,
+          image: adData.company_logo || '/default-profile.jpg'
+        },
+        location: {
+          lat: adData.coordinate.latitude,
+          lng: adData.coordinate.longitude
+        },
+        images: adData.image_ids.map(img => img.ad_image)
+      };
+
+      // Update the restaurantAd ref with the API response data
+      restaurantAd.value = {
+        id: adData.ad_id,
+        title: adData.ad_title,
+        description: adData.ad_description,
+        price: adData.price,
+        location: adData.address,
+        date: adData.ad_posted_on
+      };
+
+      // Update the images array for the gallery
+      images.value = adData.image_ids.map(img => img.ad_image);
+    }
   } catch (error) {
     console.error('Error fetching ad details:', error);
   }
@@ -179,8 +229,7 @@ const viewDetails = (adId) => {
 };
 
 onMounted(() => {
-  const { id } = route.params;
-  fetchAdDetails(id);
+  fetchAdDetails();
 });
 </script>
 

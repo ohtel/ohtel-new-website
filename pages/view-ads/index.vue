@@ -399,7 +399,17 @@ export default {
       this.filters.budget.max = maxValue;
     },
     viewDetails(adId) {
-      this.$router.push(`/ads-details/${adId}`);
+      const ad = this.ads.find(ad => ad.ad.id === adId);
+      if (ad) {
+        this.$router.push({
+          path: `/ads-details/${adId}`,
+          query: {
+            category_id: ad.category.id,
+            type: ad.ad.type,
+            ad_uuid: ad.ad.uuid
+          }
+        });
+      }
     },
     async fetchInitialAds() {
       const params = new URLSearchParams();
