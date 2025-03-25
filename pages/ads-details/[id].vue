@@ -7,7 +7,7 @@
       <a href="/">Home</a> > <a href="/ads">Hospitality Spaces</a> > {{ ad.title }}
     </nav>
     <div class="heading-section">
-        <div class="main-heading">Restaurant Without Bar</div>
+        <div class="main-heading">{{ ad.title }}</div>
         <div class="ad-id">Ad ID : {{route.query.ad_uuid}}</div>
      </div>
     <div class="content-wrapper">
@@ -43,13 +43,6 @@
         <!-- Ad Description -->
         <h1 class="ad-title">{{ ad.title }}</h1>
         <p class="description">{{ ad.description }}</p>
-        <h3 class="key-freatures-title">Key Features</h3>
-        <!-- Key Features -->
-        <div class="key-features">
-          <span v-for="feature in ad.features" :key="feature" class="feature-badge">
-            {{ feature }}
-          </span>
-        </div>
       </div>
 
       <!-- Right Section: Seller Info and Location -->
@@ -119,44 +112,23 @@ import headerSection from '../main-pages/headerSection.vue'
 
 const route = useRoute();
 const ad = ref({
-  title: 'Prime Restaurant',
-  price: '₹ 52,000/- per month',
-  description: 'Don\'t miss this fantastic opportunity to own a fully equipped restaurant space! Ready for you to start your business right away, with everything you need already in place.',
-  features: ['Fully Furnished', 'Free Wifi', '10,000 sq.ft', 'Car Parking', 'Kitchen Setup', 'Washrooms'],
-  seller: { name: 'John Spencer', contact: 'Call now', image: 'https://i.ibb.co/8sv6t1Y/Ellipse-124.png' },
+  title: '',
+  price: '',
+  description: '',
+  seller: { name: '', contact: '', image: '' },
   location: { lat: 12.9716, lng: 77.5946 },
-  images: [
-    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871936.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871936.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871936.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871932.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871933.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871934.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871935.png',
-    'https://i.ibb.co/b536R2w/Frame-1618871936.png'
-  ]
+  images: []
 });
-const images = ref(ad.value.images);
+
+const images = ref([]);
 const mainImageIndex = ref(0);
 const restaurantAd = ref({
-  id: 123,
-  title: "Prime Restaurant",
-  description: "Fully Furnished with Cabin and 20 Workspaces",
-  price: 52000,
-  location: "Bengaluru",
-  date: "3 days ago",
+  id: '',
+  title: '',
+  description: '',
+  price: '',
+  location: '',
+  date: ''
 });
 
 const googleMapComponent = ref(null);
@@ -191,13 +163,6 @@ const fetchAdDetails = async () => {
         title: adData.ad_title,
         price: adData.price,
         description: adData.ad_description,
-        features: [
-          adData.vendor_name,
-          adData.product_brand,
-          adData.material_type,
-          adData.category_name,
-          adData.sub_category_name
-        ].filter(Boolean),
         seller: { 
           name: adData.contact_person,
           contact: adData.contact_number || adData.contact_email,
@@ -328,19 +293,6 @@ onMounted(() => {
 .description {
   font-size: 1rem;
   margin: 1rem 0;
-}
-.key-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-.feature-badge {
-  background: #EDECF5;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-font-size: 12px;
-font-style: normal;
-font-weight: 500;
 }
 .right-section {
   flex: 1;
@@ -519,9 +471,6 @@ margin-bottom: 24px;
   }
   .description {
     font-size: 0.9rem;
-  }
-  .feature-badge {
-    font-size: 0.8rem;
   }
   .seller-info {
     padding: 0.5rem;
