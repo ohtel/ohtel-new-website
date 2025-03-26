@@ -453,15 +453,15 @@ export default {
       }
     },
     async applyFilters() {
-      
       try {
         const token = localStorage.getItem('accessToken');
         
         // Build query parameters
         const params = new URLSearchParams();
         
-        // Add pagination parameter
-        params.append('page', this.currentPage);
+        // Reset page to 1 when applying filters
+        this.currentPage = 1;
+        params.append('page', 1);
         
         // Add category if selected
         if (this.filters.category) {
@@ -534,11 +534,90 @@ export default {
     },
     async changePage(page) {
       this.currentPage = page;
-      await this.applyFilters();
+      await this.fetchPage(page);
       // Scroll to top of ads list
       const adsList = document.querySelector('.ads-list');
       if (adsList) {
         adsList.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    },
+    async fetchPage(page) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        
+        // Add pagination parameter
+        params.append('page', page);
+        
+        // Add category if selected
+        if (this.filters.category) {
+          params.append('category', this.filters.category);
+        }
+        
+        // Add sub-categories if selected - each as a separate parameter
+        if (this.filters.subCategory && this.filters.subCategory.length > 0) {
+          this.filters.subCategory.forEach(subCategoryId => {
+            params.append('sub_category', subCategoryId);
+          });
+        }
+        
+        // Always add budget range values
+        params.append('min_price', this.filters.budget.min);
+        params.append('max_price', this.filters.budget.max);
+        
+        // Add coordinates only if a location has been selected
+        if (this.locationDetails && this.filters.coordinates) {
+          params.append('lat', this.filters.coordinates.lat);
+          params.append('lng', this.filters.coordinates.lng);
+        }
+        
+        // Add radius
+        params.append('radius', this.filters.radius);
+        
+        // Add area if set
+        if (this.filters.area) {
+          params.append('area', this.filters.area);
+        }
+        
+        // Add sort parameter
+        if (this.filters.sort) {
+          let sortValue = this.filters.sort;
+          // Convert sort values to match API expectations
+          switch(this.filters.sort) {
+            case 'lowToHigh':
+              sortValue = 'price_low_to_high';
+              break;
+            case 'highToLow':
+              sortValue = 'price_high_to_low';
+              break;
+            case 'date':
+              sortValue = 'new_to_old';
+              break;
+          }
+          params.append('sort', sortValue);
+        }
+        
+        // Add type parameter
+        if (this.filters.type) {
+          params.append('type', this.filters.type);
+        }
+
+        console.log("Filter params:", params.toString());
+        const response = await axios.get(`${BASE_URL}web/ads/?${params.toString()}`, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.data) {
+          this.ads = response.data.results;
+          this.hasNextPage = !!response.data.next; // Set hasNextPage based on next field
+        }
+      } catch (error) {
+        console.error("Error fetching page:", error);
       }
     },
     resetFilters() {
