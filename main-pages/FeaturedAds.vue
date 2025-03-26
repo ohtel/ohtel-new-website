@@ -10,7 +10,7 @@
         <div
           v-for="(ad, index) in ads"
           :key="index"
-          class="card h-100 shadow-sm hover-effect flex-shrink-0"
+          class="card h-100 shadow-sm flex-shrink-0"
           style="width: 18rem"
         >
           <div class="position-relative">
@@ -226,11 +226,7 @@ export default {
   display: none; /* Safari and Chrome */
 }
 
-/* Custom hover effect */
-.hover-effect:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease-in-out;
-}
+/* Remove hover effect styles */
 .ad-label{
   position: absolute;
   top: 10px;
@@ -256,11 +252,30 @@ export default {
 .card-footer{
   padding-bottom: 20px;
 }
-.card-body{
-  padding: 20px;
-}
-.card{
+.card {
   border: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.card-body {
+  padding: 20px;
+  height: 250px; /* Fixed height for card body */
+  overflow-y: auto; /* Make content scrollable if it exceeds height */
+  display: flex;
+  flex-direction: column;
+}
+.card-title {
+  font-size: 1rem;
+  line-height: 1.4;
+  height: 2.8em; /* Fixed height for title (2 lines) */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.card-text {
+  margin-bottom: 0.5rem;
 }
 .view-all{
   border: 1px solid var(--Primary, #47509B);
@@ -276,5 +291,30 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
+}
+
+/* Custom scrollbar for card body */
+.card-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.card-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.card-img-top {
+  height: 150px;
+  object-fit: contain;
+  width: 100%;
 }
 </style>
