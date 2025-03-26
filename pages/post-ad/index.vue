@@ -1592,7 +1592,12 @@ export default {
           formData.append('ad_city', adData.city || '');
           formData.append('state', adData.state || '');
           formData.append('sub_category', this.adDetails.subCategory);
-          
+          if (this.adDetails.otherSubSubCategoryText){
+            formData.append('other_sub_sub_category_text', this.adDetails.otherSubSubCategoryText);
+          }
+          if(this.adDetails.otherSubCategoryText){
+            formData.append('other_sub_category_text', this.adDetails.otherSubCategoryText);
+          }
           // Add sub-sub-category if available
           if (this.adDetails.subSubCategory) {
             formData.append('sub_sub_category', this.adDetails.subSubCategory);
