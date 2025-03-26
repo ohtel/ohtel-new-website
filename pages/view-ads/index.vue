@@ -100,7 +100,12 @@
             </span></h3>
             <div v-if="isOpen('location')" class="filter-options">
               <div class="location-search" @click="openGoogleMap">
-                <h2><span class="location-icon"><img src="/assets/images/locationIcon.svg" alt=""></span>select location</h2>
+                <h2 v-if="!locationDetails">
+                  <span class="location-icon"><img src="/assets/images/locationIcon.svg" alt=""></span>select location
+                </h2>
+                <h2 v-else>
+                  <span class="location-icon"><img src="/assets/images/locationIcon.svg" alt=""></span>{{ locationDetails.address }}
+                </h2>
               </div>
             </div>
           </div>
@@ -448,6 +453,7 @@ export default {
       }
     },
     async applyFilters() {
+      
       try {
         const token = localStorage.getItem('accessToken');
         
@@ -473,13 +479,10 @@ export default {
         params.append('min_price', this.filters.budget.min);
         params.append('max_price', this.filters.budget.max);
         
-        // Add coordinates if available
-        if (this.filters.coordinates) {
+        // Add coordinates only if a location has been selected
+        if (this.locationDetails && this.filters.coordinates) {
           params.append('lat', this.filters.coordinates.lat);
           params.append('lng', this.filters.coordinates.lng);
-        } else {
-          params.append('lat', this.mapCenter.lat);
-          params.append('lng', this.mapCenter.lng);
         }
         
         // Add radius
