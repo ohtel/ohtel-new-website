@@ -626,6 +626,8 @@ export default {
       this.subCategories = []; // Clear subcategories
       this.currentPage = 1; // Reset to first page
       this.hasNextPage = false; // Reset hasNextPage
+      this.locationDetails = null; // Clear location details
+      this.filters.coordinates = null; // Clear coordinates
       this.applyFilters(); // Apply the reset filters
     },
     async toggleFavorite(adId, currentStatus) {
