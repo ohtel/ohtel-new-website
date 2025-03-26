@@ -41,9 +41,10 @@
             </p>
             <div class="d-flex justify-content-between align-items-center">
               <small class="text-muted">
-                <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.ad_info2 }}
+                <span><img src="/assets/images/locationIcon.svg" alt=""></span> 
+                <span class="location-text" :title="ad.ad_info2">{{ truncateText(ad.ad_info2, 40) }}</span>
               </small>
-              <small class="text-muted">{{ ad.ad_posted_on }}</small>
+              <small class="text-muted">{{ getRelativeTime(ad.ad_posted_on) }}</small>
             </div>
           </div>
           <div class="card-footer bg-white border-0">
@@ -150,6 +151,54 @@ export default {
       } catch (error) {
         console.error("Error toggling favorite:", error);
       }
+    },
+    truncateText(text, maxLength) {
+      if (!text) return '';
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + '...';
+    },
+    getRelativeTime(dateString) {
+      if (!dateString) return '';
+      
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      // If date is invalid
+      if (isNaN(date.getTime())) return '';
+      
+      // Less than 1 minute
+      if (diffInSeconds < 60) {
+        return 'just now';
+      }
+      
+      // Less than 1 hour
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`;
+      }
+      
+      // Less than 24 hours
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) {
+        return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`;
+      }
+      
+      // Less than 30 days
+      const diffInDays = Math.floor(diffInHours / 24);
+      if (diffInDays < 30) {
+        return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`;
+      }
+      
+      // Less than 12 months
+      const diffInMonths = Math.floor(diffInDays / 30);
+      if (diffInMonths < 12) {
+        return `${diffInMonths} ${diffInMonths === 1 ? 'month' : 'months'} ago`;
+      }
+      
+      // Years
+      const diffInYears = Math.floor(diffInMonths / 12);
+      return `${diffInYears} ${diffInYears === 1 ? 'year' : 'years'} ago`;
     }
   },
   async mounted() {
@@ -219,5 +268,13 @@ export default {
 }
 .price-text {
   font-family: 'Poppins', sans-serif;
+}
+.location-text {
+  display: inline-block;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
 }
 </style>
