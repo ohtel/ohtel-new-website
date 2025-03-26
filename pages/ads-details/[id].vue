@@ -63,7 +63,7 @@
                 </svg>
               </div>
                 </div>
-                <p class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} / month</p>
+                <p v-if="route.query.category_id != 7 && route.query.category_id != 8" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} / month</p>
                 <p class="card-text small text-muted mb-3">{{ restaurantAd.description }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
