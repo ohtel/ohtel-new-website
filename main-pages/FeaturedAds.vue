@@ -34,7 +34,7 @@
               </div>
             </div>
             <p class="card-text text-primary fw-bold mb-1 price-text">
-              ₹ {{ ad.price }} / month
+              ₹ {{ ad.price }} 
             </p>
             <p class="card-text small text-muted mb-3">
               {{ ad.category.name }} - {{ ad.category.sub_category }}

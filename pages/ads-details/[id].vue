@@ -44,7 +44,7 @@
         </div>
 
         <!-- Ad Description -->
-        <h1 class="ad-title">{{ ad.title }}</h1>
+        <h1 class="ad-title">{{ ad.name }}</h1>
         <p class="description">{{ ad.description }}</p>
 
         <!-- Product List Section -->
@@ -93,7 +93,7 @@
             <div >
               <div class="card-body">
                 <div class="d-flex justify-content-between">
-                    <h3>{{ restaurantAd.title }}</h3>
+                    <h3>{{ restaurantAd.name }}</h3>
                     <div class="heart-icon" @click="toggleFavorite(restaurantAd.id, restaurantAd.is_favourite)">
                 <svg v-if="restaurantAd.is_favourite" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
                   <path d="M24.3282 4.99269C20.9761 2.93654 18.0505 3.76514 16.293 5.08501C15.5722 5.6262 15.212 5.89679 15 5.89679C14.788 5.89679 14.4277 5.6262 13.707 5.08501C11.9495 3.76514 9.02386 2.93654 5.6718 4.99269C1.27259 7.69118 0.27715 16.5936 10.4244 24.1043C12.3571 25.5348 13.3235 26.25 15 26.25C16.6765 26.25 17.6429 25.5348 19.5756 24.1043C29.7229 16.5936 28.7274 7.69118 24.3282 4.99269Z" fill="#47509B"/>
@@ -103,7 +103,7 @@
                 </svg>
               </div>
                 </div>
-                <p v-if="route.query.category_id != 7 && route.query.category_id != 8" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} / month</p>
+                <p v-if="route.query.category_id != 7 && route.query.category_id != 8&& route.query.category_id != 4&& route.query.category_id != 6" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} </p>
                 <p class="card-text small text-muted mb-3">{{ restaurantAd.description }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
@@ -244,6 +244,7 @@ const mainImageIndex = ref(0);
 const restaurantAd = ref({
   id: '',
   title: '',
+  name: '',
   description: '',
   price: '',
   location: '',
@@ -265,8 +266,11 @@ const fetchAdDetails = async () => {
     const token = localStorage.getItem('accessToken');
     const { category_id, type, ad_uuid } = route.query;
     
+    // If category_id is 7 or 8, use 3 instead for applicant and recruiter
+    const effectiveCategoryId = (category_id === '7' || category_id === '8') ? '3' : category_id;
+    
     const response = await axios.get(
-      `${BASE_URL}ads/get_ads_detail/?category_id=${category_id}&type=${type}&ad_uuid=${ad_uuid}`,
+      `${BASE_URL}ads/get_ads_detail/?category_id=${effectiveCategoryId}&type=${type}&ad_uuid=${ad_uuid}`,
       {
         headers: { 
           Authorization: `Bearer ${token}`,
@@ -282,18 +286,19 @@ const fetchAdDetails = async () => {
       ad.value = {
         title: adData.ad_title,
         price: adData.price,
+        name: adData.ad_name,
         description: adData.ad_description,
         seller: { 
           name: adData.contact_person,
           contact_number: adData.contact_number,
           contact_email: adData.contact_email,
-          image: adData.company_logo || '/default-profile.jpg'
+          image: adData.profile_picture || '/default-profile.jpg'
         },
         location: {
           lat: adData.coordinate.latitude,
           lng: adData.coordinate.longitude
         },
-        images: adData.image_ids.map(img => img.ad_image),
+        images: adData.image_ids && adData.image_ids.length > 0 ? adData.image_ids.map(img => img.ad_image) : [],
         product_list: adData.product_list || []
       };
 
@@ -301,6 +306,7 @@ const fetchAdDetails = async () => {
       restaurantAd.value = {
         id: adData.ad_id,
         title: adData.ad_title,
+        name: adData.ad_name,
         description: adData.ad_description,
         price: adData.price,
         location: adData.address,
@@ -309,7 +315,7 @@ const fetchAdDetails = async () => {
       };
 
       // Update the images array for the gallery
-      images.value = adData.image_ids.map(img => img.ad_image);
+      images.value = adData.image_ids && adData.image_ids.length > 0 ? adData.image_ids.map(img => img.ad_image) : [];
     }
   } catch (error) {
     console.error('Error fetching ad details:', error);
