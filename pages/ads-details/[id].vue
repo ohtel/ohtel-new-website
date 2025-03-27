@@ -1,5 +1,8 @@
 <template>
   <div class="ad-details-page">
+    <div v-if="showToast" class="toast-notification" :class="{ 'show': showToast }">
+      {{ toastMessage }}
+    </div>
     <headerSection/>
     <!-- Header Navigation -->
      
@@ -361,6 +364,10 @@ const editForm = ref({
 });
 const errors = ref({});
 
+// Add these new refs for toast
+const showToast = ref(false);
+const toastMessage = ref('');
+
 // Add these new methods
 const openEditPopup = () => {
   editForm.value = {
@@ -414,7 +421,7 @@ const handleSubmit = async () => {
   try {
     const token = localStorage.getItem('accessToken');
     const { category_id, type } = route.query;
-    const ad_id = route.params.id; // Get ad_id from URL path parameter
+    const ad_id = route.params.id;
     
     const payload = {
       ad_id: ad_id,
@@ -437,7 +444,8 @@ const handleSubmit = async () => {
       }
     );
 
-    if (response.data && response.data.success) {
+    // Check if response contains the success message
+    if (response.data === "Updated successfully") {
       // Update the local data
       ad.value.seller.name = editForm.value.contact_person;
       ad.value.seller.contact_number = editForm.value.contact_number;
@@ -446,11 +454,30 @@ const handleSubmit = async () => {
         ad.value.seller.candidate_name = editForm.value.candidate_name;
       }
       
+      // Close popup first
       closeEditPopup();
+      
+      // Show success toast
+      toastMessage.value = 'Updated successfully';
+      showToast.value = true;
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        showToast.value = false;
+      }, 3000);
+    } else {
+      throw new Error('Update failed');
     }
   } catch (error) {
     console.error('Error updating seller information:', error);
-    // Handle error appropriately
+    // Show error toast
+    toastMessage.value = 'Error updating information';
+    showToast.value = true;
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      showToast.value = false;
+    }, 3000);
   }
 };
 
@@ -994,5 +1021,24 @@ margin-bottom: 24px;
 
 .save-btn:hover {
   background: #3a4179;
+}
+
+/* Add these new styles for toast notification */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1001;
+  transform: translateX(120%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.toast-notification.show {
+  transform: translateX(0);
 }
 </style>
