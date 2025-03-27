@@ -2,7 +2,7 @@
   <div :class="{'main-div': !isProfilePage}">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bold">{{ heading }}</h2>
-      <button class="btn view-all" @click="viewAllAds">View Ads</button>
+      <button class="btn view-all" @click="viewAllAds">View All Ads</button>
     </div>
     <!-- Horizontal Scroll Section -->
     <div class="scroll-container">
@@ -79,7 +79,20 @@ export default {
   },
   methods: {
     viewAllAds() {
-      this.$router.push('../view-ads');
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (this.heading === 'My Ads') {
+        this.$router.push({
+          path: '../view-ads',
+          query: { user_id: user.user_id }
+        });
+      } else if (this.heading === 'Favorite Ads') {
+        this.$router.push({
+          path: '../view-ads',
+          query: { user_id: user.user_id, favourite_only: true }
+        });
+      } else {
+        this.$router.push('../view-ads');
+      }
     },
     viewDetails(adId) {
       const ad = this.ads.find(ad => ad.ad.id === adId);

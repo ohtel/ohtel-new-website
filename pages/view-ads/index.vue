@@ -28,7 +28,7 @@
 </svg>All Ads</span>
       </nav>
 
-      <h1 class="page-title">All Ads</h1>
+      <h1 class="page-title">{{ pageTitle }}</h1>
 
       <div class="ads-container">
         <!-- Filters Section -->
@@ -260,7 +260,9 @@ export default {
         radius: 10,
         sort: "date",
         type: "all_ads",
-        coordinates: null
+        coordinates: null,
+        user_id: null,
+        favourite_only: false
       },
       defaultFilters: {
         category: null,
@@ -270,7 +272,9 @@ export default {
         radius: 10,
         sort: "date",
         type: "all_ads",
-        coordinates: null
+        coordinates: null,
+        user_id: null,
+        favourite_only: false
       },
       minBudget: 0,
       maxBudget: 100000,
@@ -295,7 +299,20 @@ export default {
   async mounted() {
     await this.fetchCategories();
     this.fetchCurrentLocation();
-    await this.fetchInitialAds(); // Changed to fetchInitialAds
+    
+    // Get user_id and favourite_only from URL if present
+    const user_id = this.$route.query.user_id;
+    const favourite_only = this.$route.query.favourite_only === 'true';
+    
+    if (user_id) {
+      this.filters.user_id = user_id;
+    }
+    
+    if (favourite_only) {
+      this.filters.favourite_only = true;
+    }
+    
+    await this.fetchInitialAds();
   },
   methods: {
     async fetchCategories() {
@@ -418,26 +435,39 @@ export default {
     },
     async fetchInitialAds() {
       const params = new URLSearchParams();
-        // Add sort parameter
-        if (this.filters.sort) {
-          let sortValue = this.filters.sort;
-          // Convert sort values to match API expectations
-          switch(this.filters.sort) {
-            case 'lowToHigh':
-              sortValue = 'price_low_to_high';
-              break;
-            case 'highToLow':
-              sortValue = 'price_high_to_low';
-              break;
-            case 'date':
-              sortValue = 'new_to_old';
-              break;
-          }
-          params.append('sort', sortValue);
+      
+      // Add sort parameter
+      if (this.filters.sort) {
+        let sortValue = this.filters.sort;
+        switch(this.filters.sort) {
+          case 'lowToHigh':
+            sortValue = 'price_low_to_high';
+            break;
+          case 'highToLow':
+            sortValue = 'price_high_to_low';
+            break;
+          case 'date':
+            sortValue = 'new_to_old';
+            break;
         }
+        params.append('sort', sortValue);
+      }
+
+      // Add user_id if present
+      if (this.filters.user_id) {
+        params.append('user_id', this.filters.user_id);
+      }
+
+      // Add favourite_only if true
+      if (this.filters.favourite_only) {
+        params.append('favourite_only', 'true');
+      }
+
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${BASE_URL}web/ads/?page=1&${params.toString()}`, {
+        const url = `${BASE_URL}web/ads/?page=1&${params.toString()}`;
+
+        const response = await axios.get(url, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -446,7 +476,7 @@ export default {
         
         if (response.data) {
           this.ads = response.data.results;
-          this.hasNextPage = !!response.data.next; // Set hasNextPage based on next field
+          this.hasNextPage = !!response.data.next;
         }
       } catch (error) {
         console.error("Error fetching initial ads:", error);
@@ -455,48 +485,39 @@ export default {
     async applyFilters() {
       try {
         const token = localStorage.getItem('accessToken');
-        
-        // Build query parameters
         const params = new URLSearchParams();
         
         // Reset page to 1 when applying filters
         this.currentPage = 1;
         params.append('page', 1);
         
-        // Add category if selected
+        // Add all existing filter parameters
         if (this.filters.category) {
           params.append('category', this.filters.category);
         }
         
-        // Add sub-categories if selected - each as a separate parameter
         if (this.filters.subCategory && this.filters.subCategory.length > 0) {
           this.filters.subCategory.forEach(subCategoryId => {
             params.append('sub_category', subCategoryId);
           });
         }
         
-        // Always add budget range values
         params.append('min_price', this.filters.budget.min);
         params.append('max_price', this.filters.budget.max);
         
-        // Add coordinates only if a location has been selected
         if (this.locationDetails && this.filters.coordinates) {
           params.append('lat', this.filters.coordinates.lat);
           params.append('lng', this.filters.coordinates.lng);
         }
         
-        // Add radius
         params.append('radius', this.filters.radius);
         
-        // Add area if set
         if (this.filters.area) {
           params.append('area', this.filters.area);
         }
         
-        // Add sort parameter
         if (this.filters.sort) {
           let sortValue = this.filters.sort;
-          // Convert sort values to match API expectations
           switch(this.filters.sort) {
             case 'lowToHigh':
               sortValue = 'price_low_to_high';
@@ -511,13 +532,23 @@ export default {
           params.append('sort', sortValue);
         }
         
-        // Add type parameter
         if (this.filters.type) {
           params.append('type', this.filters.type);
         }
 
-        console.log("Filter params:", params.toString());
-        const response = await axios.get(`${BASE_URL}web/ads/?${params.toString()}`, {
+        // Add user_id if present
+        if (this.filters.user_id) {
+          params.append('user_id', this.filters.user_id);
+        }
+
+        // Add favourite_only if true
+        if (this.filters.favourite_only) {
+          params.append('favourite_only', 'true');
+        }
+
+        const url = `${BASE_URL}web/ads/?${params.toString()}`;
+
+        const response = await axios.get(url, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -526,7 +557,7 @@ export default {
         
         if (response.data) {
           this.ads = response.data.results;
-          this.hasNextPage = !!response.data.next; // Set hasNextPage based on next field
+          this.hasNextPage = !!response.data.next;
         }
       } catch (error) {
         console.error("Error fetching filtered ads:", error);
@@ -544,47 +575,37 @@ export default {
     async fetchPage(page) {
       try {
         const token = localStorage.getItem('accessToken');
-        
-        // Build query parameters
         const params = new URLSearchParams();
         
-        // Add pagination parameter
         params.append('page', page);
         
-        // Add category if selected
+        // Add all existing filter parameters
         if (this.filters.category) {
           params.append('category', this.filters.category);
         }
         
-        // Add sub-categories if selected - each as a separate parameter
         if (this.filters.subCategory && this.filters.subCategory.length > 0) {
           this.filters.subCategory.forEach(subCategoryId => {
             params.append('sub_category', subCategoryId);
           });
         }
         
-        // Always add budget range values
         params.append('min_price', this.filters.budget.min);
         params.append('max_price', this.filters.budget.max);
         
-        // Add coordinates only if a location has been selected
         if (this.locationDetails && this.filters.coordinates) {
           params.append('lat', this.filters.coordinates.lat);
           params.append('lng', this.filters.coordinates.lng);
         }
         
-        // Add radius
         params.append('radius', this.filters.radius);
         
-        // Add area if set
         if (this.filters.area) {
           params.append('area', this.filters.area);
         }
         
-        // Add sort parameter
         if (this.filters.sort) {
           let sortValue = this.filters.sort;
-          // Convert sort values to match API expectations
           switch(this.filters.sort) {
             case 'lowToHigh':
               sortValue = 'price_low_to_high';
@@ -599,13 +620,23 @@ export default {
           params.append('sort', sortValue);
         }
         
-        // Add type parameter
         if (this.filters.type) {
           params.append('type', this.filters.type);
         }
 
-        console.log("Filter params:", params.toString());
-        const response = await axios.get(`${BASE_URL}web/ads/?${params.toString()}`, {
+        // Add user_id if present
+        if (this.filters.user_id) {
+          params.append('user_id', this.filters.user_id);
+        }
+
+        // Add favourite_only if true
+        if (this.filters.favourite_only) {
+          params.append('favourite_only', 'true');
+        }
+
+        const url = `${BASE_URL}web/ads/?${params.toString()}`;
+
+        const response = await axios.get(url, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -614,7 +645,7 @@ export default {
         
         if (response.data) {
           this.ads = response.data.results;
-          this.hasNextPage = !!response.data.next; // Set hasNextPage based on next field
+          this.hasNextPage = !!response.data.next;
         }
       } catch (error) {
         console.error("Error fetching page:", error);
@@ -662,6 +693,14 @@ export default {
     },
   },
   computed: {
+    pageTitle() {
+      if (this.filters.favourite_only) {
+        return 'All Favorite Ads';
+      } else if (this.filters.user_id) {
+        return 'My Ads';
+      }
+      return 'All Ads';
+    },
     hasActiveFilters() {
       return (
         this.filters.category !== null ||

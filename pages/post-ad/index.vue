@@ -1972,7 +1972,9 @@ export default {
             formData.append('coordinate', JSON.stringify(coordinates));
             formData.append('location', JSON.stringify({point: coordinates}));
           }
-
+          if (this.selectedSubscriptionPlan) {
+            formData.append('plan_id', this.selectedSubscriptionPlan);
+          }
           // Add main category and type
           formData.append('main_category', this.selectedCategoryDetails.id);
           formData.append('ad_type', this.adType);
@@ -2137,7 +2139,9 @@ export default {
           if (this.formData.companyLogoUpload && this.formData.companyLogoUpload[0]) {
             formData.append('organization_logo', this.formData.companyLogoUpload[0]);
           }
-
+          if (this.selectedSubscriptionPlan) {
+            formData.append('plan_id', this.selectedSubscriptionPlan);
+          }
           // Add office address and requirements
           formData.append('office_address', this.formData.addressOfTheBusiness || '');
           formData.append('requirement', this.formData.staffRequirement || '');

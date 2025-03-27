@@ -119,7 +119,12 @@
           <div class="seller-details d-flex">
             <img :src="ad.seller.image || '/default-profile.jpg'" alt="Seller Profile" class="seller-image" />
             <p class="seller-name">{{ ad.seller.name }}</p>
-            
+            <div class="edit-icon" @click="openEditPopup">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11 20H17" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
           </div>
           <div >
              
@@ -145,6 +150,67 @@
         <!-- <aboutUsSection/> -->
         <getTheAppSection/>
         <footerSection/>
+
+    <!-- Edit Popup Modal -->
+    <div v-if="showEditPopup" class="edit-popup-modal">
+      <div class="edit-popup-content">
+        <div class="edit-popup-header">
+          <h3>Edit Seller Information</h3>
+          <span class="close-icon" @click="closeEditPopup">✖</span>
+        </div>
+        <form @submit.prevent="handleSubmit" class="edit-form">
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input 
+              type="text" 
+              v-model="editForm.contact_person" 
+              required
+              :class="{ 'error': errors.contact_person }"
+            />
+            <span class="error-message" v-if="errors.contact_person">{{ errors.contact_person }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Contact Number</label>
+            <input 
+              type="tel" 
+              v-model="editForm.contact_number" 
+              required
+              pattern="[0-9]{10}"
+              :class="{ 'error': errors.contact_number }"
+            />
+            <span class="error-message" v-if="errors.contact_number">{{ errors.contact_number }}</span>
+          </div>
+
+          <div class="form-group" v-if="route.query.type === 'Applicant'">
+            <label>Candidate Name</label>
+            <input 
+              type="text" 
+              v-model="editForm.candidate_name" 
+              required
+              :class="{ 'error': errors.candidate_name }"
+            />
+            <span class="error-message" v-if="errors.candidate_name">{{ errors.candidate_name }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Contact Email</label>
+            <input 
+              type="email" 
+              v-model="editForm.contact_email" 
+              required
+              :class="{ 'error': errors.contact_email }"
+            />
+            <span class="error-message" v-if="errors.contact_email">{{ errors.contact_email }}</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" @click="closeEditPopup">Cancel</button>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -285,6 +351,98 @@ const viewDetails = (adId) => {
   console.log("View details for ad ID:", adId);
 };
 
+// Add these new refs
+const showEditPopup = ref(false);
+const editForm = ref({
+  contact_person: '',
+  contact_number: '',
+  candidate_name: '',
+  contact_email: ''
+});
+const errors = ref({});
+
+// Add these new methods
+const openEditPopup = () => {
+  editForm.value = {
+    contact_person: ad.value.seller.name,
+    contact_number: ad.value.seller.contact_number,
+    candidate_name: ad.value.seller.candidate_name || '',
+    contact_email: ad.value.seller.contact_email
+  };
+  showEditPopup.value = true;
+};
+
+const closeEditPopup = () => {
+  showEditPopup.value = false;
+  errors.value = {};
+};
+
+const validateForm = () => {
+  errors.value = {};
+  
+  if (!editForm.value.contact_person.trim()) {
+    errors.value.contact_person = 'Contact person name is required';
+  }
+
+  if (!editForm.value.contact_number.trim()) {
+    errors.value.contact_number = 'Contact number is required';
+  } else if (!/^[0-9]{10}$/.test(editForm.value.contact_number)) {
+    errors.value.contact_number = 'Please enter a valid 10-digit phone number';
+  }
+
+  if (route.query.type === 'Applicant' && !editForm.value.candidate_name.trim()) {
+    errors.value.candidate_name = 'Candidate name is required';
+  }
+
+  if (!editForm.value.contact_email.trim()) {
+    errors.value.contact_email = 'Contact email is required';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editForm.value.contact_email)) {
+    errors.value.contact_email = 'Please enter a valid email address';
+  }
+
+  return Object.keys(errors.value).length === 0;
+};
+
+const handleSubmit = async () => {
+  if (!validateForm()) return;
+
+  try {
+    const token = localStorage.getItem('accessToken');
+    const { category_id, type, ad_uuid } = route.query;
+    
+    const response = await axios.post(
+      `${BASE_URL}ads/update_seller_info/`,
+      {
+        category_id,
+        type,
+        ad_uuid,
+        ...editForm.value
+      },
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.data && response.data.success) {
+      // Update the local data
+      ad.value.seller.name = editForm.value.contact_person;
+      ad.value.seller.contact_number = editForm.value.contact_number;
+      ad.value.seller.contact_email = editForm.value.contact_email;
+      if (route.query.type === 'Applicant') {
+        ad.value.seller.candidate_name = editForm.value.candidate_name;
+      }
+      
+      closeEditPopup();
+    }
+  } catch (error) {
+    console.error('Error updating seller information:', error);
+    // Handle error appropriately
+  }
+};
+
 onMounted(() => {
   fetchAdDetails();
 });
@@ -394,6 +552,7 @@ onMounted(() => {
   gap: 1rem;
   align-items: center;
   margin-bottom: 18px;
+  justify-content: space-between;
 }
 .seller-image {
   width: 50px;
@@ -706,5 +865,123 @@ margin-bottom: 24px;
   .product-name {
     font-size: 16px;
   }
+}
+
+/* Add these new styles */
+.edit-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.edit-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.edit-popup-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-popup-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.edit-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.edit-popup-header h3 {
+  margin: 0;
+  color: #161C2D;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #161C2D;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 8px 12px;
+  border: 1px solid #DEE1E6;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input.error {
+  border-color: #F55959;
+}
+
+.error-message {
+  color: #F55959;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cancel-btn, .save-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn {
+  background: #fff;
+  border: 1px solid #DEE1E6;
+  color: #161C2D;
+}
+
+.save-btn {
+  background: #47509B;
+  border: none;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background: #f5f5f5;
+}
+
+.save-btn:hover {
+  background: #3a4179;
 }
 </style>
