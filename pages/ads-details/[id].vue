@@ -43,6 +43,43 @@
         <!-- Ad Description -->
         <h1 class="ad-title">{{ ad.title }}</h1>
         <p class="description">{{ ad.description }}</p>
+
+        <!-- Product List Section -->
+        <div v-if="ad.product_list && ad.product_list.length > 0" class="product-list-section">
+          <h2 class="section-title">Products</h2>
+          <div class="product-grid">
+            <div v-for="product in ad.product_list" :key="product.id" class="product-card">
+              <div class="product-image">
+                <img :src="product.image" :alt="product.name" />
+                <a v-if="product.catalog" :href="product.catalog" target="_blank" class="catalog-link">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 2V8H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  View Catalog
+                </a>
+              </div>
+              <div class="product-info">
+                <h3 class="product-name">{{ product.name }}</h3>
+                <div class="product-details">
+                  <div class="detail-item">
+                    <span class="label">Available:</span>
+                    <span class="value">{{ product.unit_available }} {{ product.unit }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Price:</span>
+                    <span class="value">₹{{ product.price.toLocaleString() }}</span>
+                  </div>
+                  <div v-if="product.offer_price" class="detail-item">
+                    <span class="label">Offer Price:</span>
+                    <span class="value offer-price">₹{{ product.offer_price.toLocaleString() }}</span>
+                  </div>
+                </div>
+                <a v-if="product.url" :href="product.url" target="_blank" class="product-link">View Product</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Right Section: Seller Info and Location -->
@@ -187,7 +224,8 @@ const fetchAdDetails = async () => {
           lat: adData.coordinate.latitude,
           lng: adData.coordinate.longitude
         },
-        images: adData.image_ids.map(img => img.ad_image)
+        images: adData.image_ids.map(img => img.ad_image),
+        product_list: adData.product_list || []
       };
 
       // Update the restaurantAd ref with the API response data
@@ -532,6 +570,141 @@ margin-bottom: 24px;
   }
   .map {
     height: 200px;
+  }
+}
+
+/* Product List Styles */
+.product-list-section {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  color: #161C2D;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  background: #fff;
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.catalog-link {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(71, 80, 155, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.catalog-link:hover {
+  background: rgba(71, 80, 155, 1);
+}
+
+.product-info {
+  padding: 1rem;
+}
+
+.product-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #161C2D;
+  margin-bottom: 1rem;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  color: #666;
+  font-size: 14px;
+}
+
+.value {
+  color: #161C2D;
+  font-weight: 500;
+}
+
+.offer-price {
+  color: #47509B;
+  font-weight: 600;
+}
+
+.product-link {
+  display: block;
+  text-align: center;
+  background: #47509B;
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.product-link:hover {
+  background: #3a4179;
+}
+
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-image {
+    height: 180px;
+  }
+  
+  .product-name {
+    font-size: 16px;
   }
 }
 </style>
