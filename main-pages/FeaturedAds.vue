@@ -146,7 +146,8 @@ export default {
           `${BASE_URL}ads/favourite/`,
           { 
             ad_id: adId,
-            category_id: ad.category.id
+            category_id: ad.category.id==8 || ad.category.id==7? 3 : ad.category.id,
+            type: ad.ad.type
           },
           {
             headers: { 

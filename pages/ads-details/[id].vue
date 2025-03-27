@@ -330,7 +330,8 @@ const toggleFavorite = async (adId, currentStatus) => {
       `${BASE_URL}ads/favourite/`,
       { 
         ad_id: adId,
-        category_id: route.query.category_id
+        category_id: route.query.category_id==8 || route.query.category_id==7? 3 : route.query.category_id,
+        type: route.query.type
       },
       {
         headers: { 
