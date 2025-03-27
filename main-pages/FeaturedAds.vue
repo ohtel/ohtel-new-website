@@ -33,7 +33,7 @@
                 </svg>
               </div>
             </div>
-            <p class="card-text text-primary fw-bold mb-1 price-text">
+            <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text text-primary fw-bold mb-1 price-text">
               ₹ {{ ad.price }} 
             </p>
             <p class="card-text small text-muted mb-3">
