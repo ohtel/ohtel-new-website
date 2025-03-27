@@ -384,20 +384,25 @@ const validateForm = () => {
     errors.value.contact_person = 'Contact person name is required';
   }
 
-  if (!editForm.value.contact_number.trim()) {
-    errors.value.contact_number = 'Contact number is required';
-  } else if (!/^[0-9]{10}$/.test(editForm.value.contact_number)) {
+  // Either contact number or email is required
+  if (!editForm.value.contact_number.trim() && !editForm.value.contact_email.trim()) {
+    errors.value.contact_number = 'Either contact number or email is required';
+    errors.value.contact_email = 'Either contact number or email is required';
+  }
+
+  // Validate contact number if provided
+  if (editForm.value.contact_number.trim() && !/^[0-9]{10}$/.test(editForm.value.contact_number)) {
     errors.value.contact_number = 'Please enter a valid 10-digit phone number';
   }
 
-  if (route.query.type === 'Applicant' && !editForm.value.candidate_name.trim()) {
-    errors.value.candidate_name = 'Candidate name is required';
+  // Validate email if provided
+  if (editForm.value.contact_email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editForm.value.contact_email)) {
+    errors.value.contact_email = 'Please enter a valid email address';
   }
 
-  if (!editForm.value.contact_email.trim()) {
-    errors.value.contact_email = 'Contact email is required';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editForm.value.contact_email)) {
-    errors.value.contact_email = 'Please enter a valid email address';
+  // Validate candidate name only for Applicant type
+  if (route.query.type === 'Applicant' && !editForm.value.candidate_name.trim()) {
+    errors.value.candidate_name = 'Candidate name is required';
   }
 
   return Object.keys(errors.value).length === 0;
@@ -408,16 +413,22 @@ const handleSubmit = async () => {
 
   try {
     const token = localStorage.getItem('accessToken');
-    const { category_id, type, ad_uuid } = route.query;
+    const { category_id, type } = route.query;
+    const ad_id = route.params.id; // Get ad_id from URL path parameter
+    
+    const payload = {
+      ad_id: ad_id,
+      ad_category: category_id,
+      ad_type: type,
+      contact_person: editForm.value.contact_person,
+      contact_number: editForm.value.contact_number || '',
+      contact_email: editForm.value.contact_email || '',
+      ...(route.query.type === 'Applicant' && { candidate_name: editForm.value.candidate_name })
+    };
     
     const response = await axios.post(
-      `${BASE_URL}ads/update_seller_info/`,
-      {
-        category_id,
-        type,
-        ad_uuid,
-        ...editForm.value
-      },
+      `${BASE_URL}ads/update/details/`,
+      payload,
       {
         headers: { 
           Authorization: `Bearer ${token}`,
