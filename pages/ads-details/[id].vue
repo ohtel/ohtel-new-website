@@ -367,6 +367,7 @@ const fetchAdDetails = async () => {
           lng: adData.coordinate.longitude
         },
         images: adData.image_ids && adData.image_ids.length > 0 ? adData.image_ids.map(img => img.ad_image) : [],
+        image_ids: adData.image_ids || [], // Store the full image_ids array
         product_list: adData.product_list || []
       };
 
@@ -448,7 +449,7 @@ const showAdDetailsPopup = ref(false);
 const adDetailsForm = ref({
   name: '',
   description: '',
-  images: []
+  images: [] // Each image will have { preview, binary, image_id }
 });
 const adDetailsErrors = ref({});
 const imageInput = ref(null);
@@ -587,17 +588,14 @@ const openAdDetailsPopup = async () => {
     images: []
   };
 
-  // Fetch binary data for each existing image
-  const imagePromises = images.value.map(async (imageUrl) => {
-    const binary = await fetchImageBinary(imageUrl);
-    return {
-      preview: imageUrl,
-      binary: binary
-    };
-  });
+  // Map existing images with their IDs from the API response
+  const existingImages = ad.value.images.map((imageUrl, index) => ({
+    preview: imageUrl,
+    binary: null,
+    image_id: ad.value.image_ids[index]?.id || null // Get the image_id from the stored image_ids array
+  }));
 
-  // Wait for all image binary data to be fetched
-  adDetailsForm.value.images = await Promise.all(imagePromises);
+  adDetailsForm.value.images = existingImages;
   showAdDetailsPopup.value = true;
 };
 
@@ -634,7 +632,8 @@ const handleImageUpload = (event) => {
         // Store both the preview URL and the binary data
         adDetailsForm.value.images.push({
           preview: e.target.result,
-          binary: file
+          binary: file,
+          image_id: null // New images don't have an image_id
         });
       };
       reader.readAsDataURL(file);
@@ -642,8 +641,62 @@ const handleImageUpload = (event) => {
   }
 };
 
-const removeImage = (index) => {
-  adDetailsForm.value.images.splice(index, 1);
+const removeImage = async (index) => {
+  const imageToRemove = adDetailsForm.value.images[index];
+  
+  // If it's an existing image (has image_id), call the delete API
+  if (imageToRemove.image_id) {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const { category_id } = route.query;
+      const ad_id = route.params.id;
+      
+      const response = await axios.post(
+        `${BASE_URL}web/delete-images/`,
+        {
+          category_id: category_id,
+          ad_id: ad_id,
+          image_id: imageToRemove.image_id
+        },
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data === "Deleted successfully") {
+        // Remove the image from the form
+        adDetailsForm.value.images.splice(index, 1);
+        
+        // Show success toast
+        toastMessage.value = 'Image deleted successfully';
+        showToast.value = true;
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+          showToast.value = false;
+        }, 3000);
+      } else {
+        throw new Error('Delete failed');
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      // Show error toast
+      toastMessage.value = 'Error deleting image';
+      showToast.value = true;
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        showToast.value = false;
+      }, 3000);
+      return; // Don't remove the image if deletion failed
+    }
+  } else {
+    // If it's a new image, just remove it from the form
+    adDetailsForm.value.images.splice(index, 1);
+  }
 };
 
 const handleAdDetailsSubmit = async () => {
@@ -662,9 +715,9 @@ const handleAdDetailsSubmit = async () => {
     formData.append('ad_name', adDetailsForm.value.name);
     formData.append('ad_description', adDetailsForm.value.description);
 
-    // Append each image as binary data
-    adDetailsForm.value.images.forEach((image, index) => {
-      if (image.binary) {
+    // Only append new images (those without image_id)
+    adDetailsForm.value.images.forEach((image) => {
+      if (image.binary && !image.image_id) {
         formData.append('image_ids', image.binary);
       }
     });
