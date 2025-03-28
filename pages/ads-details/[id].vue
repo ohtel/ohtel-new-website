@@ -88,6 +88,9 @@
               </div>
             </div>
           </div>
+          <button v-if="ad.product_list && ad.product_list.length > 0" class="edit-products-btn" @click="openProductEditPopup">
+            Edit Products
+          </button>
         </div>
       </div>
 
@@ -282,6 +285,111 @@
         </form>
       </div>
     </div>
+
+    <!-- Add this new popup after the Ad Details Edit Popup -->
+    <div v-if="showProductEditPopup" class="edit-popup-modal">
+      <div class="edit-popup-content">
+        <div class="edit-popup-header">
+          <h3>Edit Products</h3>
+          <span class="close-icon" @click="closeProductEditPopup">✖</span>
+        </div>
+        <form @submit.prevent="handleProductSubmit" class="edit-form">
+          <div v-for="(product, index) in productEditForm" :key="index" class="product-edit-item">
+            <div class="product-edit-header">
+              <h4>Product {{ index + 1 }}</h4>
+              <button type="button" class="remove-product" @click="removeProduct(index)" v-if="productEditForm.length > 1">×</button>
+            </div>
+            
+            <div class="form-group">
+              <label>Product Image</label>
+              <div class="image-preview-container">
+                <div v-if="product.image_preview" class="image-preview-item">
+                  <img :src="product.image_preview" :alt="'Product ' + (index + 1)" class="preview-image" />
+                  <button type="button" class="remove-image" @click="removeProductImage(index)">×</button>
+                </div>
+                <div v-else class="image-upload-placeholder" @click="triggerProductImageUpload(index)">
+                  <input 
+                    type="file" 
+                    :ref="'productImageInput' + index"
+                    @change="(e) => handleProductImageUpload(e, index)" 
+                    accept="image/*" 
+                    style="display: none"
+                  />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5V19M5 12H19" stroke="#161C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>Add Image</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Product Name</label>
+              <input 
+                type="text" 
+                v-model="product.name" 
+                required
+                :class="{ 'error': productErrors[index]?.name }"
+              />
+              <span class="error-message" v-if="productErrors[index]?.name">{{ productErrors[index].name }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Available Units</label>
+              <input 
+                type="number" 
+                v-model="product.unit_available" 
+                required
+                min="0"
+                :class="{ 'error': productErrors[index]?.unit_available }"
+              />
+              <span class="error-message" v-if="productErrors[index]?.unit_available">{{ productErrors[index].unit_available }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Unit Type</label>
+              <input 
+                type="text" 
+                v-model="product.unit" 
+                required
+                :class="{ 'error': productErrors[index]?.unit }"
+              />
+              <span class="error-message" v-if="productErrors[index]?.unit">{{ productErrors[index].unit }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Price</label>
+              <input 
+                type="number" 
+                v-model="product.price" 
+                required
+                min="0"
+                :class="{ 'error': productErrors[index]?.price }"
+              />
+              <span class="error-message" v-if="productErrors[index]?.price">{{ productErrors[index].price }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Offer Price (Optional)</label>
+              <input 
+                type="number" 
+                v-model="product.offer_price" 
+                min="0"
+                :class="{ 'error': productErrors[index]?.offer_price }"
+              />
+              <span class="error-message" v-if="productErrors[index]?.offer_price">{{ productErrors[index].offer_price }}</span>
+            </div>
+          </div>
+
+          <button type="button" class="add-product-btn" @click="addNewProduct">Add Another Product</button>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" @click="closeProductEditPopup">Cancel</button>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -453,6 +561,11 @@ const adDetailsForm = ref({
 });
 const adDetailsErrors = ref({});
 const imageInput = ref(null);
+
+// Add these new refs after the existing refs
+const showProductEditPopup = ref(false);
+const productEditForm = ref([]);
+const productErrors = ref([]);
 
 // Add these new methods
 const openEditPopup = () => {
@@ -756,6 +869,172 @@ const handleAdDetailsSubmit = async () => {
     console.error('Error updating ad details:', error);
     // Show error toast
     toastMessage.value = 'Error updating ad details';
+    showToast.value = true;
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      showToast.value = false;
+    }, 3000);
+  }
+};
+
+// Add these new methods after the existing methods
+const openProductEditPopup = () => {
+  // Initialize the form with existing products
+  productEditForm.value = ad.value.product_list.map(product => ({
+    ...product,
+    image_preview: product.image,
+    image_binary: null
+  }));
+  showProductEditPopup.value = true;
+};
+
+const closeProductEditPopup = () => {
+  showProductEditPopup.value = false;
+  productErrors.value = [];
+};
+
+const addNewProduct = () => {
+  productEditForm.value.push({
+    name: '',
+    unit_available: 0,
+    unit: '',
+    price: 0,
+    offer_price: null,
+    image_preview: null,
+    image_binary: null
+  });
+};
+
+const removeProduct = (index) => {
+  productEditForm.value.splice(index, 1);
+};
+
+const triggerProductImageUpload = (index) => {
+  const input = document.querySelector(`#productImageInput${index}`);
+  if (input) input.click();
+};
+
+const handleProductImageUpload = (event, index) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      productEditForm.value[index].image_preview = e.target.result;
+      productEditForm.value[index].image_binary = file;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const removeProductImage = (index) => {
+  productEditForm.value[index].image_preview = null;
+  productEditForm.value[index].image_binary = null;
+};
+
+const validateProductForm = () => {
+  productErrors.value = [];
+  let isValid = true;
+
+  productEditForm.value.forEach((product, index) => {
+    productErrors.value[index] = {};
+    
+    if (!product.name.trim()) {
+      productErrors.value[index].name = 'Product name is required';
+      isValid = false;
+    }
+
+    if (!product.unit_available || product.unit_available < 0) {
+      productErrors.value[index].unit_available = 'Valid available units are required';
+      isValid = false;
+    }
+
+    if (!product.unit.trim()) {
+      productErrors.value[index].unit = 'Unit type is required';
+      isValid = false;
+    }
+
+    if (!product.price || product.price < 0) {
+      productErrors.value[index].price = 'Valid price is required';
+      isValid = false;
+    }
+
+    if (product.offer_price && product.offer_price < 0) {
+      productErrors.value[index].offer_price = 'Offer price must be positive';
+      isValid = false;
+    }
+  });
+
+  return isValid;
+};
+
+const handleProductSubmit = async () => {
+  if (!validateProductForm()) return;
+
+  try {
+    const token = localStorage.getItem('accessToken');
+    const ad_id = route.params.id;
+    
+    // Create FormData to handle binary files
+    const formData = new FormData();
+    formData.append('product_length', productEditForm.value.length);
+
+    // Create product list array
+    const productList = productEditForm.value.map((product, index) => {
+      const productData = {
+        name: product.name,
+        unit_available: product.unit_available,
+        unit: product.unit,
+        price: product.price,
+        offer_price: product.offer_price || null
+      };
+
+      // If there's a new image, append it to FormData
+      if (product.image_binary) {
+        formData.append(`product_image_${index}`, product.image_binary);
+      }
+
+      return productData;
+    });
+
+    formData.append('product_list', JSON.stringify(productList));
+    
+    const response = await axios.put(
+      `${BASE_URL}products/?ad_id=${ad_id}`,
+      formData,
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+
+    if (response.data) {
+      // Update the local data
+      ad.value.product_list = productEditForm.value.map(product => ({
+        ...product,
+        image: product.image_preview
+      }));
+      
+      // Close popup first
+      closeProductEditPopup();
+      
+      // Show success toast
+      toastMessage.value = 'Products updated successfully';
+      showToast.value = true;
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        showToast.value = false;
+      }, 3000);
+    } else {
+      throw new Error('Update failed');
+    }
+  } catch (error) {
+    console.error('Error updating products:', error);
+    // Show error toast
+    toastMessage.value = 'Error updating products';
     showToast.value = true;
     
     // Hide toast after 3 seconds
@@ -1222,6 +1501,9 @@ margin-bottom: 24px;
   width: 90%;
   max-width: 500px;
   position: relative;
+  max-height: 90vh; /* Limit height to 90% of viewport height */
+  display: flex;
+  flex-direction: column;
 }
 
 .edit-popup-header {
@@ -1229,6 +1511,10 @@ margin-bottom: 24px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
 }
 
 .edit-popup-header h3 {
@@ -1242,6 +1528,28 @@ margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: calc(90vh - 120px); /* Subtract header and footer height */
+  padding-right: 8px; /* Add padding for scrollbar */
+}
+
+/* Custom scrollbar styles */
+.edit-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.edit-form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.edit-form::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.edit-form::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .form-group {
@@ -1277,6 +1585,11 @@ margin-bottom: 24px;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 16px;
+  border-top: 1px solid #DEE1E6;
 }
 
 .cancel-btn, .save-btn {
@@ -1399,5 +1712,76 @@ textarea {
 
 textarea.error {
   border-color: #F55959;
+}
+
+/* Add these new styles for the new product edit popup */
+.product-edit-item {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.product-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.product-edit-header h4 {
+  margin: 0;
+  color: #161C2D;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.remove-product {
+  background: #F55959;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.add-product-btn {
+  background: #fff;
+  border: 2px dashed #DEE1E6;
+  color: #47509B;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 16px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.add-product-btn:hover {
+  border-color: #47509B;
+  background: #f5f5f5;
+}
+
+.edit-products-btn {
+  background: #47509B;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 16px;
+  transition: background 0.2s;
+}
+
+.edit-products-btn:hover {
+  background: #3a4179;
 }
 </style>
