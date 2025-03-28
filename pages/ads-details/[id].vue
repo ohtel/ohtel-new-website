@@ -566,16 +566,38 @@ const handleSubmit = async () => {
   }
 };
 
-// Add these new methods for ad details popup
-const openAdDetailsPopup = () => {
+// Add this new function to fetch image binary data
+const fetchImageBinary = async (imageUrl) => {
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    return new File([blob], 'image.jpg', { type: 'image/jpeg' });
+  } catch (error) {
+    console.error('Error fetching image binary:', error);
+    return null;
+  }
+};
+
+// Update the openAdDetailsPopup function
+const openAdDetailsPopup = async () => {
+  // Initialize the form with name and description
   adDetailsForm.value = {
     name: ad.value.name,
     description: ad.value.description,
-    images: images.value.map(img => ({
-      preview: img,
-      binary: null
-    }))
+    images: []
   };
+
+  // Fetch binary data for each existing image
+  const imagePromises = images.value.map(async (imageUrl) => {
+    const binary = await fetchImageBinary(imageUrl);
+    return {
+      preview: imageUrl,
+      binary: binary
+    };
+  });
+
+  // Wait for all image binary data to be fetched
+  adDetailsForm.value.images = await Promise.all(imagePromises);
   showAdDetailsPopup.value = true;
 };
 
