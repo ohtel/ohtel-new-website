@@ -666,12 +666,12 @@ const removeImage = async (index) => {
         }
       );
 
-      if (response.data === "Deleted successfully") {
+      if (response.data.detail === "Image removed successfully.") {
         // Remove the image from the form
         adDetailsForm.value.images.splice(index, 1);
         
-        // Show success toast
-        toastMessage.value = 'Image deleted successfully';
+        // Show success toast with the message from the API
+        toastMessage.value = response.data.detail;
         showToast.value = true;
         
         // Hide toast after 3 seconds
@@ -704,26 +704,25 @@ const handleAdDetailsSubmit = async () => {
 
   try {
     const token = localStorage.getItem('accessToken');
-    const { category_id, type } = route.query;
     const ad_id = route.params.id;
     
     // Create FormData to handle binary files
     const formData = new FormData();
-    formData.append('ad_id', ad_id);
-    formData.append('ad_category', category_id);
-    formData.append('ad_type', type);
     formData.append('ad_name', adDetailsForm.value.name);
     formData.append('ad_description', adDetailsForm.value.description);
 
     // Only append new images (those without image_id)
+    let imageCount = 1;
     adDetailsForm.value.images.forEach((image) => {
       if (image.binary && !image.image_id) {
-        formData.append('image_ids', image.binary);
+        // Append each image with numbered keys (product_image_1, product_image_2, etc.)
+        formData.append(`new_image`, image.binary);
+        imageCount++;
       }
     });
     
-    const response = await axios.post(
-      `${BASE_URL}ads/update/ad-details-api/`,
+    const response = await axios.put(
+      `${BASE_URL}ads/update_ads_under_mf/${ad_id}/`,
       formData,
       {
         headers: { 
