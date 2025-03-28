@@ -732,7 +732,7 @@ const handleAdDetailsSubmit = async () => {
       }
     );
 
-    if (response.data === "Updated successfully") {
+    if (response.data.detail === "Updated successfully") {
       // Update the local data
       ad.value.name = adDetailsForm.value.name;
       ad.value.description = adDetailsForm.value.description;
