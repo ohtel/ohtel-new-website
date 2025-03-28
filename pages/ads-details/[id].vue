@@ -12,6 +12,12 @@
     <div class="heading-section">
         <div class="main-heading">{{ ad.title }}</div>
         <div class="ad-id">Ad ID : {{route.query.ad_uuid}}</div>
+        <div class="edit-icon" @click="openAdDetailsPopup">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15.2141 5.98239L16.6158 4.58063C17.39 3.80646 18.6452 3.80646 19.4194 4.58063C20.1935 5.3548 20.1935 6.60998 19.4194 7.38415L18.0176 8.78591M15.2141 5.98239L6.98023 14.2163C5.93493 15.2616 5.41226 15.7842 5.05637 16.4211C4.70047 17.058 4.3424 18.5619 4 20C5.43809 19.6576 6.94199 19.2995 7.57889 18.9436C8.21579 18.5877 8.73844 18.0651 9.78375 17.0198L18.0176 8.78591M15.2141 5.98239L18.0176 8.78591" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 20H17" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
      </div>
     <div class="content-wrapper">
       <!-- Left Section: Ad Details -->
@@ -214,6 +220,68 @@
         </form>
       </div>
     </div>
+
+    <!-- Ad Details Edit Popup Modal -->
+    <div v-if="showAdDetailsPopup" class="edit-popup-modal">
+      <div class="edit-popup-content">
+        <div class="edit-popup-header">
+          <h3>Edit Ad Details</h3>
+          <span class="close-icon" @click="closeAdDetailsPopup">✖</span>
+        </div>
+        <form @submit.prevent="handleAdDetailsSubmit" class="edit-form">
+          <div class="form-group">
+            <label>Ad Name</label>
+            <input 
+              type="text" 
+              v-model="adDetailsForm.name" 
+              required
+              :class="{ 'error': adDetailsErrors.name }"
+            />
+            <span class="error-message" v-if="adDetailsErrors.name">{{ adDetailsErrors.name }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea 
+              v-model="adDetailsForm.description" 
+              required
+              rows="4"
+              :class="{ 'error': adDetailsErrors.description }"
+            ></textarea>
+            <span class="error-message" v-if="adDetailsErrors.description">{{ adDetailsErrors.description }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Images</label>
+            <div class="image-preview-container">
+              <div v-for="(image, index) in adDetailsForm.images" :key="index" class="image-preview-item">
+                <img :src="image.preview" :alt="'Image ' + (index + 1)" class="preview-image" />
+                <button type="button" class="remove-image" @click="removeImage(index)">×</button>
+              </div>
+              <div class="image-upload-placeholder" @click="triggerImageUpload">
+                <input 
+                  type="file" 
+                  ref="imageInput" 
+                  @change="handleImageUpload" 
+                  accept="image/*" 
+                  multiple 
+                  style="display: none"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V19M5 12H19" stroke="#161C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Add Images</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" @click="closeAdDetailsPopup">Cancel</button>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -375,6 +443,16 @@ const errors = ref({});
 const showToast = ref(false);
 const toastMessage = ref('');
 
+// Add these new refs for ad details popup
+const showAdDetailsPopup = ref(false);
+const adDetailsForm = ref({
+  name: '',
+  description: '',
+  images: []
+});
+const adDetailsErrors = ref({});
+const imageInput = ref(null);
+
 // Add these new methods
 const openEditPopup = () => {
   editForm.value = {
@@ -479,6 +557,131 @@ const handleSubmit = async () => {
     console.error('Error updating seller information:', error);
     // Show error toast
     toastMessage.value = 'Error updating information';
+    showToast.value = true;
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      showToast.value = false;
+    }, 3000);
+  }
+};
+
+// Add these new methods for ad details popup
+const openAdDetailsPopup = () => {
+  adDetailsForm.value = {
+    name: ad.value.name,
+    description: ad.value.description,
+    images: images.value.map(img => ({
+      preview: img,
+      binary: null
+    }))
+  };
+  showAdDetailsPopup.value = true;
+};
+
+const closeAdDetailsPopup = () => {
+  showAdDetailsPopup.value = false;
+  adDetailsErrors.value = {};
+};
+
+const validateAdDetailsForm = () => {
+  adDetailsErrors.value = {};
+  
+  if (!adDetailsForm.value.name.trim()) {
+    adDetailsErrors.value.name = 'Ad name is required';
+  }
+
+  if (!adDetailsForm.value.description.trim()) {
+    adDetailsErrors.value.description = 'Description is required';
+  }
+
+  return Object.keys(adDetailsErrors.value).length === 0;
+};
+
+const triggerImageUpload = () => {
+  imageInput.value.click();
+};
+
+const handleImageUpload = (event) => {
+  const files = event.target.files;
+  if (files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        // Store both the preview URL and the binary data
+        adDetailsForm.value.images.push({
+          preview: e.target.result,
+          binary: file
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+};
+
+const removeImage = (index) => {
+  adDetailsForm.value.images.splice(index, 1);
+};
+
+const handleAdDetailsSubmit = async () => {
+  if (!validateAdDetailsForm()) return;
+
+  try {
+    const token = localStorage.getItem('accessToken');
+    const { category_id, type } = route.query;
+    const ad_id = route.params.id;
+    
+    // Create FormData to handle binary files
+    const formData = new FormData();
+    formData.append('ad_id', ad_id);
+    formData.append('ad_category', category_id);
+    formData.append('ad_type', type);
+    formData.append('ad_name', adDetailsForm.value.name);
+    formData.append('ad_description', adDetailsForm.value.description);
+
+    // Append each image as binary data
+    adDetailsForm.value.images.forEach((image, index) => {
+      if (image.binary) {
+        formData.append('image_ids', image.binary);
+      }
+    });
+    
+    const response = await axios.post(
+      `${BASE_URL}ads/update/ad-details-api/`,
+      formData,
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+
+    if (response.data === "Updated successfully") {
+      // Update the local data
+      ad.value.name = adDetailsForm.value.name;
+      ad.value.description = adDetailsForm.value.description;
+      images.value = adDetailsForm.value.images.map(img => img.preview);
+      
+      // Close popup first
+      closeAdDetailsPopup();
+      
+      // Show success toast
+      toastMessage.value = 'Ad details updated successfully';
+      showToast.value = true;
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        showToast.value = false;
+      }, 3000);
+    } else {
+      throw new Error('Update failed');
+    }
+  } catch (error) {
+    console.error('Error updating ad details:', error);
+    // Show error toast
+    toastMessage.value = 'Error updating ad details';
     showToast.value = true;
     
     // Hide toast after 3 seconds
@@ -1047,5 +1250,80 @@ margin-bottom: 24px;
 
 .toast-notification.show {
   transform: translateX(0);
+}
+
+/* Add these new styles for image preview */
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #F55959;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.image-upload-placeholder {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #DEE1E6;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.image-upload-placeholder:hover {
+  border-color: #47509B;
+}
+
+.image-upload-placeholder span {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+textarea {
+  padding: 8px 12px;
+  border: 1px solid #DEE1E6;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+}
+
+textarea.error {
+  border-color: #F55959;
 }
 </style>
