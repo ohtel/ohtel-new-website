@@ -950,8 +950,12 @@
 
               <!-- Publish Button -->
               <div class="publish-section">
-                <button class="publish-button" @click="handlePublish">
-                  Publish Ad
+                <button 
+                  class="publish-button" 
+                  @click="handlePublish"
+                  :disabled="isPublishing"
+                >
+                  {{ isPublishing ? 'Publishing...' : 'Publish Ad' }}
                 </button>
               </div>
             </div>
@@ -1015,6 +1019,7 @@ export default {
       showSubSubCategoryStep: false,
       subSubCategories: [],
       selectedSubscriptionPlan: null,
+      isPublishing: false, // Add this line for tracking publish state
       adDetails: {
         category: "",
         sellerOrBuyer: "Seller",
@@ -1302,8 +1307,12 @@ export default {
     },
     async handlePublish() {
       try {
+        // Set publishing state to true
+        this.isPublishing = true;
+        
         // Verify token before proceeding
         if (!this.verifyToken()) {
+          this.isPublishing = false;
           return;
         }
         
@@ -1390,6 +1399,9 @@ export default {
           detail: error.message || 'An error occurred while publishing your ad.',
           life: 5000
         });
+      } finally {
+        // Set publishing state back to false
+        this.isPublishing = false;
       }
     },
     
@@ -3068,10 +3080,16 @@ export default {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
-}
 
-.publish-button:hover {
-  background: #3a3f7a;
+  &:hover:not(:disabled) {
+    background: #3a3f7a;
+  }
+
+  &:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 }
 
 @media (max-width: 768px) {
