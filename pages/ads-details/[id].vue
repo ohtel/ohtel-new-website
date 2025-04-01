@@ -310,7 +310,7 @@
                 <div v-else class="image-upload-placeholder" @click="triggerProductImageUpload(index)">
                   <input 
                     type="file" 
-                    :ref="'productImageInput' + index"
+                    :data-product-index="index"
                     @change="(e) => handleProductImageUpload(e, index)" 
                     accept="image/*" 
                     style="display: none"
@@ -911,7 +911,8 @@ const removeProduct = (index) => {
 };
 
 const triggerProductImageUpload = (index) => {
-  const input = document.querySelector(`#productImageInput${index}`);
+  // Get the input element using the ref
+  const input = document.querySelector(`input[type="file"][data-product-index="${index}"]`);
   if (input) input.click();
 };
 
@@ -1777,7 +1778,8 @@ textarea.error {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 16px;
+  margin: 16px auto; /* Changed from margin-bottom to margin with auto for horizontal centering */
+  display: block; /* Added to make margin auto work */
   transition: background 0.2s;
 }
 
