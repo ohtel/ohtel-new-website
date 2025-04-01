@@ -328,15 +328,53 @@ export default {
       try {
         const result = await signInWithPopup(auth, provider);
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
         const user = result.user;
+        const token = user.accessToken;
 
         console.log('Google Sign-In successful:', user);
-        localStorage.setItem('accessToken', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        this.$router.push('/main-dashboard');
+        const user_name = user.displayName;
+        const user_email = user.email;
+
+        // Call the Google authentication API
+        const response = await axios.post(
+          `${BASE_URL}google-authenticate/`,
+          {
+            name: user_name,
+            email: user_email,
+            google_token: token
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.status === 200) {
+          // Store the authentication data
+          localStorage.setItem('accessToken', response.data.token);
+          localStorage.setItem('user', JSON.stringify(response.data.data));
+          
+          // Show success message
+          this.toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Google Sign-In successful',
+            life: 5000
+          });
+          
+          // Navigate to dashboard
+          this.$router.push('/main-dashboard');
+        }
       } catch (error) {
-        this.loginError = error.message || 'Failed to sign in with Google';
+        console.error('Google Sign-In error:', error);
+        this.toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.response?.data?.detail || 'Failed to sign in with Google',
+          life: 5000
+        });
+        this.loginError = error.response?.data?.detail || 'Failed to sign in with Google';
       }
     },
   },
