@@ -912,7 +912,7 @@
               <div class="review-section" v-if="formData.document_uploaded">
                 <div class="section-header">
                   <h3 class="section-title">Documents</h3>
-                  <button class="edit-button" @click="handleBackStep(3)">
+                  <button class="edit-button" @click="handleBackStep(4)">
                     <i class="pi pi-pencil"></i> Edit
                   </button>
                 </div>
@@ -1059,6 +1059,20 @@ export default {
       subscriptionPlans: [],
       formData: null,
     };
+  },
+  computed: {
+    getSelectedPlanName() {
+      const selectedPlan = this.subscriptionPlans.find(plan => plan.id === this.selectedSubscriptionPlan);
+      return selectedPlan ? selectedPlan.plan_name : '';
+    },
+    getSelectedPlanPrice() {
+      const selectedPlan = this.subscriptionPlans.find(plan => plan.id === this.selectedSubscriptionPlan);
+      return selectedPlan ? selectedPlan.plan_price : 0;
+    },
+    getSelectedPlanValidity() {
+      const selectedPlan = this.subscriptionPlans.find(plan => plan.id === this.selectedSubscriptionPlan);
+      return selectedPlan ? selectedPlan.validity_days : 0;
+    }
   },
   methods: {
     handleNextStep(step) {
