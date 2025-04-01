@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Toast />
     <div class="center-section">
       <h1>Login</h1>
       <p>Welcome Back! Sign in to continue</p>
@@ -79,6 +80,8 @@ import { BASE_URL, ENDPOINTS } from '../environment.js';
 import { useRouter } from 'vue-router';
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useToast } from "primevue/usetoast";
+import Toast from 'primevue/toast';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -98,6 +101,9 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export default {
+  components: {
+    Toast
+  },
   data() {
     return {
       email: '',
@@ -109,6 +115,10 @@ export default {
       showOtpSection: false,
       timer: 30,
     };
+  },
+  setup() {
+    const toast = useToast();
+    return { toast };
   },
   methods: {
     validateInput(event) {
@@ -252,12 +262,47 @@ export default {
         }
       }, 1000);
     },
-    resendOtp() {
+    async resendOtp() {
       if (this.timer === 0) {
-        this.timer = 30;
-        this.startTimer();
-        // Simulate resending OTP
-        console.log('OTP Resent');
+        try {
+          let endpoint = '';
+          let params = '';
+
+          // Check if input is email or phone
+          if (this.isEmail(this.email)) {
+            endpoint = `${BASE_URL}send-otp-to-email/`;
+            params = `?email=${this.email}`;
+          } else {
+            endpoint = `${BASE_URL}send-otp-to-phone/`;
+            params = `?phone=${this.email}`;
+          }
+
+          const response = await axios.get(`${endpoint}${params}`, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.status === 200) {
+            this.toast.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'OTP has been resent successfully',
+              life: 5000
+            });
+            // Start the timer only after successful resend
+            this.timer = 30;
+            this.startTimer();
+          }
+        } catch (error) {
+          console.error('Error resending OTP:', error);
+          this.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.response?.data?.detail || 'Failed to resend OTP. Please try again.',
+            life: 5000
+          });
+        }
       }
     },
     async skipLogin() {
