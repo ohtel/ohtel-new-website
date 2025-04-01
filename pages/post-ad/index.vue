@@ -897,7 +897,7 @@
               <div class="review-section" v-if="formData.files && formData.files.length > 0">
                 <div class="section-header">
                   <h3 class="section-title">Images</h3>
-                  <button class="edit-button" @click="handleBackStep(3)">
+                  <button class="edit-button" @click="handleBackStep(4)">
                     <i class="pi pi-pencil"></i> Edit
               </button>
             </div>
