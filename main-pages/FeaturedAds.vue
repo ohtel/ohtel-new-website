@@ -10,7 +10,7 @@
         <div
           v-for="(ad, index) in ads"
           :key="index"
-          class="card h-100 shadow-sm flex-shrink-0"
+          class="card featured-ads-card shadow-sm flex-shrink-0"
           style="width: 18rem"
         >
           <div class="position-relative">
@@ -330,5 +330,8 @@ export default {
   height: 150px;
   object-fit: contain;
   width: 100%;
+}
+.featured-ads-card{
+  height: 450px;
 }
 </style>

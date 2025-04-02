@@ -102,7 +102,8 @@ mounted() {
     const userString = localStorage.getItem("user");
     console.log("data from personal details", userString);
     console.log("data from parent", this.dataFromParent);
-    if (this.dataFromParent.fullName === '' && userString) {
+    if(userString!='GUEST_USER'){
+      if (this.dataFromParent.fullName === '' && userString) {
       const user = JSON.parse(userString);
       console.log("Parsed user data:", user);
       // Update the personalDetails object with fetched data
@@ -114,6 +115,8 @@ mounted() {
       this.personalDetails.preferredContactMethodsPhone = !!user.phone;
       this.personalDetails.preferredContactMethodsEmail = !!user.email;
     }
+    }
+    
     else {
       console.log("data from personal details", this.dataFromParent);
       this.personalDetails.fullName = this.dataFromParent.fullName || "";
