@@ -2,6 +2,14 @@
   <div class="main-section">
     <Toast />
     <headerSection />
+    <!-- Add Permission Popup -->
+    <div v-if="showPermissionPopup" class="permission-popup-overlay">
+      <div class="permission-popup">
+        <h3>Permission Required</h3>
+        <p>You do not have permission to perform this action. Please login to continue.</p>
+        <button class="login-button" @click="handleLogin">Login</button>
+      </div>
+    </div>
     <div
       class="card p-6 max-w-3xl mx-auto main-div"
     >
@@ -1009,6 +1017,7 @@ export default {
   },
   data() {
     return {
+      showPermissionPopup: false,
       progress: 20, // Default to Step 1 (20%)
       selectedCategory: null,
       selectedStep2Card: null,
@@ -1420,8 +1429,7 @@ export default {
           this.$router.push('/login');
           return;
         }
-        debugger
-        console.log("selected category details", this.selectedCategoryDetails)
+
         if (this.selectedCategoryDetails?.id === 1 || 
             this.selectedCategoryDetails?.id === 2 || 
             this.selectedCategoryDetails?.id === 5) {
@@ -1537,6 +1545,19 @@ export default {
             body: formData
           });
           
+          let responseData;
+          try {
+            responseData = await response.json();
+          } catch (error) {
+            console.error('Error parsing response:', error);
+            throw new Error('Failed to parse server response');
+          }
+          
+          if (response.status === 403 && responseData.detail === 'You do not have permission to perform this action.') {
+            this.showPermissionPopup = true;
+            return;
+          }
+          
           console.log("API Response Status:", response.status);
           
           if (response.status === 401) {
@@ -1552,8 +1573,7 @@ export default {
           
           // Specifically check for 201 status code
           if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
-            const result = await response.json();
-            console.log("API Response:", result);
+            console.log("API Response:", responseData);
             
             this.toast.add({
               severity: 'success',
@@ -1570,8 +1590,7 @@ export default {
           }
           
           // If we get here, there was an error
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to publish ad');
+          throw new Error(responseData.message || 'Failed to publish ad');
           
         }
         if (this.selectedCategoryDetails?.id === 4 || 
@@ -1721,6 +1740,19 @@ export default {
             body: formData
           });
           
+          let responseData;
+          try {
+            responseData = await response.json();
+          } catch (error) {
+            console.error('Error parsing response:', error);
+            throw new Error('Failed to parse server response');
+          }
+          
+          if (response.status === 403 && responseData.detail === 'You do not have permission to perform this action.') {
+            this.showPermissionPopup = true;
+            return;
+          }
+          
           console.log("API Response Status:", response.status);
           
           if (response.status === 401) {
@@ -1735,8 +1767,7 @@ export default {
           }
           
           if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
-            const result = await response.json();
-            console.log("API Response:", result);
+            console.log("API Response:", responseData);
             
             this.toast.add({
               severity: 'success',
@@ -1753,8 +1784,7 @@ export default {
           }
           
           // Handle error
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to publish ad');
+          throw new Error(responseData.message || 'Failed to publish ad');
         } else if (this.selectedCategoryDetails?.id === 11) {
           // Equipment and Amenities form handling
           const form5Ref = this.$refs.form5Ref;
@@ -1855,9 +1885,21 @@ export default {
             body: formData,
           });
 
+          let responseData;
+          try {
+            responseData = await response.json();
+          } catch (error) {
+            console.error('Error parsing response:', error);
+            throw new Error('Failed to parse server response');
+          }
+          
+          if (response.status === 403 && responseData.detail === 'You do not have permission to perform this action.') {
+            this.showPermissionPopup = true;
+            return;
+          }
+
           if (response.ok) {
-            const result = await response.json();
-            console.log("API Response:", result);
+            console.log("API Response:", responseData);
             
             this.toast.add({
               severity: 'success',
@@ -1872,8 +1914,7 @@ export default {
             return;
           }
           
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to publish ad');
+          throw new Error(responseData.message || 'Failed to publish ad');
         }
         else if (this.selectedCategoryDetails?.id === 12) {
           // Service Provider form handling
@@ -1950,9 +1991,21 @@ export default {
             body: formData,
           });
 
+          let responseData;
+          try {
+            responseData = await response.json();
+          } catch (error) {
+            console.error('Error parsing response:', error);
+            throw new Error('Failed to parse server response');
+          }
+          
+          if (response.status === 403 && responseData.detail === 'You do not have permission to perform this action.') {
+            this.showPermissionPopup = true;
+            return;
+          }
+
           if (response.ok) {
-            const result = await response.json();
-            console.log("API Response:", result);
+            console.log("API Response:", responseData);
             
             this.toast.add({
               severity: 'success',
@@ -1967,8 +2020,7 @@ export default {
             return;
           }
           
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to publish ad');
+          throw new Error(responseData.message || 'Failed to publish ad');
         }
         
         // Add form-3 handling (Applicant)
@@ -2081,39 +2133,39 @@ export default {
               body: formData
             });
 
+            let responseData;
+            try {
+              responseData = await response.json();
+            } catch (error) {
+              console.error('Error parsing response:', error);
+              throw new Error('Failed to parse server response');
+            }
+            
+            if (response.status === 403 && responseData.detail === 'You do not have permission to perform this action.') {
+              this.showPermissionPopup = true;
+              return;
+            }
+
             console.log("API Response Status:", response.status);
 
-            // if (response.status === 401) {
-            //   this.toast.add({
-            //     severity: 'error',
-            //     summary: 'Authentication Error',
-            //     detail: 'Your session has expired. Please login again.',
-            //     life: 5000
-            //   });
-            //   this.$router.push('/login');
-            //   return;
-            // }
-
-            // if (!response.ok) {
-            //   const errorData = await response.json();
-            //   throw new Error(errorData.message || 'Failed to submit application');
-            // }
-
-            const result = await response.json();
-            console.log("API Response:", result);
+            if (response.ok) {
+              console.log("API Response:", responseData);
+              
+              this.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Your application has been submitted successfully!',
+                life: 5000
+              });
+              
+              // Delay redirection for 4 seconds
+              setTimeout(() => {
+                this.$router.push('/view-ads');
+              }, 2000);
+              return;
+            }
             
-            this.toast.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Your application has been submitted successfully!',
-              life: 5000
-            });
-            
-            // Delay redirection for 4 seconds
-            setTimeout(() => {
-              this.$router.push('/view-ads');
-            }, 2000);
-            return;
+            throw new Error(responseData.message || 'Failed to submit application');
           } catch (error) {
             console.error("API error:", error);
             if (!error.message.includes('expired')) {  // Only show error toast if it's not an auth error
@@ -2220,29 +2272,39 @@ export default {
               body: formData
             });
 
-            console.log("API Response Status:", response.status);
-
-            if (response.status === 201 || (response.status >= 200 && response.status < 300)) {
-            const result = await response.json();
-            console.log("API Response:", result);
-            
-            this.toast.add({
-              severity: 'success',
-              summary: 'Success',
-                detail: 'Your recruiter ad has been published successfully!',
-              life: 5000
-            });
-            
-              // Delay redirection for 4 seconds
-            setTimeout(() => {
-                this.$router.push('/view-ads');
-              }, 2000);
-            return;
+            let responseData;
+            try {
+              responseData = await response.json();
+            } catch (error) {
+              console.error('Error parsing response:', error);
+              throw new Error('Failed to parse server response');
             }
             
-            // Handle error
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to publish recruiter ad');
+            if (response.status === 403 && responseData.detail === 'You do not have permission to perform this action.') {
+              this.showPermissionPopup = true;
+              return;
+            }
+
+            console.log("API Response Status:", response.status);
+
+            if (response.ok) {
+              console.log("API Response:", responseData);
+              
+              this.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Your recruiter ad has been published successfully!',
+                life: 5000
+              });
+              
+              // Delay redirection for 4 seconds
+              setTimeout(() => {
+                this.$router.push('/view-ads');
+              }, 2000);
+              return;
+            }
+            
+            throw new Error(responseData.message || 'Failed to publish recruiter ad');
           } catch (error) {
             console.error("API error:", error);
               this.toast.add({
@@ -2649,6 +2711,10 @@ export default {
         const blobUrl = URL.createObjectURL(documentFile);
         window.open(blobUrl, '_blank');
       }
+    },
+    handleLogin() {
+      this.showPermissionPopup = false;
+      this.$router.push('/login');
     },
   },
   created() {
@@ -3177,5 +3243,55 @@ export default {
 .interview-item span {
   color: #666;
   font-size: 14px;
+}
+
+.permission-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.permission-popup {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    color: #47509b;
+    margin-bottom: 15px;
+    font-size: 20px;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .login-button {
+    background: #47509b;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background: #3a3f7a;
+    }
+  }
 }
 </style>
