@@ -10,6 +10,18 @@
         <button class="login-button" @click="handleLogin">Login</button>
       </div>
     </div>
+
+    <!-- Add Confirmation Popup -->
+    <div v-if="showConfirmationPopup" class="permission-popup-overlay">
+      <div class="permission-popup">
+        <h3>Important Notice</h3>
+        <p>Please note that you won't be able to edit your ad after posting. Are you sure you want to proceed?</p>
+        <div class="popup-buttons">
+          <button class="cancel-button" @click="showConfirmationPopup = false">Cancel</button>
+          <button class="proceed-button" @click="proceedWithPublish">Proceed</button>
+        </div>
+      </div>
+    </div>
     <div
       class="card p-6 max-w-3xl mx-auto main-div"
     >
@@ -1072,6 +1084,7 @@ export default {
       step5Cards: [],
       subscriptionPlans: [],
       formData: null,
+      showConfirmationPopup: false,
     };
   },
   computed: {
@@ -1316,90 +1329,14 @@ export default {
     },
     async handlePublish() {
       try {
-        // Set publishing state to true
-        this.isPublishing = true;
-        
-        // Verify token before proceeding
-        if (!this.verifyToken()) {
-          this.isPublishing = false;
-          return;
-        }
-        
-        console.log("Starting publish process...");
-        let formRef = null;
-        
-        // Determine which form to use based on category ID
-        if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
-          formRef = this.$refs.form1Ref;
-        } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
-          formRef = this.$refs.form2Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
-          formRef = this.$refs.form3Ref;
-        } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
-          formRef = this.$refs.form4Ref;
-        } else if ([11].includes(this.selectedCategoryDetails?.id)) {
-          formRef = this.$refs.form5Ref;
-        } else if ([12].includes(this.selectedCategoryDetails?.id)) {
-          formRef = this.$refs.form6Ref;
+        // Check if the category requires confirmation
+        if ([1, 2, 3, 5, 8].includes(this.selectedCategoryDetails?.id)) {
+          this.showConfirmationPopup = true;
+          return; // Stop here and wait for user confirmation
         }
 
-        // Get form data if form reference exists
-        let formData = {};
-        if (formRef && typeof formRef.getFormData === 'function') {
-          formData = formRef.getFormData();
-          console.log("Form data collected:", formData);
-          
-          // Update adDetails with form values
-          if (formData.title) this.adDetails.title = formData.title;
-          if (formData.description) this.adDetails.description = formData.description;
-          
-          // Handle files specifically
-          if (formData.files && formData.files.length > 0) {
-            console.log("Files found in form data:", formData.files);
-            this.adDetails.images = formData.files;
-          }
-        }
-
-        // When calling submitAdToApi, make sure to pass the files
-        const completeData = {
-          ...formData,
-          title: this.adDetails.title || formData.title,
-          description: this.adDetails.description || formData.description,
-          price: (this.adDetails.price !== undefined) ? this.adDetails.price : (formData.price || ''),
-          area: (this.adDetails.area !== undefined) ? this.adDetails.area : (formData.area || ''),
-          address: this.adDetails.address,
-          category: this.selectedCategoryDetails?.id,
-          subCategory: this.adDetails.subCategory || null,
-          subSubCategory: this.adDetails.subSubCategory || null,
-          coordinates: this.adDetails.coordinates || {
-            latitude: this.adDetails.defaultLocation?.lat || null,
-            longitude: this.adDetails.defaultLocation?.lng || null
-          },
-          city: this.adDetails.city || '',
-          state: this.adDetails.state || '',
-          fullName: this.adDetails.fullName || '',
-          contact: this.adDetails.contact || '',
-          email: this.adDetails.email || '',
-          organizationName: this.adDetails.organizationName || '',
-          preferredContactMethodsPhone: this.adDetails.preferredContactMethodsPhone || false,
-          preferredContactMethodsEmail: this.adDetails.preferredContactMethodsEmail || false,
-          images: this.adDetails.images || [], // Make sure images are included
-        };
-
-        await this.submitAdToApi(completeData);
-        
-        // Remove duplicate success toast from here since it's already shown in submitAdToApi
-        // this.toast.add({
-        //   severity: 'success',
-        //   summary: 'Success',
-        //   detail: 'Your ad has been published successfully!',
-        //   life: 5000 // Display for 5 seconds
-        // });
-        
-        // Delay the redirection to allow the toast to be visible
-        // setTimeout(() => {
-        //   this.$router.push('/main-dashboard');
-        // }, 3000); // Redirect after 3 seconds
+        // If no confirmation needed, proceed with publishing
+        await this.publishAd();
       } catch (error) {
         console.error("Error in publish process:", error);
         this.toast.add({
@@ -1409,9 +1346,96 @@ export default {
           life: 5000
         });
       } finally {
-        // Set publishing state back to false
         this.isPublishing = false;
       }
+    },
+
+    async proceedWithPublish() {
+      try {
+        this.showConfirmationPopup = false;
+        this.isPublishing = true;
+        await this.publishAd();
+      } catch (error) {
+        console.error("Error in publish process:", error);
+        this.toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'An error occurred while publishing your ad.',
+          life: 5000
+        });
+      } finally {
+        this.isPublishing = false;
+      }
+    },
+
+    async publishAd() {
+      // Verify token before proceeding
+      if (!this.verifyToken()) {
+        return;
+      }
+      
+      console.log("Starting publish process...");
+      let formRef = null;
+      
+      // Determine which form to use based on category ID
+      if ([1, 7, 8].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form1Ref;
+      } else if ([4, 6].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form2Ref;
+      } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Applicant') {
+        formRef = this.$refs.form3Ref;
+      } else if ([3].includes(this.selectedCategoryDetails?.id) && this.adType === 'Recruiter') {
+        formRef = this.$refs.form4Ref;
+      } else if ([11].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form5Ref;
+      } else if ([12].includes(this.selectedCategoryDetails?.id)) {
+        formRef = this.$refs.form6Ref;
+      }
+
+      // Get form data if form reference exists
+      let formData = {};
+      if (formRef && typeof formRef.getFormData === 'function') {
+        formData = formRef.getFormData();
+        console.log("Form data collected:", formData);
+        
+        // Update adDetails with form values
+        if (formData.title) this.adDetails.title = formData.title;
+        if (formData.description) this.adDetails.description = formData.description;
+        
+        // Handle files specifically
+        if (formData.files && formData.files.length > 0) {
+          console.log("Files found in form data:", formData.files);
+          this.adDetails.images = formData.files;
+        }
+      }
+
+      // When calling submitAdToApi, make sure to pass the files
+      const completeData = {
+        ...formData,
+        title: this.adDetails.title || formData.title,
+        description: this.adDetails.description || formData.description,
+        price: (this.adDetails.price !== undefined) ? this.adDetails.price : (formData.price || ''),
+        area: (this.adDetails.area !== undefined) ? this.adDetails.area : (formData.area || ''),
+        address: this.adDetails.address,
+        category: this.selectedCategoryDetails?.id,
+        subCategory: this.adDetails.subCategory || null,
+        subSubCategory: this.adDetails.subSubCategory || null,
+        coordinates: this.adDetails.coordinates || {
+          latitude: this.adDetails.defaultLocation?.lat || null,
+          longitude: this.adDetails.defaultLocation?.lng || null
+        },
+        city: this.adDetails.city || '',
+        state: this.adDetails.state || '',
+        fullName: this.adDetails.fullName || '',
+        contact: this.adDetails.contact || '',
+        email: this.adDetails.email || '',
+        organizationName: this.adDetails.organizationName || '',
+        preferredContactMethodsPhone: this.adDetails.preferredContactMethodsPhone || false,
+        preferredContactMethodsEmail: this.adDetails.preferredContactMethodsEmail || false,
+        images: this.adDetails.images || [], // Make sure images are included
+      };
+
+      await this.submitAdToApi(completeData);
     },
     
     async submitAdToApi(adData) {
@@ -2716,6 +2740,70 @@ export default {
       this.showPermissionPopup = false;
       this.$router.push('/login');
     },
+    handleBackStep(step) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      
+      // If we're at step 4 (progress === 80) and going back
+      if (this.progress === 80) {
+        // Clear the "Others" input fields when going back from step 4
+        this.adDetails.otherSubCategoryText = "";
+        this.adDetails.otherSubSubCategoryText = "";
+        
+        // If sub-sub-category step exists, go back to it
+        if (this.showSubSubCategoryStep) {
+          this.progress = 70;
+          return;
+        }
+      }
+      
+      // If we're at sub-sub-category step and going back to step 3
+      if (this.progress === 70 && step === 3) {
+        this.selectedSubSubCategory = null; // Clear sub-sub-category selection
+        this.adDetails.subSubCategory = null;
+        this.adDetails.subSubCategoryTitle = "";
+        this.adDetails.isOtherSubSubCategory = false;
+        this.adDetails.otherSubSubCategoryText = "";
+        this.progress = 60; // Go back to sub-category selection
+        return;
+      }
+      
+      if (step === 1) {
+        this.selectedStep2Card = null;
+      } else if (step === 2) {
+        this.selectedStep3Card = null;
+        this.selectedSubSubCategory = null;
+        this.showSubSubCategoryStep = false;
+        // Clear sub-category related data
+        this.adDetails.subCategory = null;
+        this.adDetails.subCategoryTitle = "";
+        this.adDetails.isOtherSubCategory = false;
+        this.adDetails.otherSubCategoryText = "";
+        // Clear sub-sub-category related data
+        this.adDetails.subSubCategory = null;
+        this.adDetails.subSubCategoryTitle = "";
+        this.adDetails.isOtherSubSubCategory = false;
+        this.adDetails.otherSubSubCategoryText = "";
+      } else if (step === 3) {
+        this.selectedStep4Card = null;
+      } else if (step === 4) {
+        this.selectedStep5Card = null;
+      }
+      
+      this.progress =
+        step === 1
+          ? 20
+          : step === 2
+          ? 40
+          : step === 3
+          ? 60
+          : step === 4
+          ? 80
+          : step === 5
+          ? 100
+          : step === 6
+          ? 120
+          : 140;
+    },
   },
   created() {
     this.fetchCategories();
@@ -3292,6 +3380,35 @@ export default {
     &:hover {
       background: #3a3f7a;
     }
+  }
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  .cancel-button, .proceed-button {
+    flex: 1;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .cancel-button {
+    background-color: #ccc;
+  }
+
+  .proceed-button {
+    background-color: #4CAF50;
+    color: white;
   }
 }
 </style>
