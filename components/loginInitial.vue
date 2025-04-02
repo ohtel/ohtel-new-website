@@ -329,9 +329,9 @@ export default {
         const result = await signInWithPopup(auth, provider);
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const user = result.user;
-        const token = user.accessToken;
+        const token = result._tokenResponse.oauthIdToken;
 
-        console.log('Google Sign-In successful:', user);
+        console.log('Google Sign-In successful:', result);
         const user_name = user.displayName;
         const user_email = user.email;
 
