@@ -31,6 +31,7 @@ import image4 from "../../assets/images/caurosel/caurosel2.svg";
 import LoginInitial from '../../components/loginInitial.vue';
 
 export default {
+  name: 'LoginInitialPage',
   components: {
     LoginInitial
   },
@@ -65,6 +66,7 @@ export default {
   padding: 0;
   height: 100vh;
   padding: 16px;
+  background: white;
 }
 
 .login-inputs {

@@ -1,8 +1,10 @@
 <template>
   <div class="mainClass">
-    <div v-if="isLoading" class="loading-container">
-      <div class="spinner"></div>
-    </div>
+    <ClientOnly>
+      <div v-if="loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+    </ClientOnly>
   </div>
 </template>
 
@@ -13,27 +15,26 @@ import { BASE_URL } from '../environment.js';
 export default {
   data() {
     return {
-      isLoading: true
-    };
+      loading: true
+    }
   },
-  async mounted() {
-    // Only proceed if we're on the client side
-    if (process.client) {
+  async beforeMount() {
+    await this.handleNavigation();
+  },
+  methods: {
+    async handleNavigation() {
+      if (!process.client) return;
+
       try {
-        // Check if user is logged in
         const token = localStorage.getItem('accessToken');
         const intentionalLogin = localStorage.getItem('intentionalLogin');
         
         if (token) {
-          this.isLoading = false;
-          await this.$router.push('/main-dashboard');
+          window.location.href = '/main-dashboard';
         } else if (intentionalLogin === 'true') {
-          // If user clicked login button, go to login page
           localStorage.removeItem('intentionalLogin');
-          this.isLoading = false;
-          await this.$router.push('/loginInitial');
+          window.location.href = '/loginInitial';
         } else {
-          // If no token and not intentional login, perform skip login
           try {
             localStorage.clear();
             const response = await axios.get(`${BASE_URL}user/guest_user/`, {}, {
@@ -44,17 +45,15 @@ export default {
 
             localStorage.setItem('accessToken', response.data.result);
             localStorage.setItem('user', response.data.detail);
-            this.isLoading = false;
-            await this.$router.push('/main-dashboard');
+            window.location.href = '/main-dashboard';
           } catch (error) {
             console.error('Failed to login as guest:', error);
-            this.isLoading = false;
-            await this.$router.push('/loginInitial');
+            window.location.href = '/loginInitial';
           }
         }
       } catch (error) {
         console.error('Navigation error:', error);
-        this.isLoading = false;
+        this.loading = false;
       }
     }
   }
@@ -62,17 +61,18 @@ export default {
 </script>
 
 <style>
-.loading-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: white;
+.mainClass {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  background: white;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .spinner {
