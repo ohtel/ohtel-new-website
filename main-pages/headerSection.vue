@@ -182,12 +182,14 @@
   
       // Method to navigate to a specific route
       const navigateTo = (path) => {
-        const storedMapCenter = JSON.parse(sessionStorage.getItem('mapCenter'));
-        const storedLocationName = sessionStorage.getItem('locationName');
+        // Don't fetch location if it's already available
+        if (!locationFetched.value) {
+          const storedMapCenter = JSON.parse(sessionStorage.getItem('mapCenter'));
+          const storedLocationName = sessionStorage.getItem('locationName');
 
-        // Check if location data is already available
-        if (!storedMapCenter || !storedLocationName) {
-          fetchLocation(); // Fetch location if not available
+          if (!storedMapCenter || !storedLocationName) {
+            fetchLocation();
+          }
         }
 
         router.push(path);
@@ -203,6 +205,7 @@
       // Method to handle logout
       const logout = () => {
         localStorage.clear();
+        // Use window.location.href for logout to force a refresh
         window.location.href = '/';
       };
   
