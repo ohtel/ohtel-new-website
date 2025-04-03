@@ -196,7 +196,8 @@
   
       // Method to handle login button click
       const navigateToLogin = () => {
-        window.location.href = '/';
+        localStorage.setItem('intentionalLogin', 'true');
+        router.push('/loginInitial');
       };
   
       // Method to handle logout
