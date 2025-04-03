@@ -12,7 +12,7 @@ env:
 jobs:
   build:
     name: Build
-    runs-on: ohtel-new-web
+    runs-on: self-hosted
     defaults:
       run:
         shell: bash
@@ -37,7 +37,7 @@ jobs:
           path: /home/ubuntu/docker/frontend/app/Dockerfile
   deploy:
     name: Deploy
-    runs-on: ohtel-new-web
+    runs-on: self-hosted
     needs: build
     defaults:
       run:
