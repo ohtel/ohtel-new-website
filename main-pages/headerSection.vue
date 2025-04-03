@@ -18,7 +18,7 @@
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/contact_us')}" class="nav-title" @click="navigateTo('/main-dashboard/contact_us')">Contact Us</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/blogs')}" class="nav-title" @click="navigateTo('/main-dashboard/blogs')">Blogs</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/view-ads')}" class="nav-title"  @click="navigateTo('/view-ads')">View Ads</a></li>
-            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/profile')}" class="nav-title"  @click="navigateTo('/profile')">Profile</a></li>
+            <li v-if="isUserLoggedIn && !isGuestUser"><a :class="{'active': isActiveRoute('/profile')}" class="nav-title"  @click="navigateTo('/profile')">Profile</a></li>
             <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
               <span class="location-icon"><img src="/assets/images/location-icon.svg" alt=""></span>
               <span class="location-name nav-title">{{ locationName }}</span>
@@ -49,7 +49,7 @@
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/contact_us')}" class="nav-title" @click="navigateTo('/main-dashboard/contact_us')">Contact Us</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/main-dashboard/blogs')}" class="nav-title" @click="navigateTo('/main-dashboard/blogs')">Blogs</a></li>
             <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/view-ads')}" class="nav-title"  @click="navigateTo('/view-ads')">View Ads</a></li>
-            <li v-if="isUserLoggedIn"><a :class="{'active': isActiveRoute('/profile')}" class="nav-title"  @click="navigateTo('/profile')">Profile</a></li>
+            <li v-if="isUserLoggedIn && !isGuestUser"><a :class="{'active': isActiveRoute('/profile')}" class="nav-title"  @click="navigateTo('/profile')">Profile</a></li>
         <li v-if="isUserLoggedIn" class="location" @click="openGoogleMap">
           <span class="location-icon"><img src="/assets/images/location-icon.svg" alt=""></span>
           <span class="location-name nav-title">{{ locationName }}</span>
@@ -182,12 +182,14 @@
   
       // Method to navigate to a specific route
       const navigateTo = (path) => {
-        const storedMapCenter = JSON.parse(sessionStorage.getItem('mapCenter'));
-        const storedLocationName = sessionStorage.getItem('locationName');
+        // Don't fetch location if it's already available
+        if (!locationFetched.value) {
+          const storedMapCenter = JSON.parse(sessionStorage.getItem('mapCenter'));
+          const storedLocationName = sessionStorage.getItem('locationName');
 
-        // Check if location data is already available
-        if (!storedMapCenter || !storedLocationName) {
-          fetchLocation(); // Fetch location if not available
+          if (!storedMapCenter || !storedLocationName) {
+            fetchLocation();
+          }
         }
 
         router.push(path);
@@ -196,12 +198,14 @@
   
       // Method to handle login button click
       const navigateToLogin = () => {
-        window.location.href = '/';
+        localStorage.setItem('intentionalLogin', 'true');
+        router.push('/loginInitial');
       };
   
       // Method to handle logout
       const logout = () => {
         localStorage.clear();
+        // Use window.location.href for logout to force a refresh
         window.location.href = '/';
       };
   

@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   modules: ['@pinia/nuxt'], // Register Pinia
   plugins: [
     '~/plugins/auth.js', // Global plugin for auth
-    '@/plugins/google-maps.js', // Google Maps plugin
+    '@/plugins/google-maps.js' // Google Maps plugin
   ],
   runtimeConfig: {
     public: {

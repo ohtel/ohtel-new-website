@@ -190,7 +190,7 @@ export default {
 <style>
 .main {
   padding: 0;
-  height: 100vh;
+  /* height: 100vh; */
   padding: 16px;
 }
 
