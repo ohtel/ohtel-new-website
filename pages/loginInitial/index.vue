@@ -5,7 +5,7 @@
         <LoginInitial />
       </div>
       <!-- Carousel Section -->
-      <div class="carousel-section col-md-6 d-flex">
+      <div v-if="showCarousel" class="carousel-section col-md-6 d-flex">
         <img :src="images[currentIndex]" alt="Carousel Image" />
         <div class="heading-class">
           <h2 class="changing-head">{{ headings[currentIndex] }}</h2>
@@ -44,34 +44,49 @@ export default {
         "Jobs",
         "From Cook to Manager, From rented space to owning a property we got your back.",
       ],
-      currentIndex: 0
+      currentIndex: 0,
+      windowWidth: window.innerWidth
     };
+  },
+  computed: {
+    showCarousel() {
+      return this.windowWidth > 1024;
+    }
   },
   methods: {
     updateIndex() {
       this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    },
+    handleResize() {
+      this.windowWidth = window.innerWidth;
     }
   },
   mounted() {
     this.interval = setInterval(this.updateIndex, 3000);
+    window.addEventListener('resize', this.handleResize);
   },
   beforeDestroy() {
     clearInterval(this.interval);
+    window.removeEventListener('resize', this.handleResize);
   }
 };
 </script>
 
 <style>
 .main {
-  padding: 0;
-  height: 100vh;
-  padding: 16px;
+  min-height: 100vh;
   background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
 }
 
 .login-inputs {
-  height: 100%;
+  width: 100%;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .inputs {
@@ -79,7 +94,9 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   height: 100%;
+  transition: all 0.3s ease;
 }
 
 .carousel-section {
@@ -89,10 +106,6 @@ export default {
   justify-content: right;
   width: fit-content;
   position: relative;
-}
-
-.center-section {
-  width: 500px;
 }
 
 .carousel-dots {
@@ -135,5 +148,55 @@ export default {
   padding-left: 10%;
   padding-right: 10%;
   margin-bottom: 66px;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .inputs {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .col-md-6 {
+    width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .login-inputs {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 24px;
+  }
+
+  .inputs {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 16px;
+  }
+
+  .inputs {
+    padding: 20px;
+  }
+
+  .login-inputs {
+    padding: 0 16px;
+  }
+}
+
+/* Transitions */
+.carousel-section,
+.inputs {
+  transition: all 0.3s ease-in-out;
 }
 </style> 

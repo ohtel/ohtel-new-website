@@ -19,7 +19,7 @@
         />
       </div>
 
-      <div v-if="showOtpSection" class="center-section">
+      <div v-if="showOtpSection" class="center-section-otp">
         <label for="otp-inputs">Enter OTP</label>
         <!-- OTP Inputs -->
         <div id="otp-inputs" class="otp-div d-flex">
@@ -479,6 +479,11 @@ export default {
 }
 .center-section {
   width: 500px;
+}
+@media (max-width: 600px) {
+ .center-section{
+  padding: 105px;
+ }
 }
 .sub-options {
   margin-top: 16px;
