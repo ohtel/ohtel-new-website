@@ -2,7 +2,7 @@
   <div class="main-div">
     <div class="footer-section">
       <!-- Logo -->
-      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/footer-logo.svg" alt="Footer Logo" class="footer-logo">
+      <img src="https://test-bucket-ohtel-1.s3.ap-south-1.amazonaws.com/images/ohtel_logo.svg" alt="Footer Logo" class="footer-logo">
 
       <!-- Address and Email in Flex Layout -->
       <div class="footer-info">

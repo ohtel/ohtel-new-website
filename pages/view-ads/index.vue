@@ -67,7 +67,7 @@
           </div>
           
           <div class="border-class"></div>
-          <div v-if="filters.category!=3&&filters.category!=4&&filters.category!=6&&filters.category!=7&&filters.category!=8" class="filter-section">
+          <!-- <div v-if="filters.category!=3&&filters.category!=4&&filters.category!=6&&filters.category!=7&&filters.category!=8" class="filter-section">
             <h3 @click="toggleSection('budget')">Budget  <span class="arrow" :class="{ 'open': isOpen('budget') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -90,7 +90,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="filter-section">
             <h3 @click="toggleSection('location')">Location <span class="arrow" :class="{ 'open': isOpen('location') }">
@@ -255,7 +255,7 @@ export default {
       filters: {
         category: null,
         subCategory: [],
-        budget: { min: 0, max: 100000 },
+        budget: { min: 0, max: 10000000 },
         area: 20000,
         radius: 10,
         sort: "date",
@@ -267,7 +267,7 @@ export default {
       defaultFilters: {
         category: null,
         subCategory: [],
-        budget: { min: 0, max: 100000 },
+        budget: { min: 0, max: 10000000 },
         area: 20000,
         radius: 10,
         sort: "date",
@@ -277,7 +277,7 @@ export default {
         favourite_only: false
       },
       minBudget: 0,
-      maxBudget: 100000,
+      maxBudget: 10000000,
       categories: [],
       subCategories: [],
       ads: [],
@@ -707,7 +707,7 @@ export default {
         this.filters.category !== null ||
         this.filters.subCategory.length > 0 ||
         this.filters.budget.min !== 50000 ||
-        this.filters.budget.max !== 100000 ||
+        this.filters.budget.max !== 10000000 ||
         this.filters.area !== 20000 ||
         this.filters.radius !== 10 ||
         this.filters.coordinates !== null ||
