@@ -322,26 +322,38 @@ export default {
   padding: 2% 10%;
 }
 
+.user-info {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .user-details {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 24px;
+  flex-wrap: wrap;
 }
 
 .left-section {
-  flex: 2;
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .middle-section {
   flex: 2;
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
+  min-width: 280px;
 }
 
 .right-section {
   flex: 2;
+  min-width: 280px;
 }
 
 .user-photo {
@@ -349,6 +361,8 @@ export default {
   height: 150px;
   border-radius: 50%;
   margin-bottom: 10px;
+  object-fit: cover;
+  border: 3px solid #47509B;
 }
 
 .form-row {
@@ -357,31 +371,44 @@ export default {
 
 .styled-input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 14px;
   border: 2px solid #ddd;
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s ease;
+  background-color: #f8f9fa;
 }
-.delete-btn{
-    padding: 10px;
-    border-radius: 4px;
-border: 1px solid #F55959;
-color: #F24150;
-background-color: #ffff;
-width: 120px;
-}
-.edit-btn{
-    padding: 10px;
-    border-radius: 4px;
-    background: #47509B;
-    border: 1px solid #47509B;
-    color: #ffffff;
-    width: 120px;
-    }
 
-/* Add these new styles for the edit popup */
+.delete-btn {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #F55959;
+  color: #F24150;
+  background-color: #fff;
+  width: 120px;
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #fff5f5;
+}
+
+.edit-btn {
+  padding: 10px;
+  border-radius: 4px;
+  background: #47509B;
+  border: 1px solid #47509B;
+  color: #ffffff;
+  width: 120px;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: #3a4179;
+}
+
+/* Edit popup styles */
 .edit-popup-modal {
   position: fixed;
   top: 0;
@@ -393,15 +420,18 @@ width: 120px;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 20px;
 }
 
 .edit-popup-content {
   background: #fff;
   padding: 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 90%;
   max-width: 500px;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .edit-popup-header {
@@ -409,6 +439,11 @@ width: 120px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
 }
 
 .edit-popup-header h3 {
@@ -420,14 +455,15 @@ width: 120px;
 
 .close-icon {
   cursor: pointer;
-  font-size: 20px;
+  font-size: 24px;
   color: #666;
+  padding: 8px;
 }
 
 .edit-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-group {
@@ -443,10 +479,16 @@ width: 120px;
 }
 
 .form-group input {
-  padding: 8px 12px;
+  padding: 12px;
   border: 1px solid #DEE1E6;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #47509B;
+  box-shadow: 0 0 0 2px rgba(71, 80, 155, 0.1);
 }
 
 .form-group input.error {
@@ -456,6 +498,7 @@ width: 120px;
 .error-message {
   color: #F55959;
   font-size: 12px;
+  margin-top: 4px;
 }
 
 .form-actions {
@@ -463,14 +506,21 @@ width: 120px;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
 }
 
 .cancel-btn, .save-btn {
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 12px 24px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  min-width: 100px;
 }
 
 .cancel-btn {
@@ -498,7 +548,10 @@ width: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #f8f9fa;
 }
 
 .preview-image {
@@ -506,7 +559,8 @@ width: 120px;
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #DEE1E6;
+  border: 3px solid #47509B;
+  transition: all 0.3s ease;
 }
 
 .file-input {
@@ -517,13 +571,98 @@ width: 120px;
   background: #47509B;
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 12px 24px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .upload-btn:hover {
   background: #3a4179;
+  transform: translateY(-1px);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 16px;
+  }
+
+  .user-details {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .left-section,
+  .middle-section,
+  .right-section {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .user-photo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .edit-popup-content {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .cancel-btn,
+  .save-btn {
+    width: 100%;
+  }
+
+  .profile-picture-upload {
+    padding: 16px;
+  }
+
+  .preview-image {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 12px;
+  }
+
+  .user-info {
+    padding: 16px;
+  }
+
+  .user-photo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .edit-popup-content {
+    padding: 12px;
+  }
+
+  .edit-popup-header h3 {
+    font-size: 18px;
+  }
+
+  .form-group input {
+    padding: 10px;
+  }
+
+  .preview-image {
+    width: 100px;
+    height: 100px;
+  }
 }
 </style>
