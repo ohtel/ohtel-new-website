@@ -1,991 +1,998 @@
 <template>
-  <div class="main-section">
+  <div class="post-ad-container">
     <Toast />
     <headerSection />
-    <!-- Add Permission Popup -->
-    <div v-if="showPermissionPopup" class="permission-popup-overlay">
-      <div class="permission-popup">
-        <h3>Permission Required</h3>
-        <p>You do not have permission to perform this action. Please login to continue.</p>
-        <button class="login-button" @click="handleLogin">Login</button>
-      </div>
-    </div>
-
-    <!-- Add Confirmation Popup -->
-    <div v-if="showConfirmationPopup" class="permission-popup-overlay">
-      <div class="permission-popup">
-        <h3>Important Notice</h3>
-        <p>Please note that you won't be able to edit your ad after posting. Are you sure you want to proceed?</p>
-        <div class="popup-buttons">
-          <button class="cancel-button" @click="showConfirmationPopup = false">Cancel</button>
-          <button class="proceed-button" @click="proceedWithPublish">Proceed</button>
+    
+    <!-- Zoom wrapper only around the form section -->
+    <div class="zoom-wrapper">
+      <!-- Add Permission Popup -->
+      <div v-if="showPermissionPopup" class="permission-popup-overlay">
+        <div class="permission-popup">
+          <h3>Permission Required</h3>
+          <p>You do not have permission to perform this action. Please login to continue.</p>
+          <button class="login-button" @click="handleLogin">Login</button>
         </div>
       </div>
-    </div>
-    <div
-      class="card p-6 max-w-3xl mx-auto main-div"
-    >
-      <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
-        Post Your Ad
-      </h1>
-      <p class="text-gray-500 mb-10 text-center">
-        Ready to Scale? Let's Build Something Great Together!
-      </p>
-      <div class="stepper-content-wrapper">
-        <Stepper value="1" class="custom-stepper">
-          <StepItem value="1">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 20 }"
-                    >1</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 20 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 1:</span>
-                  <div class="step-title">Select Category</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" :class="{ active: progress >= 20 }"></div>
-          <StepItem value="2">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 40 }"
-                    >2</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 40 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 2:</span>
-                  <div class="step-title">Select Ad Type</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" :class="{ active: progress >= 40 }"></div>
-          <StepItem value="3">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 60 }"
-                    >3</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 60 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 3:</span>
-                  <div class="step-title">Select Sub Category</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" :class="{ active: progress >= 60 }"></div>
-          
-          <!-- New Sub-Sub-Category Step -->
-          <StepItem value="3.5" v-if="showSubSubCategoryStep">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 70 }"
-                    >3.5</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 70 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 3.5:</span>
-                  <div class="step-title">Select Sub-Sub-Category</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" v-if="showSubSubCategoryStep" :class="{ active: progress >= 70 }"></div>
-          
-          <StepItem value="4">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 80 }"
-                    >4</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 80 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 4:</span>
-                  <div class="step-title">Additional Info</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" :class="{ active: progress >= 80 }"></div>
-          <StepItem value="5">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 100 }"
-                    >5</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 100 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 5:</span>
-                  <div class="step-title">Personal Informations</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" :class="{ active: progress >= 100 }"></div>
-          <StepItem value="6">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress >= 120 }"
-                    >6</span
-                  >
-                  <div class="vertical-progress-bar">
-                    <div
-                      class="vertical-progress-bar-fill"
-                      :style="{ height: `${progress > 120 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 6:</span>
-                  <div class="step-title">Select Subscription Plan</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-          <div class="step-line" :class="{ active: progress >= 120 }"></div>
-          <StepItem value="7">
-            <Step>
-              <div class="step-header">
-                <div class="step-number-container">
-                  <span
-                    class="step-number"
-                    :class="{ 'active-step': progress === 140 }"
-                    >7</span
-                  >
-                  <div>
-                    <div
-                      :style="{ height: `${progress === 140 ? 100 : 0}%` }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="justify-items-left">
-                  <span class="step-count">Step 7:</span>
-                  <div class="step-title">Review & Publish</div>
-                </div>
-              </div>
-            </Step>
-          </StepItem>
-        </Stepper>
-        <div class="step-content">
-          <div v-if="progress === 20">
-            <div class="d-flex justify-content-start mb-4">
-              <div></div>
-            </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
-                    <!-- Header -->
 
-                    <!-- Card List -->
-                    <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+      <!-- Add Confirmation Popup -->
+      <div v-if="showConfirmationPopup" class="permission-popup-overlay">
+        <div class="permission-popup">
+          <h3>Important Notice</h3>
+          <p>Please note that you won't be able to edit your ad after posting. Are you sure you want to proceed?</p>
+          <div class="popup-buttons">
+            <button class="cancel-button" @click="showConfirmationPopup = false">Cancel</button>
+            <button class="proceed-button" @click="proceedWithPublish">Proceed</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-6 max-w-3xl mx-auto main-div">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
+          Post Your Ad
+        </h1>
+        <p class="text-gray-500 mb-10 text-center">
+          Ready to Scale? Let's Build Something Great Together!
+        </p>
+        <div class="stepper-content-wrapper">
+          <Stepper value="1" class="custom-stepper">
+            <StepItem value="1">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 20 }"
+                      >1</span
+                    >
+                    <div class="vertical-progress-bar">
                       <div
-                        v-for="card in cards"
-                        :key="card.id"
-                        :class="[
-                          'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
-                          { 'selected-card': selectedCategory === card.id },
-                        ]"
-                        @click="selectCategory(card)"
-                      >
-                        <!-- Image -->
-                        <img
-                          :src="card.category_images"
-                          alt="Card Image"
-                          class="w-28 h-20 object-cover"
-                        />
-                        <!-- Content -->
-                        <div class="ml-4 text-left">
-                          <h3 class="category-card-title">
-                            {{ card.category_title }}
-                          </h3>
-                          <p class="category-subtitle">
-                            {{ card.category_description }}
-                          </p>
-                        </div>
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="32"
-                            height="32"
-                            viewBox="0 0 32 32"
-                            fill="none"
-                          >
-                            <path
-                              d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
-                              stroke="#161C2D"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </div>
-                      </div>
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 20 ? 100 : 0}%` }"
+                      ></div>
                     </div>
                   </div>
-                </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                :disabled="!selectedCategory"
-                @click="handleNextStep(2)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div v-if="progress === 40">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(1)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
-                    <!-- Header -->
-
-                    <!-- Card List -->
-                    <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 1:</span>
+                    <div class="step-title">Select Category</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" :class="{ active: progress >= 20 }"></div>
+            <StepItem value="2">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 40 }"
+                      >2</span
+                    >
+                    <div class="vertical-progress-bar">
                       <div
-                        v-for="card in step2Cards"
-                        :key="card.id"
-                        :class="[
-                          'd-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between',
-                          { 'selected-card': selectedStep2Card === card.id },
-                        ]"
-                        @click="selectStep2Card(card)"
-                      >
-                        <!-- Image -->
-                        <div class="d-flex">
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 40 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 2:</span>
+                    <div class="step-title">Select Ad Type</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" :class="{ active: progress >= 40 }"></div>
+            <StepItem value="3">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 60 }"
+                      >3</span
+                    >
+                    <div class="vertical-progress-bar">
+                      <div
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 60 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 3:</span>
+                    <div class="step-title">Select Sub Category</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" :class="{ active: progress >= 60 }"></div>
+            
+            <!-- New Sub-Sub-Category Step -->
+            <StepItem value="3.5" v-if="showSubSubCategoryStep">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 70 }"
+                      >3.5</span
+                    >
+                    <div class="vertical-progress-bar">
+                      <div
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 70 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 3.5:</span>
+                    <div class="step-title">Select Sub-Sub-Category</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" v-if="showSubSubCategoryStep" :class="{ active: progress >= 70 }"></div>
+            
+            <StepItem value="4">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 80 }"
+                      >4</span
+                    >
+                    <div class="vertical-progress-bar">
+                      <div
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 80 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 4:</span>
+                    <div class="step-title">Additional Info</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" :class="{ active: progress >= 80 }"></div>
+            <StepItem value="5">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 100 }"
+                      >5</span
+                    >
+                    <div class="vertical-progress-bar">
+                      <div
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 100 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 5:</span>
+                    <div class="step-title">Personal Informations</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" :class="{ active: progress >= 100 }"></div>
+            <StepItem value="6">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress >= 120 }"
+                      >6</span
+                    >
+                    <div class="vertical-progress-bar">
+                      <div
+                        class="vertical-progress-bar-fill"
+                        :style="{ height: `${progress > 120 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 6:</span>
+                    <div class="step-title">Select Subscription Plan</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+            <div class="step-line" :class="{ active: progress >= 120 }"></div>
+            <StepItem value="7">
+              <Step>
+                <div class="step-header">
+                  <div class="step-number-container">
+                    <span
+                      class="step-number"
+                      :class="{ 'active-step': progress === 140 }"
+                      >7</span
+                    >
+                    <div>
+                      <div
+                        :style="{ height: `${progress === 140 ? 100 : 0}%` }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="justify-items-left">
+                    <span class="step-count">Step 7:</span>
+                    <div class="step-title">Review & Publish</div>
+                  </div>
+                </div>
+              </Step>
+            </StepItem>
+          </Stepper>
+          <div class="step-content">
+            <div v-if="progress === 20">
+              <div class="d-flex justify-content-start mb-4">
+                <div></div>
+              </div>
+              <div class="flex flex-col items-center h-48">
+                <div class="content-box">
+                  <section class="category-section py-12 px-6 bg-gray-50">
+                    <div class="max-w-6xl mx-auto">
+                      <!-- Header -->
+
+                      <!-- Card List -->
+                      <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                        <div
+                          v-for="card in cards"
+                          :key="card.id"
+                          :class="[
+                            'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
+                            { 'selected-card': selectedCategory === card.id },
+                          ]"
+                          @click="selectCategory(card)"
+                        >
+                          <!-- Image -->
                           <img
-                            src="/assets/images/ohtel_logo.png"
+                            :src="card.category_images"
                             alt="Card Image"
-                            class="w-28 h-20 object-cover-buyer-seller"
+                            class="w-28 h-20 object-cover"
                           />
                           <!-- Content -->
                           <div class="ml-4 text-left">
                             <h3 class="category-card-title">
-                              {{ card.title }}
+                              {{ card.category_title }}
                             </h3>
                             <p class="category-subtitle">
-                              {{ card.description }}
+                              {{ card.category_description }}
+                            </p>
+                          </div>
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="none"
+                            >
+                              <path
+                                d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
+                                stroke="#161C2D"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  :disabled="!selectedCategory"
+                  @click="handleNextStep(2)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <div v-if="progress === 40">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(1)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="flex flex-col items-center h-48">
+                <div class="content-box">
+                  <section class="category-section py-12 px-6 bg-gray-50">
+                    <div class="max-w-6xl mx-auto">
+                      <!-- Header -->
+
+                      <!-- Card List -->
+                      <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                        <div
+                          v-for="card in step2Cards"
+                          :key="card.id"
+                          :class="[
+                            'd-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between',
+                            { 'selected-card': selectedStep2Card === card.id },
+                          ]"
+                          @click="selectStep2Card(card)"
+                        >
+                          <!-- Image -->
+                          <div class="d-flex">
+                            <img
+                              src="/assets/images/ohtel_logo.png"
+                              alt="Card Image"
+                              class="w-28 h-20 object-cover-buyer-seller"
+                            />
+                            <!-- Content -->
+                            <div class="ml-4 text-left">
+                              <h3 class="category-card-title">
+                                {{ card.title }}
+                              </h3>
+                              <p class="category-subtitle">
+                                {{ card.description }}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="none"
+                            >
+                              <path
+                                d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
+                                stroke="#161C2D"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  :disabled="!selectedStep2Card"
+                  @click="handleNextStep(3)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <div v-if="progress === 60">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(2)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="flex flex-col items-center h-48">
+                <div class="content-box subcategory-card">
+                  <section class="category-section py-12 px-6 bg-gray-50 div-grid">
+                 
+                 <div
+                   v-for="card in step3Cards"
+                   :key="card.id"
+                   :class="['card-subcategory', { 'selected-card-subcategory': selectedStep3Card === card.id }]"
+                   @click="selectStep3Card(card.id)"
+                 >
+                   <!-- Image -->
+                   <img
+                     :src="card.sub_category_images"
+                     alt="Card Image"
+                     class="w-28 h-20 object-cover-step3"
+                   />
+                   <!-- Content -->
+                   <div class="ml-4 text-left">
+                     <h3 class="subcategory-card-title">
+                       {{ card.sub_category_title }}
+                     </h3>
+                   </div>
+                 </div>
+              
+         </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  :disabled="!selectedStep3Card"
+                  @click="handleNextStep(4)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <div v-if="progress === 70">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(3)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="content-box subcategory-card">
+                  <section class="category-section py-12 px-6 bg-gray-50">
+                    <h3 class="text-xl font-bold mb-6 text-center">Select Sub-Sub-Category</h3>
+                    <div class="div-grid">
+                      <div
+                        v-for="subSubCat in subSubCategories"
+                        :key="subSubCat.id"
+                        :class="[
+                          'card-subcategory cursor-pointer',
+                          { 'selected-card-subcategory': selectedSubSubCategory === subSubCat.id }
+                        ]"
+                        @click="selectSubSubCategory(subSubCat)"
+                      >
+                        <div class="text-center p-4">
+                          <h3 class="subcategory-card-title">
+                            {{ subSubCat.applicant_role_title || subSubCat.sub_sub_category_title || subSubCat.title }}
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  :disabled="!selectedSubSubCategory"
+                  @click="handleNextStep(4)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <div v-if="progress === 80">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(3)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="flex flex-col items-center h-48">
+                <div class="content-box">
+                  <section class="category-section py-12 px-6 bg-gray-50">
+                    <div class="max-w-6xl mx-auto">
+                      <!-- Add Other Sub Category Input if needed -->
+                      <div v-if="adDetails.isOtherSubCategory" class="form-group mb-4">
+                        <label class="form-label">Enter Sub Category Name</label>
+                        <input
+                          type="text"
+                          v-model="adDetails.otherSubCategoryText"
+                          class="form-control styled-input"
+                          placeholder="Enter sub category name"
+                          required
+                        />
+                      </div>
+
+                      <!-- Add Other Sub-Sub Category Input if needed -->
+                      <div v-if="adDetails.isOtherSubSubCategory" class="form-group mb-4">
+                        <label class="form-label">Enter Sub-Sub Category Name</label>
+                        <input
+                          type="text"
+                          v-model="adDetails.otherSubSubCategoryText"
+                          class="form-control styled-input"
+                          placeholder="Enter sub-sub category name"
+                          required
+                        />
+                      </div>
+
+                      <!-- Dynamic Form Component -->
+                      <div
+                        id="mapModal"
+                        v-if="this.adType !== 'Recruiter'"
+                        class="map-modal google-map styled-input"
+                      >
+                        <h5 class="text-center">Select Address </h5>
+                        <div>
+                          <googleMap
+                            ref="googleMapComponent"
+                            @mapEvent="handleMapEvent"
+                          ></googleMap>
+                        </div>
+                      </div>
+                      <div
+                        v-if="this.adType !== 'Recruiter'
+                        "
+                        class="form-row justify-space-between mb-2"
+                      >
+                        <label>Address: </label>
+                        <textarea
+                          disabled
+                          class="styled-input address-class"
+                          v-model="adDetails.address"
+                          placeholder="please select address from map"
+                        ></textarea>
+                      </div>
+                      <form1
+                        v-if="
+                          this.selectedCategoryDetails?.id === 1 ||
+                          this.selectedCategoryDetails?.id === 2 ||
+                          this.selectedCategoryDetails?.id === 5
+                        "
+                        ref="form1Ref"
+                        :dataFromParent="adDetails"
+                      ></form1>
+                      <form2
+                        v-if="
+                          this.selectedCategoryDetails?.id === 4 ||
+                          this.selectedCategoryDetails?.id === 6
+                        "
+                        ref="form2Ref"
+                        :dataFromParent="adDetails"
+                      ></form2>
+                      <form3
+                        v-if="this.adType === 'Applicant'"
+                        ref="form3Ref"
+                        :dataFromParent="adDetails"
+                      ></form3>
+                      <form4
+                        v-if="this.adType === 'Recruiter'"
+                        ref="form4Ref"
+                        :dataFromParent="adDetails"
+                      ></form4>
+                      <form5
+                        v-if="this.selectedCategoryDetails?.id === 11"
+                        ref="form5Ref"
+                        :dataFromParent="adDetails"
+                      ></form5>
+                      <form6
+                        v-if="this.selectedCategoryDetails?.id === 12"
+                        ref="form6Ref"
+                        :dataFromParent="adDetails"
+                      ></form6>
+                      
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  @click="handleNextStep(5)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <div v-if="progress === 100">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(4)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="flex flex-col items-center h-48">
+                <div class="content-box">
+                  <section class="category-section py-12 px-6 bg-gray-50">
+                    <div class="max-w-6xl mx-auto">
+                      <!-- Personal Details Component -->
+                      <personal-details
+                        ref="personalDetailsRef"
+                        :dataFromParent="adDetails"
+                        :selectedCategory="adType"
+                      ></personal-details>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  @click="handleNextStep(6)"
+                >
+                  Next
+                </button>
+              </div>
+
+            </div>
+            <div v-if="progress === 120">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(5)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="flex flex-col items-center h-48">
+                <div class="content-box">
+                  <section class="category-section py-12 px-6 bg-gray-50">
+                    <div class="max-w-6xl mx-auto">
+                      <!-- Subscription Plan Selection -->
+                      <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                        <div
+                          v-for="plan in subscriptionPlans"
+                          :key="plan.id"
+                          :class="[
+                            'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
+                            { 'selected-card': selectedSubscriptionPlan === plan.id },
+                          ]"
+                          @click="selectSubscriptionPlan(plan.id)"
+                        >
+                          <!-- Content -->
+                          <div class="ml-4 text-left">
+                            <h3 class="category-card-title">
+                              {{ plan.plan_name }}
+                            </h3>
+                            <p class="category-subtitle">
+                              {{ plan.plan_description }}
+                            </p>
+                            <p class="category-subtitle">
+                              Price: {{ plan.plan_price }} (Discount: {{ plan.discount_price }})
+                            </p>
+                            <p class="category-subtitle">
+                              Validity: {{ plan.validity_days }} days
                             </p>
                           </div>
                         </div>
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="32"
-                            height="32"
-                            viewBox="0 0 32 32"
-                            fill="none"
-                          >
-                            <path
-                              d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
-                              stroke="#161C2D"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </div>
                       </div>
                     </div>
+                  </section>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                <button
+                  label="Next"
+                  class="next-button"
+                  :disabled="!selectedSubscriptionPlan"
+                  @click="handleNextStep(7)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <div v-if="progress === 140">
+              <div class="d-flex justify-content-start mb-4">
+                <button
+                  label="Back"
+                  class="back-button"
+                  severity="secondary"
+                  @click="handleBackStep(6)"
+                >
+                  Back
+                </button>
+              </div>
+              <div class="review-container">
+                <h2 class="review-title">Review Your Ad Details</h2>
+                
+                <!-- Category Information -->
+                <div class="review-section">
+                  <div class="section-header">
+                    <h3 class="section-title">Category Information</h3>
+                    <button class="edit-button" @click="handleBackStep(1)">
+                      <i class="pi pi-pencil"></i> Edit
+                    </button>
                   </div>
-                </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                :disabled="!selectedStep2Card"
-                @click="handleNextStep(3)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div v-if="progress === 60">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(2)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box subcategory-card">
-                <section class="category-section py-12 px-6 bg-gray-50 div-grid">
-               
-               <div
-                 v-for="card in step3Cards"
-                 :key="card.id"
-                 :class="['card-subcategory', { 'selected-card-subcategory': selectedStep3Card === card.id }]"
-                 @click="selectStep3Card(card.id)"
-               >
-                 <!-- Image -->
-                 <img
-                   :src="card.sub_category_images"
-                   alt="Card Image"
-                   class="w-28 h-20 object-cover-step3"
-                 />
-                 <!-- Content -->
-                 <div class="ml-4 text-left">
-                   <h3 class="subcategory-card-title">
-                     {{ card.sub_category_title }}
-                   </h3>
-                 </div>
-               </div>
-            
-         </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                :disabled="!selectedStep3Card"
-                @click="handleNextStep(4)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div v-if="progress === 70">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(3)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="content-box subcategory-card">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <h3 class="text-xl font-bold mb-6 text-center">Select Sub-Sub-Category</h3>
-                  <div class="div-grid">
-                    <div
-                      v-for="subSubCat in subSubCategories"
-                      :key="subSubCat.id"
-                      :class="[
-                        'card-subcategory cursor-pointer',
-                        { 'selected-card-subcategory': selectedSubSubCategory === subSubCat.id }
-                      ]"
-                      @click="selectSubSubCategory(subSubCat)"
-                    >
-                      <div class="text-center p-4">
-                        <h3 class="subcategory-card-title">
-                          {{ subSubCat.applicant_role_title || subSubCat.sub_sub_category_title || subSubCat.title }}
-                        </h3>
+                  <div class="review-grid">
+                    <div class="review-item">
+                      <span class="label">Main Category:</span>
+                      <span class="value">{{ selectedCategory?.name }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Sub Category:</span>
+                      <span class="value">{{ adDetails.subCategoryTitle || adDetails.subCategory }}</span>
+                    </div>
+                    <div v-if="adDetails.subSubCategoryTitle" class="review-item">
+                      <span class="label">Sub-Sub Category:</span>
+                      <span class="value">{{ adDetails.subSubCategoryTitle }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Ad Type:</span>
+                      <span class="value">{{ adDetails.sellerOrBuyer }}</span>
+                    </div>
+                  </div>
                       </div>
+                      
+                <!-- Location Information -->
+                <div class="review-section">
+                  <div class="section-header">
+                    <h3 class="section-title">Location Information</h3>
+                    <button class="edit-button" @click="handleBackStep(4)">
+                      <i class="pi pi-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="review-grid">
+                    <div class="review-item">
+                      <span class="label">Address:</span>
+                      <span class="value">{{ adDetails.address }}</span>
+                    </div>
+                    <div class="review-item">
+                      <span class="label">Coordinates:</span>
+                      <span class="value">{{ defaultLocation.lat }}, {{ defaultLocation.lng }}</span>
                     </div>
                   </div>
-                </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                :disabled="!selectedSubSubCategory"
-                @click="handleNextStep(4)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div v-if="progress === 80">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(3)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
-                    <!-- Add Other Sub Category Input if needed -->
-                    <div v-if="adDetails.isOtherSubCategory" class="form-group mb-4">
-                      <label class="form-label">Enter Sub Category Name</label>
-                      <input
-                        type="text"
-                        v-model="adDetails.otherSubCategoryText"
-                        class="form-control styled-input"
-                        placeholder="Enter sub category name"
-                        required
-                      />
-                    </div>
-
-                    <!-- Add Other Sub-Sub Category Input if needed -->
-                    <div v-if="adDetails.isOtherSubSubCategory" class="form-group mb-4">
-                      <label class="form-label">Enter Sub-Sub Category Name</label>
-                      <input
-                        type="text"
-                        v-model="adDetails.otherSubSubCategoryText"
-                        class="form-control styled-input"
-                        placeholder="Enter sub-sub category name"
-                        required
-                      />
-                    </div>
-
-                    <!-- Dynamic Form Component -->
-                    <div
-                      id="mapModal"
-                      v-if="this.adType !== 'Recruiter'"
-                      class="map-modal google-map styled-input"
-                    >
-                      <h5 class="text-center">Select Address </h5>
-                      <div>
-                        <googleMap
-                          ref="googleMapComponent"
-                          @mapEvent="handleMapEvent"
-                        ></googleMap>
                       </div>
+                      
+                <!-- Form Specific Information -->
+                <div class="review-section">
+                  <div class="section-header">
+                    <h3 class="section-title">Ad Details</h3>
+                    <button class="edit-button" @click="handleBackStep(3)">
+                      <i class="pi pi-pencil"></i> Edit
+                    </button>
                     </div>
-                    <div
-                      v-if="this.adType !== 'Recruiter'
-                      "
-                      class="form-row justify-space-between mb-2"
-                    >
-                      <label>Address: </label>
-                      <textarea
-                        disabled
-                        class="styled-input address-class"
-                        v-model="adDetails.address"
-                        placeholder="please select address from map"
-                      ></textarea>
-                    </div>
-                    <form1
-                      v-if="
-                        this.selectedCategoryDetails?.id === 1 ||
-                        this.selectedCategoryDetails?.id === 2 ||
-                        this.selectedCategoryDetails?.id === 5
-                      "
-                      ref="form1Ref"
-                      :dataFromParent="adDetails"
-                    ></form1>
-                    <form2
-                      v-if="
-                        this.selectedCategoryDetails?.id === 4 ||
-                        this.selectedCategoryDetails?.id === 6
-                      "
-                      ref="form2Ref"
-                      :dataFromParent="adDetails"
-                    ></form2>
-                    <form3
-                      v-if="this.adType === 'Applicant'"
-                      ref="form3Ref"
-                      :dataFromParent="adDetails"
-                    ></form3>
-                    <form4
-                      v-if="this.adType === 'Recruiter'"
-                      ref="form4Ref"
-                      :dataFromParent="adDetails"
-                    ></form4>
-                    <form5
-                      v-if="this.selectedCategoryDetails?.id === 11"
-                      ref="form5Ref"
-                      :dataFromParent="adDetails"
-                    ></form5>
-                    <form6
-                      v-if="this.selectedCategoryDetails?.id === 12"
-                      ref="form6Ref"
-                      :dataFromParent="adDetails"
-                    ></form6>
-                    
-                  </div>
-                </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                @click="handleNextStep(5)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div v-if="progress === 100">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(4)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
-                    <!-- Personal Details Component -->
-                    <personal-details
-                      ref="personalDetailsRef"
-                      :dataFromParent="adDetails"
-                      :selectedCategory="adType"
-                    ></personal-details>
-                  </div>
-                </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                @click="handleNextStep(6)"
-              >
-                Next
-              </button>
+                  <div class="review-grid">
+                    <!-- Common Fields for All Categories -->
+                    <div class="review-item">
+                      <span class="label">Title:</span>
+                      <span class="value">{{ adDetails.title }}</span>
             </div>
 
-          </div>
-          <div v-if="progress === 120">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(5)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="flex flex-col items-center h-48">
-              <div class="content-box">
-                <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
-                    <!-- Subscription Plan Selection -->
-                    <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
-                      <div
-                        v-for="plan in subscriptionPlans"
-                        :key="plan.id"
-                        :class="[
-                          'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
-                          { 'selected-card': selectedSubscriptionPlan === plan.id },
-                        ]"
-                        @click="selectSubscriptionPlan(plan.id)"
-                      >
-                        <!-- Content -->
-                        <div class="ml-4 text-left">
-                          <h3 class="category-card-title">
-                            {{ plan.plan_name }}
-                          </h3>
-                          <p class="category-subtitle">
-                            {{ plan.plan_description }}
-                          </p>
-                          <p class="category-subtitle">
-                            Price: {{ plan.plan_price }} (Discount: {{ plan.discount_price }})
-                          </p>
-                          <p class="category-subtitle">
-                            Validity: {{ plan.validity_days }} days
-                          </p>
-                        </div>
+                    <!-- Property Category (1, 2, 5) -->
+                    <template v-if="[1, 2, 5].includes(selectedCategoryDetails?.id)">
+                      <div class="review-item">
+                        <span class="label">Description:</span>
+                        <span class="value">{{ formData.description }}</span>
+              </div>
+                      <div class="review-item">
+                        <span class="label">Deal Type:</span>
+                        <span class="value">{{ formData.dealType }}</span>
                       </div>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-              <button
-                label="Next"
-                class="next-button"
-                :disabled="!selectedSubscriptionPlan"
-                @click="handleNextStep(7)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div v-if="progress === 140">
-            <div class="d-flex justify-content-start mb-4">
-              <button
-                label="Back"
-                class="back-button"
-                severity="secondary"
-                @click="handleBackStep(6)"
-              >
-                Back
-              </button>
-            </div>
-            <div class="review-container">
-              <h2 class="review-title">Review Your Ad Details</h2>
-              
-              <!-- Category Information -->
-              <div class="review-section">
-                <div class="section-header">
-                  <h3 class="section-title">Category Information</h3>
-                  <button class="edit-button" @click="handleBackStep(1)">
-                    <i class="pi pi-pencil"></i> Edit
-                  </button>
-                </div>
-                <div class="review-grid">
-                  <div class="review-item">
-                    <span class="label">Main Category:</span>
-                    <span class="value">{{ selectedCategory?.name }}</span>
-                  </div>
-                  <div class="review-item">
-                    <span class="label">Sub Category:</span>
-                    <span class="value">{{ adDetails.subCategoryTitle || adDetails.subCategory }}</span>
-                  </div>
-                  <div v-if="adDetails.subSubCategoryTitle" class="review-item">
-                    <span class="label">Sub-Sub Category:</span>
-                    <span class="value">{{ adDetails.subSubCategoryTitle }}</span>
-                  </div>
-                  <div class="review-item">
-                    <span class="label">Ad Type:</span>
-                    <span class="value">{{ adDetails.sellerOrBuyer }}</span>
-                  </div>
-                </div>
-                    </div>
-                    
-              <!-- Location Information -->
-              <div class="review-section">
-                <div class="section-header">
-                  <h3 class="section-title">Location Information</h3>
-                  <button class="edit-button" @click="handleBackStep(4)">
-                    <i class="pi pi-pencil"></i> Edit
-                  </button>
-                </div>
-                <div class="review-grid">
-                  <div class="review-item">
-                    <span class="label">Address:</span>
-                    <span class="value">{{ adDetails.address }}</span>
-                  </div>
-                  <div class="review-item">
-                    <span class="label">Coordinates:</span>
-                    <span class="value">{{ defaultLocation.lat }}, {{ defaultLocation.lng }}</span>
-                  </div>
-                </div>
-                    </div>
-                    
-              <!-- Form Specific Information -->
-              <div class="review-section">
-                <div class="section-header">
-                  <h3 class="section-title">Ad Details</h3>
-                  <button class="edit-button" @click="handleBackStep(3)">
-                    <i class="pi pi-pencil"></i> Edit
-                  </button>
-                  </div>
-                <div class="review-grid">
-                  <!-- Common Fields for All Categories -->
-                  <div class="review-item">
-                    <span class="label">Title:</span>
-                    <span class="value">{{ adDetails.title }}</span>
-              </div>
+                      <div class="review-item">
+                        <span class="label">Area:</span>
+                        <span class="value">{{ formData.area }} sq ft</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Price:</span>
+                        <span class="value">₹{{ formData.price }}</span>
+                      </div>
+                    </template>
 
-                  <!-- Property Category (1, 2, 5) -->
-                  <template v-if="[1, 2, 5].includes(selectedCategoryDetails?.id)">
-                    <div class="review-item">
-                      <span class="label">Description:</span>
-                      <span class="value">{{ formData.description }}</span>
-            </div>
-                    <div class="review-item">
-                      <span class="label">Deal Type:</span>
-                      <span class="value">{{ formData.dealType }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Area:</span>
-                      <span class="value">{{ formData.area }} sq ft</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Price:</span>
-                      <span class="value">₹{{ formData.price }}</span>
-                    </div>
-                  </template>
-
-                  <!-- Product Category (4, 6) -->
-                  <template v-if="[4, 6].includes(selectedCategoryDetails?.id)">
-                    <div class="review-item">
-                      <span class="label">Description:</span>
-                      <span class="value">{{ formData.description }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Price:</span>
-                      <span class="value">₹{{ formData.price }}</span>
-                    </div>
-                    <div v-if="formData.products && formData.products.length > 0" class="review-item full-width">
-                      <span class="label">Products:</span>
-                      <div class="products-list">
-                        <div v-for="(product, index) in formData.products" :key="index" class="product-item">
-                          <div class="product-details">
-                            <span class="product-name">{{ product.productName }}</span>
-                            <span class="product-specs">
-                              Units: {{ product.units }} {{ product.unit_type }}
-                              <br>
-                              MRP: ₹{{ product.mrp }}
-                              <span v-if="product.offerPrice"> | Offer: ₹{{ product.offerPrice }}</span>
-                            </span>
+                    <!-- Product Category (4, 6) -->
+                    <template v-if="[4, 6].includes(selectedCategoryDetails?.id)">
+                      <div class="review-item">
+                        <span class="label">Description:</span>
+                        <span class="value">{{ formData.description }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Price:</span>
+                        <span class="value">₹{{ formData.price }}</span>
+                      </div>
+                      <div v-if="formData.products && formData.products.length > 0" class="review-item full-width">
+                        <span class="label">Products:</span>
+                        <div class="products-list">
+                          <div v-for="(product, index) in formData.products" :key="index" class="product-item">
+                            <div class="product-details">
+                              <span class="product-name">{{ product.productName }}</span>
+                              <span class="product-specs">
+                                Units: {{ product.units }} {{ product.unit_type }}
+                                <br>
+                                MRP: ₹{{ product.mrp }}
+                                <span v-if="product.offerPrice"> | Offer: ₹{{ product.offerPrice }}</span>
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
+                    </template>
 
-                  <!-- Job Applicant (3) -->
-                  <template v-if="[3].includes(selectedCategoryDetails?.id) && adType === 'Applicant'">
-                    <div class="review-item">
-                      <span class="label">Candidate Name:</span>
-                      <span class="value">{{ formData.candidateName }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Education:</span>
-                      <span class="value">{{ formData.education }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Work Experience:</span>
-                      <span class="value">{{ formData.workExperience }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Resume:</span>
-                      <span class="value">{{ formData.resume ? 'Uploaded' : 'Not uploaded' }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Relocation:</span>
-                      <span class="value">{{ formData.relocate }}</span>
-                    </div>
-                  </template>
+                    <!-- Job Applicant (3) -->
+                    <template v-if="[3].includes(selectedCategoryDetails?.id) && adType === 'Applicant'">
+                      <div class="review-item">
+                        <span class="label">Candidate Name:</span>
+                        <span class="value">{{ formData.candidateName }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Education:</span>
+                        <span class="value">{{ formData.education }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Work Experience:</span>
+                        <span class="value">{{ formData.workExperience }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Resume:</span>
+                        <span class="value">{{ formData.resume ? 'Uploaded' : 'Not uploaded' }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Relocation:</span>
+                        <span class="value">{{ formData.relocate }}</span>
+                      </div>
+                    </template>
 
-                  <!-- Job Recruiter (3) -->
-                  <template v-if="[3].includes(selectedCategoryDetails?.id) && adType === 'Recruiter'">
-                    <div class="review-item">
-                      <span class="label">Business Address:</span>
-                      <span class="value">{{ formData.addressOfTheBusiness }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Staff Requirements:</span>
-                      <span class="value">{{ formData.staffRequirement }}</span>
-                    </div>
-                    <div v-if="formData.walkInInterviews && formData.walkInInterviews.length > 0" class="review-item full-width">
-                      <span class="label">Walk-in Interviews:</span>
-                      <div class="interviews-list">
-                        <div v-for="(interview, index) in formData.walkInInterviews" :key="index" class="interview-item">
-                          <span>Date: {{ interview.date }}</span>
-                          <span>Time: {{ interview.time }}</span>
-                          <span>Venue: {{ interview.venue }}</span>
+                    <!-- Job Recruiter (3) -->
+                    <template v-if="[3].includes(selectedCategoryDetails?.id) && adType === 'Recruiter'">
+                      <div class="review-item">
+                        <span class="label">Business Address:</span>
+                        <span class="value">{{ formData.addressOfTheBusiness }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Staff Requirements:</span>
+                        <span class="value">{{ formData.staffRequirement }}</span>
+                      </div>
+                      <div v-if="formData.walkInInterviews && formData.walkInInterviews.length > 0" class="review-item full-width">
+                        <span class="label">Walk-in Interviews:</span>
+                        <div class="interviews-list">
+                          <div v-for="(interview, index) in formData.walkInInterviews" :key="index" class="interview-item">
+                            <span>Date: {{ interview.date }}</span>
+                            <span>Time: {{ interview.time }}</span>
+                            <span>Venue: {{ interview.venue }}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
+                    </template>
 
-                  <!-- Equipment and Amenities (11) -->
-                  <template v-if="[11].includes(selectedCategoryDetails?.id)">
-                    <div class="review-item">
-                      <span class="label">Vendor Name:</span>
-                      <span class="value">{{ formData.vendorName }}</span>
+                    <!-- Equipment and Amenities (11) -->
+                    <template v-if="[11].includes(selectedCategoryDetails?.id)">
+                      <div class="review-item">
+                        <span class="label">Vendor Name:</span>
+                        <span class="value">{{ formData.vendorName }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Product Brand:</span>
+                        <span class="value">{{ formData.productBrand }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Material Type:</span>
+                        <span class="value">{{ formData.materialType }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Price:</span>
+                        <span class="value">₹{{ formData.price }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Description:</span>
+                        <span class="value">{{ formData.description }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Document:</span>
+                        <span class="value">{{ formData.documentName || 'Not uploaded' }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Company Logo:</span>
+                        <span class="value">{{ formData.logoName || 'Not uploaded' }}</span>
+                      </div>
+                    </template>
+
+                    <!-- Service Provider (12) -->
+                    <template v-if="[12].includes(selectedCategoryDetails?.id)">
+                      <div class="review-item">
+                        <span class="label">Name:</span>
+                        <span class="value">{{ formData.name }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Profile:</span>
+                        <span class="value">{{ formData.profile }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Company Name:</span>
+                        <span class="value">{{ formData.companyName }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Services:</span>
+                        <span class="value">{{ formData.services }}</span>
+                      </div>
+                      <div class="review-item">
+                        <span class="label">Document:</span>
+                        <span class="value">{{ formData.documentName || 'Not uploaded' }}</span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <!-- Images Preview -->
+                <div class="review-section" v-if="formData.files && formData.files.length > 0">
+                  <div class="section-header">
+                    <h3 class="section-title">Images</h3>
+                    <button class="edit-button" @click="handleBackStep(4)">
+                      <i class="pi pi-pencil"></i> Edit
+              </button>
+            </div>
+                  <div class="image-preview-grid">
+                    <div v-for="(file, index) in formData.files" :key="index" class="image-preview-item">
+                      <img :src="getImageUrl(file)" alt="Preview" @click="openImagePreview(getImageUrl(file))" />
                     </div>
-                    <div class="review-item">
-                      <span class="label">Product Brand:</span>
-                      <span class="value">{{ formData.productBrand }}</span>
+                  </div>
+                </div>
+
+                <!-- Document Preview -->
+                <div class="review-section" v-if="formData.document_uploaded">
+                  <div class="section-header">
+                    <h3 class="section-title">Documents</h3>
+                    <button class="edit-button" @click="handleBackStep(4)">
+                      <i class="pi pi-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="document-preview">
+                    <div class="document-item" @click="openDocument(formData.document_uploaded)">
+                      <i class="pi pi-file-pdf"></i>
+                      <span>{{ formData.documentName || 'Document' }}</span>
                     </div>
+                  </div>
+                </div>
+
+                <!-- Subscription Plan -->
+                <div class="review-section">
+                  <div class="section-header">
+                    <h3 class="section-title">Subscription Plan</h3>
+                    <button class="edit-button" @click="handleBackStep(6)">
+                      <i class="pi pi-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="review-grid">
                     <div class="review-item">
-                      <span class="label">Material Type:</span>
-                      <span class="value">{{ formData.materialType }}</span>
+                      <span class="label">Selected Plan:</span>
+                      <span class="value">{{ getSelectedPlanName }}</span>
                     </div>
                     <div class="review-item">
                       <span class="label">Price:</span>
-                      <span class="value">₹{{ formData.price }}</span>
+                      <span class="value">₹{{ getSelectedPlanPrice }}</span>
                     </div>
                     <div class="review-item">
-                      <span class="label">Description:</span>
-                      <span class="value">{{ formData.description }}</span>
+                      <span class="label">Validity:</span>
+                      <span class="value">{{ getSelectedPlanValidity }} days</span>
                     </div>
-                    <div class="review-item">
-                      <span class="label">Document:</span>
-                      <span class="value">{{ formData.documentName || 'Not uploaded' }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Company Logo:</span>
-                      <span class="value">{{ formData.logoName || 'Not uploaded' }}</span>
-                    </div>
-                  </template>
-
-                  <!-- Service Provider (12) -->
-                  <template v-if="[12].includes(selectedCategoryDetails?.id)">
-                    <div class="review-item">
-                      <span class="label">Name:</span>
-                      <span class="value">{{ formData.name }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Profile:</span>
-                      <span class="value">{{ formData.profile }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Company Name:</span>
-                      <span class="value">{{ formData.companyName }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Services:</span>
-                      <span class="value">{{ formData.services }}</span>
-                    </div>
-                    <div class="review-item">
-                      <span class="label">Document:</span>
-                      <span class="value">{{ formData.documentName || 'Not uploaded' }}</span>
-                    </div>
-                  </template>
-                </div>
-              </div>
-
-              <!-- Images Preview -->
-              <div class="review-section" v-if="formData.files && formData.files.length > 0">
-                <div class="section-header">
-                  <h3 class="section-title">Images</h3>
-                  <button class="edit-button" @click="handleBackStep(4)">
-                    <i class="pi pi-pencil"></i> Edit
-              </button>
-            </div>
-                <div class="image-preview-grid">
-                  <div v-for="(file, index) in formData.files" :key="index" class="image-preview-item">
-                    <img :src="getImageUrl(file)" alt="Preview" @click="openImagePreview(getImageUrl(file))" />
                   </div>
                 </div>
-              </div>
 
-              <!-- Document Preview -->
-              <div class="review-section" v-if="formData.document_uploaded">
-                <div class="section-header">
-                  <h3 class="section-title">Documents</h3>
-                  <button class="edit-button" @click="handleBackStep(4)">
-                    <i class="pi pi-pencil"></i> Edit
+                <!-- Publish Button -->
+                <div class="publish-section">
+                  <button 
+                    class="publish-button" 
+                    @click="handlePublish"
+                    :disabled="isPublishing"
+                  >
+                    {{ isPublishing ? 'Publishing...' : 'Publish Ad' }}
                   </button>
                 </div>
-                <div class="document-preview">
-                  <div class="document-item" @click="openDocument(formData.document_uploaded)">
-                    <i class="pi pi-file-pdf"></i>
-                    <span>{{ formData.documentName || 'Document' }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Subscription Plan -->
-              <div class="review-section">
-                <div class="section-header">
-                  <h3 class="section-title">Subscription Plan</h3>
-                  <button class="edit-button" @click="handleBackStep(6)">
-                    <i class="pi pi-pencil"></i> Edit
-                  </button>
-                </div>
-                <div class="review-grid">
-                  <div class="review-item">
-                    <span class="label">Selected Plan:</span>
-                    <span class="value">{{ getSelectedPlanName }}</span>
-                  </div>
-                  <div class="review-item">
-                    <span class="label">Price:</span>
-                    <span class="value">₹{{ getSelectedPlanPrice }}</span>
-                  </div>
-                  <div class="review-item">
-                    <span class="label">Validity:</span>
-                    <span class="value">{{ getSelectedPlanValidity }} days</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Publish Button -->
-              <div class="publish-section">
-                <button 
-                  class="publish-button" 
-                  @click="handlePublish"
-                  :disabled="isPublishing"
-                >
-                  {{ isPublishing ? 'Publishing...' : 'Publish Ad' }}
-                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <howToPostAdSection />
-    <getTheAppSection />
-    <footerSection />
+
+    <!-- Footer sections outside zoom wrapper -->
+    <div class="footer-sections">
+      <howToPostAdSection />
+      <getTheAppSection />
+      <footerSection />
+    </div>
   </div>
 </template>
 
@@ -2809,7 +2816,14 @@ export default {
     this.fetchCategories();
   },
   beforeDestroy() {
-    // Clean up object URLs when component is destroyed
+    // Reset zoom when leaving the page
+    document.body.style.zoom = "";
+    document.body.style.transform = "";
+    document.body.style.width = "";
+    document.body.style.height = "";
+    document.body.style.marginRight = "";
+    
+    // Clean up object URLs
     if (this.formData.files) {
       this.formData.files.forEach(file => {
         if (file instanceof File) {
@@ -2817,11 +2831,95 @@ export default {
         }
       });
     }
-  }
+  },
+  head() {
+    return {
+      meta: [
+        {
+          name: 'viewport',
+          content: 'width=1024, initial-scale=0.1, maximum-scale=1.0'
+        }
+      ],
+      script: [
+        {
+          innerHTML: `
+            (function() {
+              function forceZoomOut() {
+                document.querySelector('.zoom-wrapper').style.transform = 'scale(0.4)';
+                document.querySelector('.zoom-wrapper').style.transformOrigin = 'top left';
+                document.querySelector('.post-ad-container').style.overflow = 'hidden';
+                document.querySelector('.post-ad-container').style.maxWidth = '100vw';
+              }
+              if (window.innerWidth <= 768) {
+                window.addEventListener('load', forceZoomOut);
+                setTimeout(forceZoomOut, 100); // Backup timeout
+              }
+            })();
+          `,
+          type: 'text/javascript'
+        }
+      ]
+    }
+  },
+  mounted() {
+    if (window.innerWidth <= 768) {
+      // Force initial zoom out
+      document.querySelector('.zoom-wrapper').style.transform = 'scale(0.4)';
+      document.querySelector('.zoom-wrapper').style.transformOrigin = 'top left';
+      document.querySelector('.post-ad-container').style.overflow = 'hidden';
+      document.querySelector('.post-ad-container').style.maxWidth = '100vw';
+      
+      // Prevent zooming
+      document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) e.preventDefault();
+      }, { passive: false });
+      
+      document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+    }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+.post-ad-container {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.zoom-wrapper {
+  @media (max-width: 768px) {
+    width: 250vw;
+    max-width: 100vw;
+    transform-origin: top left;
+    transform: scale(0.4);
+    margin-bottom: -4rem; // Reduce the gap after scaling
+  }
+  
+  @media (min-width: 769px) {
+    width: 100%;
+    transform: none;
+  }
+}
+
+.footer-sections {
+  width: 100%;
+  overflow: hidden;
+  
+  @media (max-width: 768px) {
+    transform: none;
+    width: 100vw;
+    margin-top: -4rem; // Reduce space from top
+  }
+}
+
+// Add this at the top of your styles
+:root {
+  --app-scale: 1;
+}
+
 .card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -2833,27 +2931,51 @@ export default {
 .stepper-content-wrapper {
   display: flex;
   gap: 2rem;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
 
 .custom-stepper {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  min-width: 250px;
+
+  @media (max-width: 1024px) {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 1rem 0;
+    width: 100%;
+    min-width: unset;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
 }
 
 .step-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #47509b;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 }
 
 .step-number-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
+
+  @media (max-width: 1024px) {
+    flex-direction: row;
+  }
 }
 
 .step-number {
@@ -2904,6 +3026,14 @@ export default {
   transition: background-color 0.3s ease;
   border-bottom-left-radius: 50px;
   border-bottom-right-radius: 50px;
+
+  @media (max-width: 1024px) {
+    width: 50px;
+    height: 4px;
+    margin-left: 0;
+    margin-top: 13px;
+    border-radius: 0 50px 50px 0;
+  }
 }
 
 .step-line.active {
@@ -2928,6 +3058,14 @@ export default {
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .content-box {
@@ -3087,9 +3225,9 @@ export default {
   .div-grid {
     grid-template-columns: repeat(1, 1fr);
   }
-  // .main-div{
-  //     width: fit-content;
-  // }
+  .main-div{
+      width: fit-content;
+  }
 }
 // .address-class{
 //     width: 67.5%;
@@ -3409,6 +3547,62 @@ export default {
   .proceed-button {
     background-color: #4CAF50;
     color: white;
+  }
+}
+
+@media (max-width: 768px) {
+  .stepper-content-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .custom-stepper {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 1rem;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .step-header {
+    flex-direction: column;
+    text-align: center;
+    min-width: 100px;
+  }
+
+  .step-number-container {
+    margin-bottom: 0.5rem;
+  }
+
+  .vertical-progress-bar {
+    display: none;
+  }
+
+  .step-line {
+    width: 50px;
+    height: 4px;
+    margin: 0;
+    transform: translateY(15px);
+  }
+
+  .justify-items-left {
+    text-align: center;
+  }
+
+  .step-count {
+    font-size: 12px;
+  }
+
+  .step-title {
+    font-size: 14px;
+  }
+
+  .step-content {
+    padding: 1rem;
   }
 }
 </style>
