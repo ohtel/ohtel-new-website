@@ -757,7 +757,7 @@ export default {
 
 .filters {
   flex: 1;
-  max-width: 390px;
+  max-width: 293px;
   background: #ffffff;
   border-radius: 10px;
   position: sticky;
@@ -842,14 +842,15 @@ export default {
 }
 
 .sort-section {
-  margin-bottom: 20px;
+  margin-bottom: 66px;
   text-align: right;
 }
 
 .ads-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    justify-items: end;
 }
 
 .card {
