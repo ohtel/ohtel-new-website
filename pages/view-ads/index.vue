@@ -28,7 +28,17 @@
 </svg>All Ads</span>
       </nav>
 
-      <h1 class="page-title">{{ pageTitle }}</h1>
+      <div class="page-header">
+        <h1 class="page-title">{{ pageTitle }}</h1>
+        <div class="sort-section">
+          <span>Sort by:</span>
+          <select v-model="filters.sort">
+            <option value="date">Date posted</option>
+            <option value="lowToHigh">Price: Low to High</option>
+            <option value="highToLow">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
 
       <div class="ads-container">
         <!-- Filters Section -->
@@ -147,15 +157,6 @@
 
         <!-- Ads List Section -->
         <main class="ads-list">
-          <div class="sort-section">
-            <span>Sort by:</span>
-            <select v-model="filters.sort">
-              <option value="date">Date posted</option>
-              <option value="lowToHigh">Price: Low to High</option>
-              <option value="highToLow">Price: High to Low</option>
-            </select>
-          </div>
-
           <div v-if="ads.length > 0" class="ads-grid">
             <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
               <div class="position-relative">
@@ -174,7 +175,7 @@
                     </svg>
                 </div>
                 </div>
-                <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ ad.price }}  </p>
+                <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="fw-bold mb-1 price-text card-text">₹ {{ ad.price }}/- <span class="per-mnth">per month</span></p>
                 <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
@@ -739,14 +740,37 @@ export default {
   font-size: 14px;
 }
 
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 59px;
+  margin-top: 32px;
+}
+
 .page-title {
   color: #161C2D;
   font-size: 36px;
   font-style: normal;
   font-weight: 700;
   text-align: left;
-  margin-top: 32px;
-  margin-bottom: 59px;
+  margin: 0; /* Remove margins since we're handling it in the container */
+}
+
+.sort-section {
+  margin-bottom: 0; /* Remove bottom margin */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-section select {
+  padding: 8px 12px;
+  border: 1px solid #DEE1E6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #161C2D;
+  background-color: white;
 }
 
 /* Ads Page Layout */
@@ -841,11 +865,6 @@ export default {
   /* height: 100vh; */
 }
 
-.sort-section {
-  margin-bottom: 66px;
-  text-align: right;
-}
-
 .ads-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -864,7 +883,7 @@ export default {
 .card-img-top {
   width: 100%;
   height: 150px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .card-body {
@@ -877,11 +896,7 @@ export default {
   margin-bottom: 8px;
 }
 
-.card-text {
-  font-size: 14px;
-  margin-bottom: 16px;
-  color: #555;
-}
+
 
 .ad-label {
   position: absolute;
@@ -890,9 +905,12 @@ export default {
   padding: 5px 10px;
   background: #EDECF5;
   border-radius: 8px;
+  background: linear-gradient(180deg, #47509B 0%, #A20584 100%);
+  color: white;
 }
 
 .price-text {
+  color:black;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -1110,5 +1128,16 @@ opacity: 0.7;
 
 .heart-icon:hover svg {
   filter: brightness(1.2);
+}
+.card-text {
+  color: black;
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: black;
+}
+.per-mnth{
+  font-size: 12px;
+font-style: normal;
+font-weight: 500;
 }
 </style>
