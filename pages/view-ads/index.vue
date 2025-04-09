@@ -174,7 +174,7 @@
                 <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
-                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.ad_info2 }}
+                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ extractCityName(ad.ad_info2) }}
                   </small>
                   <small class="text-muted">{{ formatTimeAgo(ad.ad_posted_on) }}</small>
                 </div>
@@ -713,6 +713,21 @@ export default {
       } else {
         return 'Just now';
       }
+    },
+    extractCityName(address) {
+      if (!address) return '';
+      
+      // Split the address by commas and remove any leading/trailing spaces
+      const parts = address.split(',').map(part => part.trim());
+      
+      // Get the third item from last (city name)
+      // If there aren't enough parts, return the last available part
+      if (parts.length >= 3) {
+        return parts[parts.length - 3];
+      } else if (parts.length > 0) {
+        return parts[parts.length - 1];
+      }
+      return '';
     },
   },
   computed: {
