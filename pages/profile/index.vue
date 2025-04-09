@@ -5,7 +5,7 @@
       <div class="user-info mb-3">
         <div class="d-flex justify-content-between mb-3">
             <h2>User Info</h2>
-            <!-- <div class="d-flex gap-4">
+            <div class="d-flex gap-4">
                 <button class="delete-btn" @click="handleDelete">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
 <path d="M16.25 4.58398L15.7336 12.9382C15.6016 15.0727 15.5357 16.1399 15.0007 16.9072C14.7361 17.2866 14.3956 17.6067 14.0006 17.8473C13.2017 18.334 12.1325 18.334 9.99392 18.334C7.8526 18.334 6.78192 18.334 5.98254 17.8464C5.58733 17.6054 5.24667 17.2847 4.98223 16.9047C4.4474 16.1362 4.38287 15.0674 4.25384 12.93L3.75 4.58398" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
@@ -20,7 +20,7 @@
 <path d="M9.66602 16.666H14.666" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
 </svg> Edit
                 </button>
-            </div> -->
+            </div>
         </div>
         <div class="user-details">
           <div class="left-section">
