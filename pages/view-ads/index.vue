@@ -41,63 +41,6 @@
           <h2>Filters</h2>
 
           <div class="filter-section">
-            <h3 @click="toggleSection('category')">Category <span class="arrow" :class="{ 'open': isOpen('category') }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span></h3>
-            <div v-if="isOpen('category')" class="filter-options">
-              <label v-for="category in categories" :key="category.id">
-                <input type="radio" name="category" :value="category.id" v-model="filters.category" @change="fetchSubCategories(category.id)" />
-                {{ category.category_title }}
-              </label>
-            </div>
-          </div>
-          <div class="border-class"></div>
-          <div class="filter-section" >
-            <h3 @click="toggleSection('subcategory')">Sub-Category <span class="arrow" :class="{ 'open': isOpen('subcategory') }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span></h3>
-            <div v-if="isOpen('subcategory')&&filters.category" class="filter-options">
-              <label v-for="subcategory in subCategories" :key="subcategory.id">
-                <input type="checkbox" :value="subcategory.id" v-model="filters.subCategory" />
-                {{ subcategory.sub_category_title }}
-              </label>
-            </div>
-            <div class="no-subcategory" v-if="!filters.category">
-            Please select a category to view its sub category
-          </div>
-          </div>
-          
-          <div class="border-class"></div>
-          <!-- <div v-if="filters.category!=3&&filters.category!=4&&filters.category!=6&&filters.category!=7&&filters.category!=8" class="filter-section">
-            <h3 @click="toggleSection('budget')">Budget  <span class="arrow" :class="{ 'open': isOpen('budget') }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span></h3>
-            <div v-if="isOpen('budget')">
-              <div class="slider-container">
-                <MultiRangeSlider
-                  :min="minBudget"
-                  :max="maxBudget"
-                  :minValue="filters.budget.min"
-                  :maxValue="filters.budget.max"
-                  :step="1000"
-                  @input="handleBudgetChange"
-                />
-                <div class="budget-labels">
-                  <span>{{ minBudget.toLocaleString() }}</span>
-                  <span>{{ filters.budget.min.toLocaleString() }} - {{ filters.budget.max.toLocaleString() }}</span>
-                  <span>{{ maxBudget.toLocaleString() }}</span>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
-          <div class="filter-section">
             <h3 @click="toggleSection('location')">Location <span class="arrow" :class="{ 'open': isOpen('location') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -150,65 +93,132 @@
           <button v-if="hasActiveFilters" class="reset-button" @click="resetFilters">Reset Filters</button>
         </aside>
 
-        <!-- Ads List Section -->
-        <main class="ads-list">
-          <div v-if="ads.length > 0" class="ads-grid">
-            <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
-              <div class="position-relative">
-                <img :src="ad.ad_image || '/assets/images/posted.png'" :alt="ad.ad.title" class="card-img-top" />
-                <span class="ad-label">{{ ad.ad.type }}</span>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between">
-                  <h5 class="card-title mb-2">{{ ad.ad.title }}</h5>
-                  <div class="heart-icon" @click="toggleFavorite(ad.ad.id, ad.is_liked)">
-                    <svg v-if="ad.is_liked" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                      <path d="M24.3282 4.99269C20.9761 2.93654 18.0505 3.76514 16.293 5.08501C15.5722 5.6262 15.212 5.89679 15 5.89679C14.788 5.89679 14.4277 5.6262 13.707 5.08501C11.9495 3.76514 9.02386 2.93654 5.6718 4.99269C1.27259 7.69118 0.27715 16.5936 10.4244 24.1043C12.3571 25.5348 13.3235 26.25 15 26.25C16.6765 26.25 17.6429 25.5348 19.5756 24.1043C29.7229 16.5936 28.7274 7.69118 24.3282 4.99269Z" fill="#47509B"/>
-                    </svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.22172 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" stroke="black" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                </div>
-                <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="fw-bold card-text price-text">₹ {{ ad.price }}/- <span class="per-mnth">per month</span></p>
-                <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <small class="text-muted">
-                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ extractCityName(ad.ad_info2) }}
-                  </small>
-                  <small class="text-muted">{{ formatTimeAgo(ad.ad_posted_on) }}</small>
+        <!-- Main Content Section -->
+        <main class="main-content">
+          <!-- Post Ad Form Section (First 3 steps) -->
+          <div v-if="!formSubmitted" class="post-ad-form">
+            <!-- Step 1: Category Selection -->
+            <div v-if="currentStep === 1" class="form-step">
+              <h3>Select Category</h3>
+              <div class="category-grid">
+                <div 
+                  v-for="category in categories" 
+                  :key="category.id"
+                  class="category-card"
+                  :class="{ 'selected': selectedCategory === category.id }"
+                  @click="selectCategory(category)"
+                >
+                  <img :src="category.category_images" :alt="category.category_title">
+                  <span>{{ category.category_title }}</span>
                 </div>
               </div>
-              <div class="card-footer bg-white border-0">
-                <button class="btn view-details w-100" @click="viewDetails(ad.ad.id)">View Details</button>
+              <button 
+                class="next-button" 
+                :disabled="!selectedCategory"
+                @click="nextStep"
+              >
+                Next
+              </button>
+            </div>
+
+            <!-- Step 2: Sub Category Selection with Ad Type Tabs -->
+            <div v-if="currentStep === 2" class="form-step">
+              <div class="ad-type-tabs">
+                <button 
+                  v-for="type in adTypes" 
+                  :key="type.id"
+                  class="tab-button"
+                  :class="{ 'active': selectedType === type.id }"
+                  @click="selectType(type.id)"
+                >
+                  {{ type.title }}
+                </button>
+              </div>
+
+              <h3>Select Sub Category</h3>
+              <div class="subcategory-grid">
+                <div 
+                  v-for="subcategory in subCategories" 
+                  :key="subcategory.id"
+                  class="subcategory-card"
+                  :class="{ 'selected': selectedSubCategories.includes(subcategory.id) }"
+                  @click="toggleSubCategory(subcategory.id)"
+                >
+                  <span>{{ subcategory.sub_category_title }}</span>
+                </div>
+              </div>
+              <div class="button-group">
+                <button class="back-button" @click="previousStep">Back</button>
+                <button 
+                  class="next-button" 
+                  :disabled="selectedSubCategories.length === 0 || !selectedType"
+                  @click="submitForm"
+                >
+                  Apply Filters
+                </button>
               </div>
             </div>
           </div>
-          <div v-else class="empty-state">
-            <!-- <img src="/assets/images/no-results.svg" alt="No results found" class="empty-state-image"> -->
-            <h3>No Ads Found</h3>
-            <p>Try adjusting your filters to see more results</p>
-          </div>
 
-          <!-- Add pagination controls -->
-          <div v-if="hasNextPage || currentPage > 1" class="pagination">
-            <button 
-              :disabled="currentPage === 1" 
-              @click="changePage(currentPage - 1)"
-              class="page-button"
-            >
-              Previous
-            </button>
-            <span class="page-info">
-              Page {{ currentPage }}
-            </span>
-            <button 
-              :disabled="!hasNextPage" 
-              @click="changePage(currentPage + 1)"
-              class="page-button"
-            >
-              Next
-            </button>
+          <!-- Ads Grid Section -->
+          <div v-else class="ads-section">
+            <div v-if="ads.length > 0" class="ads-grid">
+              <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
+                <div class="position-relative">
+                  <img :src="ad.ad_image || '/assets/images/posted.png'" :alt="ad.ad.title" class="card-img-top" />
+                  <span class="ad-label">{{ ad.ad.type }}</span>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between">
+                    <h5 class="card-title mb-2">{{ ad.ad.title }}</h5>
+                    <div class="heart-icon" @click="toggleFavorite(ad.ad.id, ad.is_liked)">
+                      <svg v-if="ad.is_liked" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                        <path d="M24.3282 4.99269C20.9761 2.93654 18.0505 3.76514 16.293 5.08501C15.5722 5.6262 15.212 5.89679 15 5.89679C14.788 5.89679 14.4277 5.6262 13.707 5.08501C11.9495 3.76514 9.02386 2.93654 5.6718 4.99269C1.27259 7.69118 0.27715 16.5936 10.4244 24.1043C12.3571 25.5348 13.3235 26.25 15 26.25C16.6765 26.25 17.6429 25.5348 19.5756 24.1043C29.7229 16.5936 28.7274 7.69118 24.3282 4.99269Z" fill="#47509B"/>
+                      </svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.22172 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" stroke="black" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <p v-if="ad.price" class="fw-bold card-text price-text">₹ {{ ad.price }}/- <span v-if="ad.category.id === 1" class="per-mnth">per month</span></p>
+                  <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                      <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ extractCityName(ad.ad_info2) }}
+                    </small>
+                    <small class="text-muted">{{ formatTimeAgo(ad.ad_posted_on) }}</small>
+                  </div>
+                </div>
+                <div class="card-footer bg-white border-0">
+                  <button class="btn view-details w-100" @click="viewDetails(ad.ad.id)">View Details</button>
+                </div>
+              </div>
+            </div>
+            <div v-else class="empty-state">
+              <h3>No Ads Found</h3>
+              <p>Try adjusting your filters to see more results</p>
+            </div>
+
+            <!-- Add pagination controls -->
+            <div v-if="hasNextPage || currentPage > 1" class="pagination">
+              <button 
+                :disabled="currentPage === 1" 
+                @click="changePage(currentPage - 1)"
+                class="page-button"
+              >
+                Previous
+              </button>
+              <span class="page-info">
+                Page {{ currentPage }}
+              </span>
+              <button 
+                :disabled="!hasNextPage" 
+                @click="changePage(currentPage + 1)"
+                class="page-button"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </main>
       </div>
@@ -290,6 +300,13 @@ export default {
       locationDetails: null, // To store location details
       currentPage: 1,
       hasNextPage: false,
+      currentStep: 1,
+      formSubmitted: false,
+      selectedCategory: null,
+      selectedSubCategories: [],
+      selectedType: null,
+      adTypes: [], // Will be populated from category data
+      totalSteps: 2,
     };
   },
   async mounted() {
@@ -318,33 +335,9 @@ export default {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // Filter out category with id 3
-        this.categories = response.data.result.category_list.filter(category => category.id !== 3);
+        // Get the category list directly from the response
+        this.categories = response.data.result.category_list;
         
-        // Add additional categories
-        const additionalCategories = [
-          {
-            id: 8,
-            category_title: "Applicant",
-            category_images: "http://localhost:8000/media/MasterCategory_images/spaces_home_cate_Mc3pDUL.png",
-            category_description: "",
-            sub_category: [],
-            short_title: "",
-            short_description: ""
-          },
-          {
-            id: 7,
-            category_title: "Recruiter",
-            category_images: "http://localhost:8000/media/MasterCategory_images/home_used_eq.png",
-            category_description: "",
-            sub_category: [],
-            short_title: "",
-            short_description: ""
-          }
-        ];
-        
-        // Add the additional categories to the existing categories array
-        this.categories = [...this.categories, ...additionalCategories];
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -352,10 +345,37 @@ export default {
     async fetchSubCategories(categoryId) {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`, {
+        let url;
+        let response;
+
+        // For jobs category (id: 3)
+        if (categoryId === 3) {
+          if (this.selectedType === 'applicant') {
+            url = `${BASE_URL}${ENDPOINTS.APPLICANT_SUBCATEGORY}?category_id=3&type=Applicant`;
+          } else if (this.selectedType === 'recruiter') {
+            url = `${BASE_URL}${ENDPOINTS.APPLICANT_SUBCATEGORY}?category_id=3&type=Recruiter`;
+          } else {
+            url = `${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`;
+          }
+        } else {
+          // For other categories
+          url = `${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`;
+        }
+
+        response = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        this.subCategories = response.data.results;
+
+        // Handle different response structures
+        if (categoryId === 3) {
+          if (this.selectedType === 'applicant' || this.selectedType === 'recruiter') {
+            this.subCategories = response.data.result.data; // Use data for both Applicant and Recruiter
+          } else {
+            this.subCategories = response.data.results; // Use standard subcategories
+          }
+        } else {
+          this.subCategories = response.data.results; // Use standard subcategories for non-job categories
+        }
       } catch (error) {
         console.error("Error fetching subcategories:", error);
       }
@@ -728,6 +748,87 @@ export default {
         return parts[parts.length - 1];
       }
       return '';
+    },
+    async selectCategory(category) {
+      this.selectedCategory = category.id;
+      this.selectedSubCategories = [];
+      
+      // Reset selected type
+      this.selectedType = null;
+      
+      // Update ad types based on category's applicant and recruiter titles for jobs
+      if (category.id === 3) { // Jobs category
+        this.adTypes = [
+          { id: 'recruiter', title: category.recruiter?.title || 'Recruiter' },
+          { id: 'applicant', title: category.applicant?.title || 'Applicant' }
+        ];
+        // Set recruiter as default for jobs
+        this.selectType('recruiter');
+      } else if (category.seller && category.buyer) {
+        // For other categories, use seller/buyer
+        this.adTypes = [
+          { id: 'seller', title: category.seller.title },
+          { id: 'buyer', title: category.buyer.title }
+        ];
+        // Set seller as default
+        this.selectType('seller');
+      } else {
+        // Fallback if no specific titles are available
+        this.adTypes = [
+          { id: 'seller', title: 'Seller' },
+          { id: 'buyer', title: 'Buyer' }
+        ];
+        // Set seller as default
+        this.selectType('seller');
+      }
+      
+      // Fetch subcategories after setting the type
+      await this.fetchSubCategories(category.id);
+    },
+    toggleSubCategory(id) {
+      const index = this.selectedSubCategories.indexOf(id);
+      if (index === -1) {
+        this.selectedSubCategories.push(id);
+      } else {
+        this.selectedSubCategories.splice(index, 1);
+      }
+    },
+    async selectType(type) {
+      this.selectedType = type;
+      this.filters.type = type;
+      this.selectedSubCategories = []; // Clear selected subcategories when type changes
+      
+      // Refetch subcategories if it's the jobs category
+      if (this.selectedCategory === 3) {
+        await this.fetchSubCategories(this.selectedCategory);
+      }
+    },
+    nextStep() {
+      if (this.currentStep < this.totalSteps) {
+        this.currentStep++;
+      }
+    },
+    previousStep() {
+      if (this.currentStep > 1) {
+        this.currentStep--;
+      }
+    },
+    async submitForm() {
+      // Update filters with form data
+      this.filters.category = this.selectedCategory;
+      this.filters.subCategory = this.selectedSubCategories;
+      this.filters.type = this.selectedType;
+      
+      if (this.locationDetails) {
+        this.filters.coordinates = {
+          lat: this.locationDetails.locationInformation.lat,
+          lng: this.locationDetails.locationInformation.lng
+        };
+      }
+      
+      // Apply filters and show ads
+      this.formSubmitted = true;
+      await this.applyFilters();
     },
   },
   computed: {
@@ -1194,5 +1295,228 @@ font-weight: 500;
   font-family: 'Poppins', sans-serif;
   font-size:20px;
   margin-bottom:18px;
+}
+
+.main-content {
+  flex: 3;
+  overflow-y: auto;
+}
+
+.post-ad-form {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-step {
+  margin-bottom: 2rem;
+}
+
+.form-step h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #161C2D;
+}
+
+.category-grid, .subcategory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.category-card, .subcategory-card {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.category-card img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.category-card.selected, .subcategory-card.selected {
+  border-color: #47509B;
+  background-color: #F5F6FF;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.next-button, .back-button {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.next-button {
+  background: #47509B;
+  color: white;
+  border: none;
+}
+
+.next-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.back-button {
+  background: white;
+  color: #47509B;
+  border: 1px solid #47509B;
+}
+
+.location-selector {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.location-placeholder, .selected-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.location-placeholder img, .selected-location img {
+  width: 24px;
+  height: 24px;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.type-card {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.type-card img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.type-card span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #161C2D;
+}
+
+.type-card.selected {
+  border-color: #47509B;
+  background-color: #F5F6FF;
+}
+
+.type-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Update category grid for better alignment */
+.category-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.category-card {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.category-card img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.5rem;
+}
+
+.category-card span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #161C2D;
+}
+
+/* Make subcategory grid match the style */
+.subcategory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.subcategory-card {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.subcategory-card span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #161C2D;
+}
+
+.ad-type-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #DEE1E6;
+  padding-bottom: 1rem;
+}
+
+.tab-button {
+  padding: 0.75rem 2rem;
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: #47509B;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #47509B;
+}
+
+.tab-button:hover {
+  color: #47509B;
 }
 </style>
