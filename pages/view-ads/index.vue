@@ -170,7 +170,7 @@
                     </svg>
                 </div>
                 </div>
-                <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="fw-bold mb-1 price-text card-text">₹ {{ ad.price }}/- <span class="per-mnth">per month</span></p>
+                <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="fw-bold card-text price-text">₹ {{ ad.price }}/- <span class="per-mnth">per month</span></p>
                 <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
@@ -945,10 +945,7 @@ export default {
   color: white;
 }
 
-.price-text {
-  color:black;
-  font-family: 'Poppins', sans-serif;
-}
+
 
 .card-footer {
   padding-bottom: 20px;
@@ -1191,5 +1188,11 @@ font-weight: 500;
 
 .breadcrumb-link svg {
   vertical-align: middle;
+}
+.price-text {
+  color:black;
+  font-family: 'Poppins', sans-serif;
+  font-size:20px;
+  margin-bottom:18px;
 }
 </style>
