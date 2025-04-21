@@ -474,11 +474,11 @@ export default {
             this.subCategories = response.data.result.data.map(item => ({
               ...item,
               sub_category_title: item.job_category_title || item.sub_category_title,
-              sub_sub_category_list: item.job_sub_category_list?.length > 0 
-                ? item.job_sub_category_list.map(subItem => ({
+              sub_sub_category_list: item.sub_sub_category_list?.length > 0 
+                ? item.sub_sub_category_list.map(subItem => ({
                     ...subItem,
-                    title: subItem.job_sub_category_title,
-                    image: subItem.job_sub_category_images
+                    title: subItem.applicant_role_title                    ,
+                    image: subItem.sub_category_images
                   }))
                 : (item.levels?.map(level => ({
                     id: level.code,
