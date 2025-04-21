@@ -99,7 +99,9 @@
           <div v-if="!formSubmitted" class="post-ad-form">
             <!-- Step 1: Category Selection -->
             <div v-if="currentStep === 1" class="form-step">
-              <h3>Select Category</h3>
+              <div class="step-header">
+                <h3>Select Category</h3>
+              </div>
               <div class="category-grid">
                 <div 
                   v-for="category in categories" 
@@ -112,17 +114,21 @@
                   <span>{{ category.category_title }}</span>
                 </div>
               </div>
-              <button 
-                class="next-button" 
-                :disabled="!selectedCategory"
-                @click="nextStep"
-              >
-                Next
-              </button>
             </div>
 
             <!-- Step 2: Sub Category Selection with Ad Type Tabs -->
             <div v-if="currentStep === 2" class="form-step">
+              <div class="step-header">
+                <button class="back-button" @click="previousStep">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+                    <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+                  </svg>
+                  Back
+                </button>
+                <h3>Select Sub Category</h3>
+              </div>
+
               <div class="ad-type-tabs">
                 <button 
                   v-for="type in adTypes" 
@@ -135,7 +141,6 @@
                 </button>
               </div>
 
-              <h3>Select Sub Category</h3>
               <div class="subcategory-grid">
                 <div 
                   v-for="subcategory in subCategories" 
@@ -148,42 +153,32 @@
                   <span>{{ subcategory.sub_category_title }}</span>
                 </div>
               </div>
-              <div class="button-group">
-                <button class="back-button" @click="previousStep">Back</button>
-                <button 
-                  class="next-button" 
-                  :disabled="!selectedSubCategory || !selectedType"
-                  @click="hasSubSubCategories ? nextStep() : submitForm()"
-                >
-                  {{ hasSubSubCategories ? 'Next' : 'Apply Filters' }}
-                </button>
-              </div>
             </div>
 
             <!-- Step 3: Sub-Sub Category Selection -->
             <div v-if="currentStep === 3" class="form-step">
-              <h3>Select Specific Category</h3>
+              <div class="step-header">
+                <button class="back-button" @click="previousStep">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+                    <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+                  </svg>
+                  Back
+                </button>
+                <h3>Select Specific Category</h3>
+              </div>
+
               <div class="subcategory-grid">
                 <div 
                   v-for="subSubCategory in currentSubCategory?.sub_sub_category_list" 
                   :key="subSubCategory.id"
                   class="subcategory-card"
                   :class="{ 'selected': selectedSubSubCategory?.id === subSubCategory.id }"
-                  @click="selectSubSubCategory(subSubCategory)"
+                  @click="selectSubSubCategory(subSubCategory); submitForm()"
                 >
                   <img v-if="subSubCategory.image" :src="subSubCategory.image" :alt="subSubCategory.title">
                   <span>{{ subSubCategory.title }}</span>
                 </div>
-              </div>
-              <div class="button-group">
-                <button class="back-button" @click="previousStep">Back</button>
-                <button 
-                  class="next-button" 
-                  :disabled="!selectedSubSubCategory"
-                  @click="submitForm"
-                >
-                  Apply Filters
-                </button>
               </div>
             </div>
           </div>
@@ -403,6 +398,12 @@ export default {
     await this.fetchInitialAds();
   },
   methods: {
+    scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    },
     async fetchCategories() {
       try {
         const token = localStorage.getItem('accessToken');
@@ -731,11 +732,7 @@ export default {
     async changePage(page) {
       this.currentPage = page;
       await this.fetchPage(page);
-      // Scroll to top of ads list
-      const adsList = document.querySelector('.ads-list');
-      if (adsList) {
-        adsList.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      this.scrollToTop();
     },
     async fetchPage(page) {
       try {
@@ -846,6 +843,7 @@ export default {
         this.formSubmitted = false;
         this.currentStep = 1;
       }
+      this.scrollToTop();
     },
     async toggleFavorite(adId, currentStatus) {
       try {
@@ -955,6 +953,9 @@ export default {
       
       // Fetch subcategories after setting the type
       await this.fetchSubCategories(category.id);
+      
+      // Automatically advance to next step
+      this.nextStep();
     },
     toggleSubCategory(subcategory) {
       this.selectedSubCategory = subcategory.id;
@@ -962,6 +963,9 @@ export default {
       
       if (this.hasSubSubCategories && subcategory.sub_sub_category_list?.length > 0) {
         this.nextStep();
+      } else {
+        // If no sub-sub-categories, submit the form
+        this.submitForm();
       }
     },
     selectSubSubCategory(subSubCategory) {
@@ -980,11 +984,13 @@ export default {
     nextStep() {
       if (this.currentStep < this.totalSteps) {
         this.currentStep++;
+        this.scrollToTop();
       }
     },
     previousStep() {
       if (this.currentStep > 1) {
         this.currentStep--;
+        this.scrollToTop();
       }
     },
     async submitForm() {
@@ -1009,6 +1015,7 @@ export default {
       
       // Apply filters and fetch ads
       await this.applyFilters();
+      this.scrollToTop();
     },
     getCategoryName(categoryId) {
       const category = this.categories.find(cat => cat.id === categoryId);
@@ -1793,5 +1800,40 @@ font-weight: 500;
 .type-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.step-header h3 {
+  margin: 0;
+  flex-grow: 1;
+}
+
+.step-header .back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 8px;
+  color: #47509B;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.step-header .back-button:hover {
+  background: #F5F6FF;
+}
+
+.step-header .back-button svg {
+  width: 20px;
+  height: 20px;
 }
 </style>
