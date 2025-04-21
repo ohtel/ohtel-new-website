@@ -141,9 +141,10 @@
                   v-for="subcategory in subCategories" 
                   :key="subcategory.id"
                   class="subcategory-card"
-                  :class="{ 'selected': selectedSubCategories.includes(subcategory.id) }"
-                  @click="toggleSubCategory(subcategory.id)"
+                  :class="{ 'selected': selectedSubCategory === subcategory.id }"
+                  @click="toggleSubCategory(subcategory)"
                 >
+                  <img v-if="subcategory.sub_category_images" :src="subcategory.sub_category_images" :alt="subcategory.sub_category_title">
                   <span>{{ subcategory.sub_category_title }}</span>
                 </div>
               </div>
@@ -151,7 +152,34 @@
                 <button class="back-button" @click="previousStep">Back</button>
                 <button 
                   class="next-button" 
-                  :disabled="selectedSubCategories.length === 0 || !selectedType"
+                  :disabled="!selectedSubCategory || !selectedType"
+                  @click="hasSubSubCategories ? nextStep() : submitForm()"
+                >
+                  {{ hasSubSubCategories ? 'Next' : 'Apply Filters' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Sub-Sub Category Selection -->
+            <div v-if="currentStep === 3" class="form-step">
+              <h3>Select Specific Category</h3>
+              <div class="subcategory-grid">
+                <div 
+                  v-for="subSubCategory in currentSubCategory?.sub_sub_category_list" 
+                  :key="subSubCategory.id"
+                  class="subcategory-card"
+                  :class="{ 'selected': selectedSubSubCategory?.id === subSubCategory.id }"
+                  @click="selectSubSubCategory(subSubCategory)"
+                >
+                  <img v-if="subSubCategory.image" :src="subSubCategory.image" :alt="subSubCategory.title">
+                  <span>{{ subSubCategory.title }}</span>
+                </div>
+              </div>
+              <div class="button-group">
+                <button class="back-button" @click="previousStep">Back</button>
+                <button 
+                  class="next-button" 
+                  :disabled="!selectedSubSubCategory"
                   @click="submitForm"
                 >
                   Apply Filters
@@ -303,10 +331,13 @@ export default {
       currentStep: 1,
       formSubmitted: false,
       selectedCategory: null,
-      selectedSubCategories: [],
+      selectedSubCategory: null,
       selectedType: null,
       adTypes: [], // Will be populated from category data
-      totalSteps: 2,
+      totalSteps: 3,
+      selectedSubSubCategory: null,
+      hasSubSubCategories: false,
+      currentSubCategory: null,
     };
   },
   async mounted() {
@@ -348,7 +379,6 @@ export default {
         let url;
         let response;
 
-        // For jobs category (id: 3)
         if (categoryId === 3) {
           if (this.selectedType === 'applicant') {
             url = `${BASE_URL}${ENDPOINTS.APPLICANT_SUBCATEGORY}?category_id=3&type=Applicant`;
@@ -358,7 +388,6 @@ export default {
             url = `${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`;
           }
         } else {
-          // For other categories
           url = `${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`;
         }
 
@@ -366,16 +395,92 @@ export default {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        // Handle different response structures
         if (categoryId === 3) {
-          if (this.selectedType === 'applicant' || this.selectedType === 'recruiter') {
-            this.subCategories = response.data.result.data; // Use data for both Applicant and Recruiter
-          } else {
-            this.subCategories = response.data.results; // Use standard subcategories
+          if (this.selectedType === 'applicant') {
+            this.subCategories = response.data.result.data.map(item => ({
+              ...item,
+              sub_category_title: item.job_category_title || item.sub_category_title,
+              sub_sub_category_list: item.job_sub_category_list?.length > 0 
+                ? item.job_sub_category_list.map(subItem => ({
+                    ...subItem,
+                    title: subItem.job_sub_category_title,
+                    image: subItem.job_sub_category_images
+                  }))
+                : (item.levels?.map(level => ({
+                    id: level.code,
+                    title: level.title,
+                    image: null
+                  })) || [])
+            }));
+          } else if (this.selectedType === 'recruiter') {
+            this.subCategories = response.data.result.data.map(item => ({
+              ...item,
+              sub_sub_category_list: item.sub_sub_category_list?.length > 0
+                ? item.sub_sub_category_list.map(subItem => ({
+                    ...subItem,
+                    title: subItem.sub_sub_category_title,
+                    image: subItem.sub_sub_category_images
+                  }))
+                : (item.levels?.map(level => ({
+                    id: level.code,
+                    title: level.title,
+                    image: null
+                  })) || [])
+            }));
           }
+        } else if (categoryId === 4) { // Food Factory
+          this.subCategories = response.data.results.map(item => ({
+            ...item,
+            sub_sub_category_list: item.food_factory_list?.length > 0
+              ? item.food_factory_list.map(subItem => ({
+                  ...subItem,
+                  title: subItem.food_factory_title,
+                  image: subItem.food_factory_images
+                }))
+              : (item.levels?.map(level => ({
+                  id: level.code,
+                  title: level.title,
+                  image: null
+                })) || [])
+          }));
+        } else if (categoryId === 5) { // Service Provider
+          this.subCategories = response.data.results.map(item => ({
+            ...item,
+            sub_sub_category_list: item.service_provider_list?.length > 0
+              ? item.service_provider_list.map(subItem => ({
+                  ...subItem,
+                  title: subItem.service_provider_title,
+                  image: subItem.service_provider_images
+                }))
+              : (item.levels?.map(level => ({
+                  id: level.code,
+                  title: level.title,
+                  image: null
+                })) || [])
+          }));
         } else {
-          this.subCategories = response.data.results; // Use standard subcategories for non-job categories
+          this.subCategories = response.data.results.map(item => ({
+            ...item,
+            sub_sub_category_list: item.sub_sub_category_list?.length > 0
+              ? item.sub_sub_category_list.map(subItem => ({
+                  ...subItem,
+                  title: subItem.sub_sub_category_title,
+                  image: subItem.sub_sub_category_images
+                }))
+              : (item.levels?.map(level => ({
+                  id: level.code,
+                  title: level.title,
+                  image: null
+                })) || [])
+          }));
         }
+
+        this.hasSubSubCategories = this.subCategories.some(
+          item => (item.sub_sub_category_list && item.sub_sub_category_list.length > 0) || 
+                 (item.levels && item.levels.length > 0)
+        );
+
+        this.totalSteps = this.hasSubSubCategories ? 3 : 2;
       } catch (error) {
         console.error("Error fetching subcategories:", error);
       }
@@ -751,7 +856,8 @@ export default {
     },
     async selectCategory(category) {
       this.selectedCategory = category.id;
-      this.selectedSubCategories = [];
+      this.selectedSubCategory = null;
+      this.selectedSubSubCategory = null;
       
       // Reset selected type
       this.selectedType = null;
@@ -785,20 +891,23 @@ export default {
       // Fetch subcategories after setting the type
       await this.fetchSubCategories(category.id);
     },
-    toggleSubCategory(id) {
-      const index = this.selectedSubCategories.indexOf(id);
-      if (index === -1) {
-        this.selectedSubCategories.push(id);
-      } else {
-        this.selectedSubCategories.splice(index, 1);
+    toggleSubCategory(subcategory) {
+      this.selectedSubCategory = subcategory.id;
+      this.currentSubCategory = subcategory;
+      
+      if (this.hasSubSubCategories && subcategory.sub_sub_category_list?.length > 0) {
+        this.nextStep();
       }
+    },
+    selectSubSubCategory(subSubCategory) {
+      this.selectedSubSubCategory = subSubCategory;
     },
     async selectType(type) {
       this.selectedType = type;
       this.filters.type = type;
-      this.selectedSubCategories = []; // Clear selected subcategories when type changes
+      this.selectedSubCategory = null;
+      this.selectedSubSubCategory = null;
       
-      // Refetch subcategories if it's the jobs category
       if (this.selectedCategory === 3) {
         await this.fetchSubCategories(this.selectedCategory);
       }
@@ -814,10 +923,13 @@ export default {
       }
     },
     async submitForm() {
-      // Update filters with form data
       this.filters.category = this.selectedCategory;
-      this.filters.subCategory = this.selectedSubCategories;
+      this.filters.subCategory = this.selectedSubCategory ? [this.selectedSubCategory] : [];
       this.filters.type = this.selectedType;
+      
+      if (this.selectedSubSubCategory) {
+        this.filters.subSubCategory = this.selectedSubSubCategory;
+      }
       
       if (this.locationDetails) {
         this.filters.coordinates = {
@@ -826,7 +938,6 @@ export default {
         };
       }
       
-      // Apply filters and show ads
       this.formSubmitted = true;
       await this.applyFilters();
     },
@@ -1518,5 +1629,12 @@ font-weight: 500;
 
 .tab-button:hover {
   color: #47509B;
+}
+
+.subcategory-card img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
 }
 </style>
