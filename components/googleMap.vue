@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" style="height: 400px; width: 100%"></div>
+    <div id="map" style="height: 176px; width: 100%"></div>
     <div v-if="showControls" class="map-actions">
       <input
         v-if="map"
