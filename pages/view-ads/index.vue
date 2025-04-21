@@ -190,6 +190,50 @@
 
           <!-- Ads Grid Section -->
           <div v-else class="ads-section">
+            <!-- Applied Filters Section -->
+            <div v-if="hasActiveFilters" class="applied-filters-section">
+              <div class="applied-filters">
+                <div v-if="filters.category" class="filter-tag">
+                  <span>{{ getCategoryName(filters.category) }}</span>
+                  <button @click="clearFilter('category')" class="clear-filter">×</button>
+                </div>
+                <div v-if="filters.type && filters.type !== 'all_ads'" class="filter-tag">
+                  <span>{{ filters.type }}</span>
+                  <button @click="clearFilter('type')" class="clear-filter">×</button>
+                </div>
+                <div v-if="filters.subCategory && filters.subCategory.length > 0" class="filter-tag">
+                  <span>{{ getSubCategoryName(filters.subCategory[0]) }}</span>
+                  <button @click="clearFilter('subCategory')" class="clear-filter">×</button>
+                </div>
+                <div v-if="selectedSubSubCategory" class="filter-tag">
+                  <span>{{ selectedSubSubCategory.title }}</span>
+                  <button @click="clearFilter('subSubCategory')" class="clear-filter">×</button>
+                </div>
+                <div v-if="locationDetails" class="filter-tag">
+                  <span>{{ extractCityName(locationDetails.address) }}</span>
+                  <button @click="clearFilter('location')" class="clear-filter">×</button>
+                </div>
+                <div v-if="filters.radius !== defaultFilters.radius" class="filter-tag">
+                  <span>{{ filters.radius }}km radius</span>
+                  <button @click="clearFilter('radius')" class="clear-filter">×</button>
+                </div>
+                <div v-if="filters.area !== defaultFilters.area" class="filter-tag">
+                  <span>{{ filters.area }} sq.ft</span>
+                  <button @click="clearFilter('area')" class="clear-filter">×</button>
+                </div>
+                <button @click="resetFilters" class="clear-all-button">Clear All</button>
+              </div>
+            </div>
+
+            <div class="ads-header">
+              <button class="back-to-form" @click="backToForm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+                  <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+                </svg>
+                Back
+              </button>
+            </div>
             <div v-if="ads.length > 0" class="ads-grid">
               <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
                 <div class="position-relative">
@@ -780,7 +824,28 @@ export default {
       this.hasNextPage = false; // Reset hasNextPage
       this.locationDetails = null; // Clear location details
       this.filters.coordinates = null; // Clear coordinates
+      this.selectedCategory = null;
+      this.selectedSubCategory = null;
+      this.selectedType = null;
+      this.selectedSubSubCategory = null;
+      this.currentStep = 1;
+      this.formSubmitted = false;
       this.applyFilters(); // Apply the reset filters
+    },
+    backToForm() {
+      if (this.selectedSubSubCategory) {
+        // If we have a sub-sub-category selected, go back to sub-sub-category selection
+        this.formSubmitted = false;
+        this.currentStep = 3;
+      } else if (this.selectedSubCategory) {
+        // If we have a sub-category selected but no sub-sub-category, go back to sub-category selection
+        this.formSubmitted = false;
+        this.currentStep = 2;
+      } else {
+        // If neither is selected, go back to category selection
+        this.formSubmitted = false;
+        this.currentStep = 1;
+      }
     },
     async toggleFavorite(adId, currentStatus) {
       try {
@@ -923,14 +988,15 @@ export default {
       }
     },
     async submitForm() {
-      this.filters.category = this.selectedCategory;
-      this.filters.subCategory = this.selectedSubCategory ? [this.selectedSubCategory] : [];
-      this.filters.type = this.selectedType;
+      // Set all filter values
+      this.filters = {
+        ...this.filters,
+        category: this.selectedCategory,
+        subCategory: this.selectedSubCategory ? [this.selectedSubCategory] : [],
+        type: this.selectedType || 'all_ads',
+      };
       
-      if (this.selectedSubSubCategory) {
-        this.filters.subSubCategory = this.selectedSubSubCategory;
-      }
-      
+      // Set coordinates if location is selected
       if (this.locationDetails) {
         this.filters.coordinates = {
           lat: this.locationDetails.locationInformation.lat,
@@ -938,8 +1004,53 @@ export default {
         };
       }
       
+      // Set form submitted state
       this.formSubmitted = true;
+      
+      // Apply filters and fetch ads
       await this.applyFilters();
+    },
+    getCategoryName(categoryId) {
+      const category = this.categories.find(cat => cat.id === categoryId);
+      return category ? category.category_title : '';
+    },
+    getSubCategoryName(subCategoryId) {
+      const subCategory = this.subCategories.find(sub => sub.id === subCategoryId);
+      return subCategory ? subCategory.sub_category_title : '';
+    },
+    clearFilter(filterType) {
+      switch(filterType) {
+        case 'category':
+          this.filters.category = null;
+          this.filters.subCategory = [];
+          this.selectedCategory = null;
+          this.selectedSubCategory = null;
+          this.selectedSubSubCategory = null;
+          break;
+        case 'type':
+          this.filters.type = 'all_ads';
+          this.selectedType = null;
+          break;
+        case 'subCategory':
+          this.filters.subCategory = [];
+          this.selectedSubCategory = null;
+          this.selectedSubSubCategory = null;
+          break;
+        case 'subSubCategory':
+          this.selectedSubSubCategory = null;
+          break;
+        case 'location':
+          this.locationDetails = null;
+          this.filters.coordinates = null;
+          break;
+        case 'radius':
+          this.filters.radius = this.defaultFilters.radius;
+          break;
+        case 'area':
+          this.filters.area = this.defaultFilters.area;
+          break;
+      }
+      this.applyFilters();
     },
   },
   computed: {
@@ -953,14 +1064,15 @@ export default {
     },
     hasActiveFilters() {
       return (
-        this.filters.category !== null ||
+        this.filters.category !== this.defaultFilters.category ||
         this.filters.subCategory.length > 0 ||
-        this.filters.budget.min !== 50000 ||
-        this.filters.budget.max !== 10000000 ||
-        this.filters.area !== 20000 ||
-        this.filters.radius !== 10 ||
-        this.filters.coordinates !== null ||
-        this.filters.sort !== 'date'
+        this.filters.type !== this.defaultFilters.type ||
+        this.filters.area !== this.defaultFilters.area ||
+        this.filters.radius !== this.defaultFilters.radius ||
+        this.filters.coordinates !== this.defaultFilters.coordinates ||
+        this.filters.sort !== this.defaultFilters.sort ||
+        this.locationDetails !== null ||
+        this.selectedSubSubCategory !== null
       );
     }
   },
@@ -1441,24 +1553,173 @@ font-weight: 500;
 .category-card, .subcategory-card {
   border: 1px solid #DEE1E6;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: stretch;
+  overflow: hidden;
+  height: 180px;
 }
 
-.category-card img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+.category-card img, .subcategory-card img {
+  width: 100%;
+  height: 75%;
+  object-fit: cover;
+  margin: 0;
+}
+
+.category-card span, .subcategory-card span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #161C2D;
+  padding: 12px;
+  text-align: center;
+  background: white;
+  height: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .category-card.selected, .subcategory-card.selected {
   border-color: #47509B;
+  background-color: white;
+}
+
+.category-card.selected span, .subcategory-card.selected span {
   background-color: #F5F6FF;
+}
+
+.category-grid, .subcategory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.ad-type-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #DEE1E6;
+  padding-bottom: 1rem;
+}
+
+.tab-button {
+  padding: 0.75rem 2rem;
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: #47509B;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #47509B;
+}
+
+.tab-button:hover {
+  color: #47509B;
+}
+
+.applied-filters-section {
+  margin: 0 0 20px 0;
+  padding: 15px 0;
+  border-bottom: 1px solid #DEE1E6;
+}
+
+.applied-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #F5F6FF;
+  border: 1px solid #47509B;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #47509B;
+}
+
+.clear-filter {
+  background: none;
+  border: none;
+  color: #47509B;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.clear-filter:hover {
+  background: rgba(71, 80, 155, 0.1);
+}
+
+.clear-all-button {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 20px;
+  color: #47509B;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.clear-all-button:hover {
+  background: #F5F6FF;
+}
+
+.ads-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-to-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 8px;
+  color: #47509B;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-to-form:hover {
+  background: #F5F6FF;
+}
+
+.back-to-form svg {
+  width: 20px;
+  height: 20px;
 }
 
 .button-group {
@@ -1490,26 +1751,6 @@ font-weight: 500;
   background: white;
   color: #47509B;
   border: 1px solid #47509B;
-}
-
-.location-selector {
-  border: 1px solid #DEE1E6;
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-  margin-bottom: 2rem;
-}
-
-.location-placeholder, .selected-location {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #666;
-}
-
-.location-placeholder img, .selected-location img {
-  width: 24px;
-  height: 24px;
 }
 
 .type-grid {
@@ -1552,89 +1793,5 @@ font-weight: 500;
 .type-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Update category grid for better alignment */
-.category-grid {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.5rem;
-}
-
-.category-card {
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.category-card img {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0.5rem;
-}
-
-.category-card span {
-  font-size: 14px;
-  font-weight: 500;
-  color: #161C2D;
-}
-
-/* Make subcategory grid match the style */
-.subcategory-grid {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.5rem;
-}
-
-.subcategory-card {
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.subcategory-card span {
-  font-size: 14px;
-  font-weight: 500;
-  color: #161C2D;
-}
-
-.ad-type-tabs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #DEE1E6;
-  padding-bottom: 1rem;
-}
-
-.tab-button {
-  padding: 0.75rem 2rem;
-  border: none;
-  background: none;
-  font-weight: 600;
-  color: #666;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.tab-button.active {
-  color: #47509B;
-}
-
-.tab-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1rem;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #47509B;
-}
-
-.tab-button:hover {
-  color: #47509B;
-}
-
-.subcategory-card img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  margin-bottom: 0.5rem;
 }
 </style>
