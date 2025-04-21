@@ -88,9 +88,6 @@
               </div>
             </div>
           </div>
-
-          <button class="apply-button" @click="applyFilters">Apply</button>
-          <button v-if="hasActiveFilters" class="reset-button" @click="resetFilters">Reset Filters</button>
         </aside>
 
         <!-- Main Content Section -->
@@ -596,7 +593,7 @@ export default {
           lat: eventData.locationInformation.lat,
           lng: eventData.locationInformation.lng
         };
-        this.fetchFilteredAds(); // Fetch ads with new location
+        this.applyFilters(); // Apply filters immediately when location changes
       }
     },
     fetchCurrentLocation() {
@@ -964,7 +961,7 @@ export default {
           { id: 'applicant', title: category.applicant?.title || 'Applicant' }
         ];
         // Set recruiter as default for jobs
-        this.selectType('recruiter');
+        await this.selectType('recruiter');
       } else if (category.seller && category.buyer) {
         // For other categories, use seller/buyer
         this.adTypes = [
@@ -972,7 +969,7 @@ export default {
           { id: 'buyer', title: category.buyer.title }
         ];
         // Set seller as default
-        this.selectType('seller');
+        await this.selectType('seller');
       } else {
         // Fallback if no specific titles are available
         this.adTypes = [
@@ -980,28 +977,37 @@ export default {
           { id: 'buyer', title: 'Buyer' }
         ];
         // Set seller as default
-        this.selectType('seller');
+        await this.selectType('seller');
       }
       
       // Fetch subcategories after setting the type
       await this.fetchSubCategories(category.id);
+
+      // Update filters and apply
+      this.filters.category = category.id;
+      await this.applyFilters();
       
       // Automatically advance to next step
       this.nextStep();
     },
-    toggleSubCategory(subcategory) {
+    async toggleSubCategory(subcategory) {
       this.selectedSubCategory = subcategory.id;
       this.currentSubCategory = subcategory;
+      
+      // Update filters
+      this.filters.subCategory = [subcategory.id];
+      await this.applyFilters();
       
       if (this.hasSubSubCategories && subcategory.sub_sub_category_list?.length > 0) {
         this.nextStep();
       } else {
         // If no sub-sub-categories, submit the form
-        this.submitForm();
+        this.formSubmitted = true;
       }
     },
-    selectSubSubCategory(subSubCategory) {
+    async selectSubSubCategory(subSubCategory) {
       this.selectedSubSubCategory = subSubCategory;
+      await this.applyFilters();
     },
     async selectType(type) {
       this.selectedType = type;
@@ -1012,6 +1018,8 @@ export default {
       if (this.selectedCategory === 3) {
         await this.fetchSubCategories(this.selectedCategory);
       }
+      
+      await this.applyFilters();
     },
     nextStep() {
       if (this.currentStep < this.totalSteps) {
@@ -1057,7 +1065,7 @@ export default {
       const subCategory = this.subCategories.find(sub => sub.id === subCategoryId);
       return subCategory ? subCategory.sub_category_title : '';
     },
-    clearFilter(filterType) {
+    async clearFilter(filterType) {
       switch(filterType) {
         case 'category':
           this.filters.category = null;
@@ -1089,7 +1097,7 @@ export default {
           this.filters.area = this.defaultFilters.area;
           break;
       }
-      this.applyFilters();
+      await this.applyFilters();
     },
   },
   computed: {
@@ -1118,7 +1126,34 @@ export default {
   watch: {
     'filters.sort': {
       handler(newValue, oldValue) {
-        // Only trigger if the value actually changed
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    },
+    'filters.radius': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    },
+    'filters.area': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    },
+    'filters.budget.min': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    },
+    'filters.budget.max': {
+      handler(newValue, oldValue) {
         if (newValue !== oldValue) {
           this.applyFilters();
         }
@@ -1197,7 +1232,7 @@ export default {
 }
 
 .filter-section {
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* Updated margin to account for removed buttons */
   cursor: pointer;
   padding-left: 10px;
 }
