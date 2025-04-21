@@ -682,19 +682,33 @@ export default {
         const token = localStorage.getItem('accessToken');
         const params = new URLSearchParams();
         
-        // Reset page to 1 when applying filters
-        this.currentPage = 1;
-        params.append('page', 1);
+        params.append('page', 1); // Reset to first page when applying filters
         
-        // Add all existing filter parameters
-        if (this.filters.category) {
-          params.append('category', this.filters.category);
+        if (this.selectedCategory) {
+          params.append('category', this.selectedCategory);
         }
         
-        if (this.filters.subCategory && this.filters.subCategory.length > 0) {
-          this.filters.subCategory.forEach(subCategoryId => {
-            params.append('sub_category', subCategoryId);
-          });
+        // Handle subcategory and level type parameters
+        if (this.selectedSubCategory) {
+          params.append('sub_category', this.selectedSubCategory);
+          
+          // Find the selected subcategory object
+          const selectedSubCategoryObj = this.subCategories.find(sub => sub.id === this.selectedSubCategory);
+          
+          if (selectedSubCategoryObj) {
+            // Check if the subcategory has levels or sub_sub_category_list
+            if (selectedSubCategoryObj.levels && selectedSubCategoryObj.levels.length > 0) {
+              // If selected sub-sub category exists and it's from levels
+              if (this.selectedSubSubCategory) {
+                params.append('level_type', this.selectedSubSubCategory.id); // Using levels.code as level_type
+              }
+            } else if (selectedSubCategoryObj.sub_sub_category_list && selectedSubCategoryObj.sub_sub_category_list.length > 0) {
+              // If selected sub-sub category exists and it's from sub_sub_category_list
+              if (this.selectedSubSubCategory) {
+                params.append('sub_sub_category', this.selectedSubSubCategory.id);
+              }
+            }
+          }
         }
         
         params.append('min_price', this.filters.budget.min);
@@ -727,8 +741,8 @@ export default {
           params.append('sort', sortValue);
         }
         
-        if (this.filters.type) {
-          params.append('type', this.filters.type);
+        if (this.selectedType) {
+          params.append('type', this.selectedType);
         }
 
         // Add user_id if present
@@ -753,9 +767,17 @@ export default {
         if (response.data) {
           this.ads = response.data.results;
           this.hasNextPage = !!response.data.next;
+          
+          // Update filters state to match current selections
+          this.filters = {
+            ...this.filters,
+            category: this.selectedCategory,
+            subCategory: this.selectedSubCategory ? [this.selectedSubCategory] : [],
+            type: this.selectedType
+          };
         }
       } catch (error) {
-        console.error("Error fetching filtered ads:", error);
+        console.error("Error applying filters:", error);
       }
     },
     async changePage(page) {
