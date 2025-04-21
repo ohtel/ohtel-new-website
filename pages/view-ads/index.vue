@@ -102,21 +102,53 @@
               <div class="step-header">
                 <h3>Select Category</h3>
               </div>
-              <div class="category-grid">
-                <div 
-                  v-for="category in categories" 
+              <div class="d-grid grid-cols-1 md:grid-cols-1 grid-section">
+                <div
+                  v-for="category in categories"
                   :key="category.id"
-                  class="category-card"
-                  :class="{ 'selected': selectedCategory === category.id }"
+                  :class="[
+                    'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
+                    { 'selected-card': selectedCategory === category.id },
+                  ]"
                   @click="selectCategory(category)"
                 >
-                  <img :src="category.category_images" :alt="category.category_title">
-                  <span>{{ category.category_title }}</span>
+                  <!-- Image -->
+                  <img
+                    :src="category.category_images"
+                    alt="Category Image"
+                    class="w-28 h-20 object-cover"
+                  />
+                  <!-- Content -->
+                  <div class="ml-4 text-left">
+                    <h3 class="category-card-title">
+                      {{ category.category_title }}
+                    </h3>
+                    <p class="category-subtitle">
+                      {{ category.category_description }}
+                    </p>
+                  </div>
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="32"
+                      height="32"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                    >
+                      <path
+                        d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
+                        stroke="#161C2D"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Step 2: Sub Category Selection with Ad Type Tabs -->
+            <!-- Step 2: Sub Category Selection -->
             <div v-if="currentStep === 2" class="form-step">
               <div class="step-header">
                 <button class="back-button" @click="previousStep">
@@ -1835,5 +1867,145 @@ font-weight: 500;
 .step-header .back-button svg {
   width: 20px;
   height: 20px;
+}
+
+.grid-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card-section {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card-section:hover {
+  border-color: #47509B;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.selected-card {
+  border-color: #47509B;
+  background-color: #F5F6FF !important;
+}
+
+.category-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #161C2D;
+  margin-bottom: 4px;
+}
+
+.category-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.w-28 {
+  width: 112px;
+}
+
+.h-20 {
+  height: 80px;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+.ml-4 {
+  margin-left: 16px;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.p-4 {
+  padding: 16px;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+/* Update subcategory and sub-subcategory styles to original grid layout */
+.subcategory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.subcategory-card {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  height: 180px;
+}
+
+.subcategory-card img {
+  width: 100%;
+  height: 75%;
+  object-fit: cover;
+  margin: 0;
+}
+
+.subcategory-card span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #161C2D;
+  padding: 12px;
+  text-align: center;
+  background: white;
+  height: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subcategory-card.selected {
+  border-color: #47509B;
+  background-color: white;
+}
+
+.subcategory-card.selected span {
+  background-color: #F5F6FF;
 }
 </style>
