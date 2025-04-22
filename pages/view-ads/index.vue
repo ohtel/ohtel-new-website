@@ -20,7 +20,7 @@
               <rect width="24" height="24" fill="white"/>
             </clipPath>
           </defs>
-        </svg> View Ads</a>
+        </svg> {{ pageTitle }}</a>
       </nav>
 
       <div class="page-header">
@@ -40,6 +40,7 @@
         <aside class="filters">
           <h2>Filters</h2>
 
+          <!-- Rest of the filters -->
           <div class="filter-section">
             <h3 @click="toggleSection('location')">Location <span class="arrow" :class="{ 'open': isOpen('location') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
@@ -92,8 +93,8 @@
 
         <!-- Main Content Section -->
         <main class="main-content">
-          <!-- Post Ad Form Section (First 3 steps) -->
-          <div v-if="!formSubmitted" class="post-ad-form">
+          <!-- Show category selection only if not in favorites or my ads -->
+          <div v-if="!isSpecialPage && !formSubmitted" class="post-ad-form">
             <!-- Step 1: Category Selection -->
             <div v-if="currentStep === 1" class="form-step">
               <div class="step-header">
@@ -116,7 +117,7 @@
                     class="w-28 h-20 object-cover"
                   />
                   <!-- Content -->
-                  <div class="ml-4 text-left">
+                  <div class="ml-4 text-left card-content">
                     <h3 class="category-card-title">
                       {{ category.category_title }}
                     </h3>
@@ -124,7 +125,7 @@
                       {{ category.category_description }}
                     </p>
                   </div>
-                  <div>
+                  <div class="arrow-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="32"
@@ -249,7 +250,7 @@
               </div>
             </div>
 
-            <div class="ads-header">
+            <div class="ads-header" v-if="!isSpecialPage">
               <button class="back-to-form" @click="backToForm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
@@ -424,6 +425,11 @@ export default {
     
     if (favourite_only) {
       this.filters.favourite_only = true;
+    }
+    
+    // Set formSubmitted to true for special pages
+    if (this.isSpecialPage) {
+      this.formSubmitted = true;
     }
     
     await this.fetchInitialAds();
@@ -1155,6 +1161,9 @@ export default {
         return 'My Ads';
       }
       return 'All Ads';
+    },
+    isSpecialPage() {
+      return this.filters.favourite_only || this.filters.user_id;
     },
     hasActiveFilters() {
       return (
@@ -2187,5 +2196,12 @@ input[type="range"]::-ms-fill-lower {
 input[type="range"]::-ms-fill-upper {
   background: #DEE1E6;
   border-radius: 2px;
+}
+.arrow-icon {
+  position: absolute;
+    right: 0px;
+}
+.card-content {
+  margin-right:16px;
 }
 </style>
