@@ -406,6 +406,8 @@ export default {
       selectedSubSubCategory: null,
       hasSubSubCategories: false,
       currentSubCategory: null,
+      isDragging: false,
+      debounceTimer: null,
     };
   },
   async mounted() {
@@ -425,6 +427,22 @@ export default {
     }
     
     await this.fetchInitialAds();
+    
+    // Add event listeners for range inputs
+    const rangeInputs = document.querySelectorAll('input[type="range"]');
+    rangeInputs.forEach(input => {
+      input.style.setProperty('--value-percent', (input.value - input.min) / (input.max - input.min) * 100 + '%');
+      
+      input.addEventListener('mousedown', this.handleRangeStart);
+      input.addEventListener('touchstart', this.handleRangeStart);
+      
+      input.addEventListener('mouseup', this.handleRangeEnd);
+      input.addEventListener('touchend', this.handleRangeEnd);
+      
+      input.addEventListener('input', (e) => {
+        e.target.style.setProperty('--value-percent', (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100 + '%');
+      });
+    });
   },
   methods: {
     scrollToTop() {
@@ -1121,6 +1139,13 @@ export default {
       }
       await this.applyFilters();
     },
+    handleRangeStart() {
+      this.isDragging = true;
+    },
+    handleRangeEnd() {
+      this.isDragging = false;
+      this.applyFilters(); // Apply filters only when the user releases the slider
+    },
   },
   computed: {
     pageTitle() {
@@ -1155,15 +1180,23 @@ export default {
     },
     'filters.radius': {
       handler(newValue, oldValue) {
-        if (newValue !== oldValue) {
-          this.applyFilters();
+        if (newValue !== oldValue && !this.isDragging) {
+          // Only update the visual style while dragging
+          const rangeInput = document.querySelector('input[type="range"][v-model="filters.radius"]');
+          if (rangeInput) {
+            rangeInput.style.setProperty('--value-percent', (newValue - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100 + '%');
+          }
         }
       }
     },
     'filters.area': {
       handler(newValue, oldValue) {
-        if (newValue !== oldValue) {
-          this.applyFilters();
+        if (newValue !== oldValue && !this.isDragging) {
+          // Only update the visual style while dragging
+          const rangeInput = document.querySelector('input[type="range"][v-model="filters.area"]');
+          if (rangeInput) {
+            rangeInput.style.setProperty('--value-percent', (newValue - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100 + '%');
+          }
         }
       }
     },
@@ -1182,6 +1215,16 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    // Clean up event listeners
+    const rangeInputs = document.querySelectorAll('input[type="range"]');
+    rangeInputs.forEach(input => {
+      input.removeEventListener('mousedown', this.handleRangeStart);
+      input.removeEventListener('touchstart', this.handleRangeStart);
+      input.removeEventListener('mouseup', this.handleRangeEnd);
+      input.removeEventListener('touchend', this.handleRangeEnd);
+    });
+  }
 };
 </script>
 
@@ -2064,5 +2107,85 @@ font-weight: 500;
 
 .subcategory-card.selected span {
   background-color: #F5F6FF;
+}
+
+/* Add these new styles for the range input */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #47509B 0%, #47509B var(--value-percent, 50%), #DEE1E6 var(--value-percent, 50%));
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #47509B;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  background: #DEE1E6;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: #47509B;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #47509B;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: #47509B;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-track {
+  width: 100%;
+  height: 4px;
+  background: #DEE1E6;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  background: #47509B;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-ms-fill-lower {
+  background: #47509B;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-fill-upper {
+  background: #DEE1E6;
+  border-radius: 2px;
 }
 </style>
