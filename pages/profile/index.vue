@@ -337,9 +337,9 @@ export default {
     async verifyOtp() {
       try {
         const token = localStorage.getItem('accessToken');
-        const endpoint = this.otpType === 'email' ? 'verify-email-change-otp/' : 'verify-phone-change-otp/';
+        const endpoint = this.otpType === 'email' ? 'validate-and-change-email/' : 'validate-and-change-phone/';
         
-        const response = await axios.put(
+        const response = await axios.post(
           `${BASE_URL}${endpoint}`,
           {
             otp: this.otpForm.otp,
@@ -404,7 +404,7 @@ export default {
           formData.append('avatar', this.selectedFile);
           
           await axios.put(
-            `${BASE_URL}user/image-update/`,
+            `${BASE_URL}image-update/`,
             formData,
             {
               headers: { 
@@ -475,7 +475,7 @@ export default {
           if (typeof window !== 'undefined') {
             const token = localStorage.getItem('accessToken');
             const response = await axios.post(
-              `${BASE_URL}user/delete/`,
+              `${BASE_URL}hard-delete/`,
               {},
               {
                 headers: { 
@@ -493,6 +493,7 @@ export default {
           }
         } catch (error) {
           console.error('Error deleting account:', error);
+          this.showToast('Error deleting account', 'error');
         }
       }
     }
