@@ -25,13 +25,29 @@
 
       <div class="page-header">
         <h1 class="page-title">{{ pageTitle }}</h1>
-        <div class="sort-section">
-          <span>Sort by:</span>
-          <select v-model="filters.sort">
-            <option value="date">Date posted</option>
-            <option value="lowToHigh">Price: Low to High</option>
-            <option value="highToLow">Price: High to Low</option>
-          </select>
+        <div class="header-actions">
+          <div class="search-container">
+            <input 
+              type="text" 
+              v-model="filters.search" 
+              placeholder="Search ads..." 
+              class="search-input"
+              @input="handleSearch"
+            />
+            <span class="search-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 11.555 11.555 14.1667 8.33333 14.1667C5.11167 14.1667 2.5 11.555 2.5 8.33333C2.5 5.11167 5.11167 2.5 8.33333 2.5C11.555 2.5 14.1667 5.11167 14.1667 8.33333Z" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <div class="sort-section">
+            <span>Sort by:</span>
+            <select v-model="filters.sort">
+              <option value="date">Date posted</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -365,7 +381,8 @@ export default {
         type: "all_ads",
         coordinates: null,
         user_id: null,
-        favourite_only: false
+        favourite_only: false,
+        search: '', // Add search field
       },
       defaultFilters: {
         category: null,
@@ -377,7 +394,8 @@ export default {
         type: "all_ads",
         coordinates: null,
         user_id: null,
-        favourite_only: false
+        favourite_only: false,
+        search: '', // Add search field
       },
       minBudget: 0,
       maxBudget: 10000000,
@@ -655,6 +673,11 @@ export default {
     async fetchInitialAds() {
       const params = new URLSearchParams();
       
+      // Add search parameter
+      if (this.filters.search) {
+        params.append('search', this.filters.search);
+      }
+      
       // Add sort parameter
       if (this.filters.sort) {
         let sortValue = this.filters.sort;
@@ -705,6 +728,11 @@ export default {
       try {
         const token = localStorage.getItem('accessToken');
         const params = new URLSearchParams();
+        
+        // Add search parameter
+        if (this.filters.search) {
+          params.append('search', this.filters.search);
+        }
         
         params.append('page', 1); // Reset to first page when applying filters
         
@@ -1152,6 +1180,15 @@ export default {
       this.isDragging = false;
       this.applyFilters(); // Apply filters only when the user releases the slider
     },
+    // Add debounced search handler
+    handleSearch() {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer);
+      }
+      this.debounceTimer = setTimeout(() => {
+        this.applyFilters();
+      }, 500);
+    },
   },
   computed: {
     pageTitle() {
@@ -1265,8 +1302,46 @@ export default {
   margin: 0; /* Remove margins since we're handling it in the container */
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search-container {
+  position: relative;
+  width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 16px;
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #161C2D;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #47509B;
+  box-shadow: 0 0 0 2px rgba(71, 80, 155, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
 .sort-section {
-  margin-bottom: 0; /* Remove bottom margin */
+  margin-bottom: 0;
   display: flex;
   align-items: center;
   gap: 10px;
