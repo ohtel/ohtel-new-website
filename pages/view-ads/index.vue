@@ -42,7 +42,7 @@
           </div>
           <div class="sort-section">
             <span>Sort by:</span>
-            <select v-model="filters.sort">
+            <select class="sort-select" v-model="filters.sort">
               <option value="date">Date posted</option>
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
@@ -2327,5 +2327,8 @@ input[type="range"]::-ms-fill-upper {
 }
 .card-content {
   margin-right:16px;
+}
+.sort-select{
+  cursor: pointer;
 }
 </style>

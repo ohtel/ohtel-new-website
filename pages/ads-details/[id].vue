@@ -120,7 +120,7 @@
                 </svg>
               </div>
                 </div>
-                <p v-if="route.query.category_id != 7 && route.query.category_id != 8&& route.query.category_id != 4&& route.query.category_id != 6" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} </p>
+                <p v-if="route.query.category_id != 7 && route.query.category_id != 8&& route.query.category_id != 4&& route.query.category_id != 6" class="card-text mb-1 price-text details-price-text">₹ {{ restaurantAd.price }} </p>
                 <p class="card-text small text-muted mb-3">{{ restaurantAd.description }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
@@ -1856,5 +1856,10 @@ textarea.error {
   margin-top: 0;
   padding: 16px 10%;
   background: #fff;
+}
+.details-price-text{
+  font-size: 24px;
+  font-weight: 600; 
+  color: #161C2D;
 }
 </style>
