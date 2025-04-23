@@ -33,7 +33,7 @@
                 </svg>
               </div>
             </div>
-            <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text text-primary fw-bold mb-1 price-text">
+            <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text fw-bold mb-1 price-text">
               ₹ {{ ad.price }} 
             </p>
             <p class="card-text small text-muted mb-3">
@@ -280,7 +280,9 @@ export default {
   flex-direction: column;
 }
 .card-title {
-  font-size: 1rem;
+  font-size: 18px;
+  font-weight: 700;
+  
   line-height: 1.4;
   height: 2.8em; /* Fixed height for title (2 lines) */
   overflow: hidden;
@@ -297,6 +299,9 @@ export default {
 }
 .price-text {
   font-family: 'Poppins', sans-serif;
+  color: #161C2D;
+  font-weight: 600;
+  font-size:14px;
 }
 .location-text {
   display: inline-block;
