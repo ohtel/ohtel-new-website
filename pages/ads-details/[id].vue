@@ -1516,10 +1516,6 @@ margin-bottom: 24px;
   transition: background-color 0.2s;
 }
 
-.edit-icon:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
 .edit-popup-modal {
   position: fixed;
   top: 0;
