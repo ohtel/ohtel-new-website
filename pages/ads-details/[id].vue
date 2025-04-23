@@ -5,7 +5,15 @@
     </div>
     <headerSection/>
     <!-- Header Navigation -->
-     
+    <div class="back-button-container">
+      <button class="back-button" @click="goBack">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+          <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+        </svg>
+        Back to Ads
+      </button>
+    </div>
     <nav class="breadcrumb">
       <a href="/">Home</a> > <a href="/ads">Hospitality Spaces</a> > {{ ad.title }}
     </nav>
@@ -395,7 +403,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import googleMap from '../../components/googleMap.vue';
@@ -406,6 +414,7 @@ import headerSection from '../main-pages/headerSection.vue'
     import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
 
 const route = useRoute();
+const router = useRouter();
 const ad = ref({
   title: '',
   price: '',
@@ -1056,6 +1065,21 @@ const handleProductSubmit = async () => {
     setTimeout(() => {
       showToast.value = false;
     }, 3000);
+  }
+};
+
+// Add this new method
+const goBack = () => {
+  const filterState = route.query.filterState;
+  if (filterState) {
+    // Navigate back to view-ads with the preserved filter state
+    router.push({
+      path: '/view-ads',
+      query: { filterState }
+    });
+  } else {
+    // If no filter state, just go back
+    router.back();
   }
 };
 
@@ -1799,5 +1823,42 @@ textarea.error {
 
 .edit-products-btn:hover {
   background: #3a4179;
+}
+
+/* Add these new styles */
+.back-button-container {
+  padding: 16px 10%;
+  background: #fff;
+  border-bottom: 1px solid #DEE1E6;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 8px;
+  color: #47509B;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: #F5F6FF;
+}
+
+.back-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Update existing styles */
+.breadcrumb {
+  margin-top: 0;
+  padding: 16px 10%;
+  background: #fff;
 }
 </style>

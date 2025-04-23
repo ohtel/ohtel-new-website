@@ -444,6 +444,35 @@ export default {
     if (favourite_only) {
       this.filters.favourite_only = true;
     }
+
+    // Handle filter state from details page
+    const filterState = this.$route.query.filterState;
+    if (filterState) {
+      try {
+        const state = JSON.parse(filterState);
+        // Restore all filter states
+        this.filters = {
+          ...this.filters,
+          category: state.category,
+          subCategory: state.subCategory,
+          type: state.type,
+          search: state.search,
+          radius: state.radius,
+          area: state.area,
+          sort: state.sort,
+          coordinates: state.coordinates
+        };
+        this.locationDetails = state.locationDetails;
+        this.selectedCategory = state.selectedCategory;
+        this.selectedSubCategory = state.selectedSubCategory;
+        this.selectedType = state.selectedType;
+        this.selectedSubSubCategory = state.selectedSubSubCategory;
+        this.currentStep = state.currentStep;
+        this.formSubmitted = state.formSubmitted;
+      } catch (error) {
+        console.error('Error parsing filter state:', error);
+      }
+    }
     
     // Set formSubmitted to true for special pages
     if (this.isSpecialPage) {
@@ -660,12 +689,32 @@ export default {
     viewDetails(adId) {
       const ad = this.ads.find(ad => ad.ad.id === adId);
       if (ad) {
+        // Create a state object with all current filters
+        const filterState = {
+          category: this.filters.category,
+          subCategory: this.filters.subCategory,
+          type: this.filters.type,
+          search: this.filters.search,
+          radius: this.filters.radius,
+          area: this.filters.area,
+          sort: this.filters.sort,
+          coordinates: this.filters.coordinates,
+          locationDetails: this.locationDetails,
+          selectedCategory: this.selectedCategory,
+          selectedSubCategory: this.selectedSubCategory,
+          selectedType: this.selectedType,
+          selectedSubSubCategory: this.selectedSubSubCategory,
+          currentStep: this.currentStep,
+          formSubmitted: this.formSubmitted
+        };
+
         this.$router.push({
           path: `/ads-details/${adId}`,
           query: {
             category_id: ad.category.id,
             type: ad.ad.type,
-            ad_uuid: ad.ad.uuid
+            ad_uuid: ad.ad.uuid,
+            filterState: JSON.stringify(filterState) // Pass filter state as query parameter
           }
         });
       }
