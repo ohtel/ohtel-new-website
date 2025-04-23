@@ -248,6 +248,13 @@ export default {
   padding: 5px 10px;
   background: #EDECF5;
   border-radius: 8px;
+  top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: #EDECF5;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #47509B 0%, #A20584 100%);
+    color: white;
 }
 .view-details {
   background: #47509B;
