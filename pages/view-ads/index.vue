@@ -460,7 +460,8 @@ export default {
           radius: state.radius,
           area: state.area,
           sort: state.sort,
-          coordinates: state.coordinates
+          coordinates: state.coordinates,
+          budget: state.budget || this.filters.budget
         };
         this.locationDetails = state.locationDetails;
         this.selectedCategory = state.selectedCategory;
@@ -469,8 +470,31 @@ export default {
         this.selectedSubSubCategory = state.selectedSubSubCategory;
         this.currentStep = state.currentStep;
         this.formSubmitted = state.formSubmitted;
+        this.currentPage = state.currentPage || 1;
+
+        // Fetch subcategories if we have a selected category
+        if (this.selectedCategory) {
+          await this.fetchSubCategories(this.selectedCategory);
+          
+          // If we have a selected subcategory, find and set the currentSubCategory
+          if (this.selectedSubCategory) {
+            this.currentSubCategory = this.subCategories.find(sub => sub.id === this.selectedSubCategory);
+          }
+        }
+
+        // Apply all filters and fetch the correct page
+        await this.fetchPage(this.currentPage);
       } catch (error) {
         console.error('Error parsing filter state:', error);
+      }
+    } else {
+      // If no filter state, check for page number in URL
+      const page = this.$route.query.page;
+      if (page) {
+        this.currentPage = parseInt(page);
+        await this.fetchPage(this.currentPage);
+      } else {
+        await this.fetchInitialAds();
       }
     }
     
@@ -478,8 +502,6 @@ export default {
     if (this.isSpecialPage) {
       this.formSubmitted = true;
     }
-    
-    await this.fetchInitialAds();
     
     // Add event listeners for range inputs
     const rangeInputs = document.querySelectorAll('input[type="range"]');
@@ -705,7 +727,8 @@ export default {
           selectedType: this.selectedType,
           selectedSubSubCategory: this.selectedSubSubCategory,
           currentStep: this.currentStep,
-          formSubmitted: this.formSubmitted
+          formSubmitted: this.formSubmitted,
+          currentPage: this.currentPage // Add current page to filter state
         };
 
         this.$router.push({
@@ -714,7 +737,8 @@ export default {
             category_id: ad.category.id,
             type: ad.ad.type,
             ad_uuid: ad.ad.uuid,
-            filterState: JSON.stringify(filterState) // Pass filter state as query parameter
+            filterState: JSON.stringify(filterState), // Pass filter state as query parameter
+            page: this.currentPage // Add page number to URL
           }
         });
       }
@@ -899,9 +923,7 @@ export default {
         }
         
         if (this.filters.subCategory && this.filters.subCategory.length > 0) {
-          this.filters.subCategory.forEach(subCategoryId => {
-            params.append('sub_category', subCategoryId);
-          });
+          params.append('sub_category', this.filters.subCategory[0]);
         }
         
         params.append('min_price', this.filters.budget.min);
