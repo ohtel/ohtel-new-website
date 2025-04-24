@@ -1,8 +1,8 @@
 <template>
   <div class="ad-details-page">
-    <div v-if="showToast" class="toast-notification" :class="{ 'show': showToast }">
+    <!-- <div v-if="showToast" class="toast-notification" :class="{ 'show': showToast }">
       {{ toastMessage }}
-    </div>
+    </div> -->
     <headerSection/>
     <!-- Header Navigation -->
     <div class="back-button-container">

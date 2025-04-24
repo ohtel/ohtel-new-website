@@ -176,9 +176,9 @@
     </div>
 
     <!-- Toast Notification -->
-    <div v-if="showToast" class="toast-notification" :class="toastType">
+    <!-- <div v-if="showToast" class="toast-notification" :class="toastType">
       {{ toastMessage }}
-    </div>
+    </div> -->
   </div>
 </template>
 
