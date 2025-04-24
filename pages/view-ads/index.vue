@@ -236,15 +236,15 @@
               <div class="applied-filters">
                 <div v-if="filters.category" class="filter-tag">
                   <span>{{ getCategoryName(filters.category) }}</span>
-                  <button @click="clearFilter('category')" class="clear-filter">×</button>
+                  <!-- <button @click="clearFilter('category')" class="clear-filter">×</button> -->
                 </div>
                 <div v-if="filters.type && filters.type !== 'all_ads'" class="filter-tag">
                   <span>{{ filters.type }}</span>
-                  <button @click="clearFilter('type')" class="clear-filter">×</button>
+                  <!-- <button @click="clearFilter('type')" class="clear-filter">×</button> -->
                 </div>
                 <div v-if="filters.subCategory && filters.subCategory.length > 0" class="filter-tag">
                   <span>{{ getSubCategoryName(filters.subCategory[0]) }}</span>
-                  <button @click="clearFilter('subCategory')" class="clear-filter">×</button>
+                  <!-- <button @click="clearFilter('subCategory')" class="clear-filter">×</button> -->
                 </div>
                 <div v-if="selectedSubSubCategory" class="filter-tag">
                   <span>{{ selectedSubSubCategory.title }}</span>
@@ -792,6 +792,8 @@ export default {
         if (response.data) {
           this.ads = response.data.results;
           this.hasNextPage = !!response.data.next;
+          this.currentPage = 1;
+          debugger;
         }
       } catch (error) {
         console.error("Error fetching initial ads:", error);
@@ -808,7 +810,7 @@ export default {
         }
         
         params.append('page', 1); // Reset to first page when applying filters
-        
+        this.currentPage = 1;
         if (this.selectedCategory) {
           params.append('category', this.selectedCategory);
         }
