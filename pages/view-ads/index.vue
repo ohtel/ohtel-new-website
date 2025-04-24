@@ -1003,7 +1003,36 @@ export default {
       this.selectedSubSubCategory = null;
       this.currentStep = 1;
       this.formSubmitted = false;
-      this.applyFilters(); // Apply the reset filters
+
+      // Clear URL parameters
+      const query = { ...this.$route.query };
+      delete query.filterState;
+      delete query.page;
+      delete query.category;
+      delete query.sub_category;
+      delete query.type;
+      delete query.search;
+      delete query.radius;
+      delete query.area;
+      delete query.sort;
+      delete query.coordinates;
+      delete query.locationDetails;
+      delete query.selectedCategory;
+      delete query.selectedSubCategory;
+      delete query.selectedType;
+      delete query.selectedSubSubCategory;
+      delete query.currentStep;
+      delete query.formSubmitted;
+      delete query.currentPage;
+
+      // Update URL without filter state
+      this.$router.replace({ 
+        path: this.$route.path,
+        query: query
+      });
+
+      // Apply the reset filters
+      this.applyFilters();
     },
     backToForm() {
       if (this.selectedSubSubCategory) {
@@ -1019,6 +1048,34 @@ export default {
         this.formSubmitted = false;
         this.currentStep = 1;
       }
+
+      // Clear URL parameters
+      const query = { ...this.$route.query };
+      delete query.filterState;
+      delete query.page;
+      delete query.category;
+      delete query.sub_category;
+      delete query.type;
+      delete query.search;
+      delete query.radius;
+      delete query.area;
+      delete query.sort;
+      delete query.coordinates;
+      delete query.locationDetails;
+      delete query.selectedCategory;
+      delete query.selectedSubCategory;
+      delete query.selectedType;
+      delete query.selectedSubSubCategory;
+      delete query.currentStep;
+      delete query.formSubmitted;
+      delete query.currentPage;
+
+      // Update URL without filter state
+      this.$router.replace({ 
+        path: this.$route.path,
+        query: query
+      });
+
       this.scrollToTop();
     },
     async toggleFavorite(adId, currentStatus) {
