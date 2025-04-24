@@ -139,13 +139,20 @@
         <form @submit.prevent="verifyOtp" class="otp-form">
           <div class="form-group">
             <label>Enter OTP sent to your {{ otpType === 'email' ? 'email' : 'phone' }}</label>
-            <input 
-              type="text" 
-              v-model="otpForm.otp" 
-              required
-              :class="{ 'error': otpErrors.otp }"
-              placeholder="Enter OTP"
-            />
+            <div class="otp-input-container">
+              <input 
+                v-for="(digit, index) in 4" 
+                :key="index"
+                type="text"
+                maxlength="1"
+                v-model="otpForm.otp[index]"
+                @input="handleOtpInput($event, index)"
+                @keydown="handleOtpKeydown($event, index)"
+                :class="{ 'error': otpErrors.otp }"
+                class="otp-input"
+                :ref="'otpInput' + index"
+              />
+            </div>
             <span class="error-message" v-if="otpErrors.otp">{{ otpErrors.otp }}</span>
           </div>
 
@@ -212,7 +219,7 @@ export default {
       showOtpPopup: false,
       otpType: '',
       otpForm: {
-        otp: '',
+        otp: ['', '', '', ''],
         new_value: ''
       },
       otpErrors: {},
@@ -334,6 +341,31 @@ export default {
       }, 1000);
     },
 
+    handleOtpInput(event, index) {
+      const value = event.target.value;
+      // Only allow numbers
+      if (!/^\d*$/.test(value)) {
+        this.otpForm.otp[index] = '';
+        return;
+      }
+      
+      if (value.length === 1) {
+        // Move to next input if available
+        if (index < 3) {
+          this.$nextTick(() => {
+            this.$refs['otpInput' + (index + 1)][0].focus();
+          });
+        }
+      }
+    },
+    handleOtpKeydown(event, index) {
+      if (event.key === 'Backspace' && !this.otpForm.otp[index] && index > 0) {
+        // Move to previous input on backspace if current input is empty
+        this.$nextTick(() => {
+          this.$refs['otpInput' + (index - 1)][0].focus();
+        });
+      }
+    },
     async verifyOtp() {
       try {
         const token = localStorage.getItem('accessToken');
@@ -342,7 +374,7 @@ export default {
         const response = await axios.post(
           `${BASE_URL}${endpoint}`,
           {
-            otp: this.otpForm.otp,
+            otp: this.otpForm.otp.join(''),
             [this.otpType === 'email' ? 'new_email' : 'new_phone']: this.otpForm.new_value
           },
           {
@@ -374,7 +406,7 @@ export default {
 
     closeOtpPopup() {
       this.showOtpPopup = false;
-      this.otpForm.otp = '';
+      this.otpForm.otp = ['', '', '', ''];
       this.otpForm.new_value = '';
       this.otpErrors = {};
       this.isOtpSent = false;
@@ -881,5 +913,33 @@ width: 120px;
 .resend-btn:disabled {
   color: #999;
   cursor: not-allowed;
+}
+
+/* OTP Input Styles */
+.otp-input-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.otp-input {
+  width: 48px;
+  height: 48px;
+  text-align: center;
+  font-size: 20px;
+  border: 2px solid #DEE1E6;
+  border-radius: 8px;
+  background: #fff;
+  transition: all 0.2s;
+}
+
+.otp-input:focus {
+  border-color: #47509B;
+  outline: none;
+}
+
+.otp-input.error {
+  border-color: #F55959;
 }
 </style>

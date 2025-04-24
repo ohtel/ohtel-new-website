@@ -1620,9 +1620,11 @@ export default {
 .map-popup {
   background: #fff;
   padding: 20px;
+  padding-top: 40px;
+  padding-bottom: 20px;
   border-radius: 10px;
   width: 80%;
-  max-width: 600px;
+  max-width: 700px;
   position: relative;
 }
 
