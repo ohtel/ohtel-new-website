@@ -1883,7 +1883,6 @@ font-weight: 500;
 .post-ad-form {
   background: white;
   border-radius: 8px;
-  padding: 2rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 

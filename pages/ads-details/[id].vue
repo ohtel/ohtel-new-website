@@ -1183,7 +1183,7 @@ onMounted(() => {
 }
 .seller-info {
   background: #fff;
-  padding: 1rem;
+  padding: 26px 30px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -1241,6 +1241,7 @@ onMounted(() => {
         font-size: 16px;
         font-style: normal;
         font-weight: 500;
+        align-content: center;
     }
 .card {
   background: #fff;
