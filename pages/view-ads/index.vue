@@ -4,94 +4,59 @@
     <div class="ads-page">
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
+        <router-link to="/" class="breadcrumb-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+            <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+          </svg> 
+          Home
+        </router-link> 
         <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-<path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
-<path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
-</svg> Home</a> &gt; <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-<g clip-path="url(#clip0_1041_2215)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M15.7083 11.2932C15.8958 11.4807 16.0011 11.735 16.0011 12.0002C16.0011 12.2653 15.8958 12.5197 15.7083 12.7072L10.0513 18.3642C9.95907 18.4597 9.84873 18.5359 9.72672 18.5883C9.60472 18.6407 9.4735 18.6683 9.34072 18.6694C9.20794 18.6706 9.07626 18.6453 8.95337 18.595C8.83047 18.5447 8.71882 18.4705 8.62492 18.3766C8.53103 18.2827 8.45678 18.171 8.4065 18.0481C8.35622 17.9252 8.33092 17.7936 8.33207 17.6608C8.33322 17.528 8.36081 17.3968 8.41322 17.2748C8.46563 17.1528 8.54181 17.0424 8.63732 16.9502L13.5873 12.0002L8.63732 7.05018C8.45516 6.86158 8.35437 6.60898 8.35665 6.34678C8.35892 6.08458 8.46409 5.83377 8.6495 5.64836C8.83491 5.46295 9.08572 5.35778 9.34792 5.35551C9.61011 5.35323 9.86272 5.45402 10.0513 5.63618L15.7083 11.2932Z" fill="black"/>
-</g>
-<defs>
-<clipPath id="clip0_1041_2215">
-<rect width="24" height="24" fill="white"/>
-</clipPath>
-</defs>
-</svg> View Ads</a> &gt; <span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-<g clip-path="url(#clip0_1041_2215)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M15.7083 11.2932C15.8958 11.4807 16.0011 11.735 16.0011 12.0002C16.0011 12.2653 15.8958 12.5197 15.7083 12.7072L10.0513 18.3642C9.95907 18.4597 9.84873 18.5359 9.72672 18.5883C9.60472 18.6407 9.4735 18.6683 9.34072 18.6694C9.20794 18.6706 9.07626 18.6453 8.95337 18.595C8.83047 18.5447 8.71882 18.4705 8.62492 18.3766C8.53103 18.2827 8.45678 18.171 8.4065 18.0481C8.35622 17.9252 8.33092 17.7936 8.33207 17.6608C8.33322 17.528 8.36081 17.3968 8.41322 17.2748C8.46563 17.1528 8.54181 17.0424 8.63732 16.9502L13.5873 12.0002L8.63732 7.05018C8.45516 6.86158 8.35437 6.60898 8.35665 6.34678C8.35892 6.08458 8.46409 5.83377 8.6495 5.64836C8.83491 5.46295 9.08572 5.35778 9.34792 5.35551C9.61011 5.35323 9.86272 5.45402 10.0513 5.63618L15.7083 11.2932Z" fill="black"/>
-</g>
-<defs>
-<clipPath id="clip0_1041_2215">
-<rect width="24" height="24" fill="white"/>
-</clipPath>
-</defs>
-</svg>All Ads</span>
+          <g clip-path="url(#clip0_1041_2215)">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.7083 11.2932C15.8958 11.4807 16.0011 11.735 16.0011 12.0002C16.0011 12.2653 15.8958 12.5197 15.7083 12.7072L10.0513 18.3642C9.95907 18.4597 9.84873 18.5359 9.72672 18.5883C9.60472 18.6407 9.4735 18.6683 9.34072 18.6694C9.20794 18.6706 9.07626 18.6453 8.95337 18.595C8.83047 18.5447 8.71882 18.4705 8.62492 18.3766C8.53103 18.2827 8.45678 18.171 8.4065 18.0481C8.35622 17.9252 8.33092 17.7936 8.33207 17.6608C8.33322 17.528 8.36081 17.3968 8.41322 17.2748C8.46563 17.1528 8.54181 17.0424 8.63732 16.9502L13.5873 12.0002L8.63732 7.05018C8.45516 6.86158 8.35437 6.60898 8.35665 6.34678C8.35892 6.08458 8.46409 5.83377 8.6495 5.64836C8.83491 5.46295 9.08572 5.35778 9.34792 5.35551C9.61011 5.35323 9.86272 5.45402 10.0513 5.63618L15.7083 11.2932Z" fill="black"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_1041_2215">
+              <rect width="24" height="24" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg> {{ pageTitle }}</a>
       </nav>
 
-      <h1 class="page-title">{{ pageTitle }}</h1>
+      <div class="page-header">
+        <h1 class="page-title">{{ pageTitle }}</h1>
+        <div class="header-actions">
+          <div class="search-container">
+            <input 
+              type="text" 
+              v-model="filters.search" 
+              placeholder="Search ads..." 
+              class="search-input"
+              @input="handleSearch"
+            />
+            <span class="search-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 11.555 11.555 14.1667 8.33333 14.1667C5.11167 14.1667 2.5 11.555 2.5 8.33333C2.5 5.11167 5.11167 2.5 8.33333 2.5C11.555 2.5 14.1667 5.11167 14.1667 8.33333Z" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <div class="sort-section">
+            <span>Sort by:</span>
+            <select class="sort-select" v-model="filters.sort">
+              <option value="date">Date posted</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       <div class="ads-container">
         <!-- Filters Section -->
         <aside class="filters">
           <h2>Filters</h2>
 
-          <div class="filter-section">
-            <h3 @click="toggleSection('category')">Category <span class="arrow" :class="{ 'open': isOpen('category') }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span></h3>
-            <div v-if="isOpen('category')" class="filter-options">
-              <label v-for="category in categories" :key="category.id">
-                <input type="radio" name="category" :value="category.id" v-model="filters.category" @change="fetchSubCategories(category.id)" />
-                {{ category.category_title }}
-              </label>
-            </div>
-          </div>
-          <div class="border-class"></div>
-          <div class="filter-section" >
-            <h3 @click="toggleSection('subcategory')">Sub-Category <span class="arrow" :class="{ 'open': isOpen('subcategory') }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span></h3>
-            <div v-if="isOpen('subcategory')&&filters.category" class="filter-options">
-              <label v-for="subcategory in subCategories" :key="subcategory.id">
-                <input type="checkbox" :value="subcategory.id" v-model="filters.subCategory" />
-                {{ subcategory.sub_category_title }}
-              </label>
-            </div>
-            <div class="no-subcategory" v-if="!filters.category">
-            Please select a category to view its sub category
-          </div>
-          </div>
-          
-          <div class="border-class"></div>
-          <!-- <div v-if="filters.category!=3&&filters.category!=4&&filters.category!=6&&filters.category!=7&&filters.category!=8" class="filter-section">
-            <h3 @click="toggleSection('budget')">Budget  <span class="arrow" :class="{ 'open': isOpen('budget') }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
-                <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span></h3>
-            <div v-if="isOpen('budget')">
-              <div class="slider-container">
-                <MultiRangeSlider
-                  :min="minBudget"
-                  :max="maxBudget"
-                  :minValue="filters.budget.min"
-                  :maxValue="filters.budget.max"
-                  :step="1000"
-                  @input="handleBudgetChange"
-                />
-                <div class="budget-labels">
-                  <span>{{ minBudget.toLocaleString() }}</span>
-                  <span>{{ filters.budget.min.toLocaleString() }} - {{ filters.budget.max.toLocaleString() }}</span>
-                  <span>{{ maxBudget.toLocaleString() }}</span>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
+          <!-- Rest of the filters -->
           <div class="filter-section">
             <h3 @click="toggleSection('location')">Location <span class="arrow" :class="{ 'open': isOpen('location') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
@@ -140,79 +105,233 @@
               </div>
             </div>
           </div>
-
-          <button class="apply-button" @click="applyFilters">Apply</button>
-          <button v-if="hasActiveFilters" class="reset-button" @click="resetFilters">Reset Filters</button>
         </aside>
 
-        <!-- Ads List Section -->
-        <main class="ads-list">
-          <div class="sort-section">
-            <span>Sort by:</span>
-            <select v-model="filters.sort">
-              <option value="date">Date posted</option>
-              <option value="lowToHigh">Price: Low to High</option>
-              <option value="highToLow">Price: High to Low</option>
-            </select>
-          </div>
+        <!-- Main Content Section -->
+        <main class="main-content">
+          <!-- Show category selection only if not in favorites or my ads -->
+          <div v-if="!isSpecialPage && !formSubmitted" class="post-ad-form">
+            <!-- Step 1: Category Selection -->
+            <div v-if="currentStep === 1" class="form-step">
+              <div class="step-header">
+                <h3>Select Category</h3>
+              </div>
+              <div class="d-grid grid-cols-1 md:grid-cols-1 grid-section">
+                <div
+                  v-for="category in categories"
+                  :key="category.id"
+                  :class="[
+                    'd-flex items-start bg-white p-4 card-section align-items-center gap-3',
+                    { 'selected-card': selectedCategory === category.id },
+                  ]"
+                  @click="selectCategory(category)"
+                >
+                  <!-- Image -->
+                  <img
+                    :src="category.category_images"
+                    alt="Category Image"
+                    class="w-28 h-20 object-cover"
+                  />
+                  <!-- Content -->
+                  <div class="ml-4 text-left card-content">
+                    <h3 class="category-card-title">
+                      {{ category.category_title }}
+                    </h3>
+                    <p class="category-subtitle">
+                      {{ category.category_description }}
+                    </p>
+                  </div>
+                  <div class="arrow-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="32"
+                      height="32"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                    >
+                      <path
+                        d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
+                        stroke="#161C2D"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <div v-if="ads.length > 0" class="ads-grid">
-            <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
-              <div class="position-relative">
-                <img :src="ad.ad_image || '/assets/images/posted.png'" :alt="ad.ad.title" class="card-img-top" />
-                <span class="ad-label">{{ ad.ad.type }}</span>
+            <!-- Step 2: Sub Category Selection -->
+            <div v-if="currentStep === 2" class="form-step">
+              <div class="step-header">
+                <button class="back-button" @click="previousStep">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+                    <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+                  </svg>
+                  Back
+                </button>
+                <h3>Select Sub Category</h3>
               </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between">
-                  <h5 class="card-title mb-2">{{ ad.ad.title }}</h5>
-                  <div class="heart-icon" @click="toggleFavorite(ad.ad.id, ad.is_liked)">
-                    <svg v-if="ad.is_liked" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                      <path d="M24.3282 4.99269C20.9761 2.93654 18.0505 3.76514 16.293 5.08501C15.5722 5.6262 15.212 5.89679 15 5.89679C14.788 5.89679 14.4277 5.6262 13.707 5.08501C11.9495 3.76514 9.02386 2.93654 5.6718 4.99269C1.27259 7.69118 0.27715 16.5936 10.4244 24.1043C12.3571 25.5348 13.3235 26.25 15 26.25C16.6765 26.25 17.6429 25.5348 19.5756 24.1043C29.7229 16.5936 28.7274 7.69118 24.3282 4.99269Z" fill="#47509B"/>
-                    </svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.22172 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" stroke="black" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                </div>
-                <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ ad.price }}  </p>
-                <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <small class="text-muted">
-                    <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ ad.ad_info2 }}
-                  </small>
-                  <small class="text-muted">{{ ad.ad_posted_on }}</small>
+
+              <div class="ad-type-tabs">
+                <button 
+                  v-for="type in adTypes" 
+                  :key="type.id"
+                  class="tab-button"
+                  :class="{ 'active': selectedType === type.id }"
+                  @click="selectType(type.id)"
+                >
+                  {{ type.title }}
+                </button>
+              </div>
+
+              <div class="subcategory-grid">
+                <div 
+                  v-for="subcategory in subCategories" 
+                  :key="subcategory.id"
+                  class="subcategory-card"
+                  :class="{ 'selected': selectedSubCategory === subcategory.id }"
+                  @click="toggleSubCategory(subcategory)"
+                >
+                  <img v-if="subcategory.sub_category_images" :src="subcategory.sub_category_images" :alt="subcategory.sub_category_title">
+                  <span>{{ subcategory.sub_category_title }}</span>
                 </div>
               </div>
-              <div class="card-footer bg-white border-0">
-                <button class="btn view-details w-100" @click="viewDetails(ad.ad.id)">View Details</button>
+            </div>
+
+            <!-- Step 3: Sub-Sub Category Selection -->
+            <div v-if="currentStep === 3" class="form-step">
+              <div class="step-header">
+                <button class="back-button" @click="previousStep">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+                    <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+                  </svg>
+                  Back
+                </button>
+                <h3>Select Specific Category</h3>
+              </div>
+
+              <div class="subcategory-grid">
+                <div 
+                  v-for="subSubCategory in currentSubCategory?.sub_sub_category_list" 
+                  :key="subSubCategory.id"
+                  class="subcategory-card"
+                  :class="{ 'selected': selectedSubSubCategory?.id === subSubCategory.id }"
+                  @click="selectSubSubCategory(subSubCategory); submitForm()"
+                >
+                  <img v-if="subSubCategory.image" :src="subSubCategory.image" :alt="subSubCategory.title">
+                  <span>{{ subSubCategory.title }}</span>
+                </div>
               </div>
             </div>
           </div>
-          <div v-else class="empty-state">
-            <!-- <img src="/assets/images/no-results.svg" alt="No results found" class="empty-state-image"> -->
-            <h3>No Ads Found</h3>
-            <p>Try adjusting your filters to see more results</p>
-          </div>
 
-          <!-- Add pagination controls -->
-          <div v-if="hasNextPage || currentPage > 1" class="pagination">
-            <button 
-              :disabled="currentPage === 1" 
-              @click="changePage(currentPage - 1)"
-              class="page-button"
-            >
-              Previous
-            </button>
-            <span class="page-info">
-              Page {{ currentPage }}
-            </span>
-            <button 
-              :disabled="!hasNextPage" 
-              @click="changePage(currentPage + 1)"
-              class="page-button"
-            >
-              Next
-            </button>
+          <!-- Ads Grid Section -->
+          <div v-else class="ads-section">
+            <!-- Applied Filters Section -->
+            <div v-if="hasActiveFilters" class="applied-filters-section">
+              <div class="applied-filters">
+                <div v-if="filters.category" class="filter-tag">
+                  <span>{{ getCategoryName(filters.category) }}</span>
+                  <!-- <button @click="clearFilter('category')" class="clear-filter">×</button> -->
+                </div>
+                <div v-if="filters.type && filters.type !== 'all_ads'" class="filter-tag">
+                  <span>{{ filters.type }}</span>
+                  <!-- <button @click="clearFilter('type')" class="clear-filter">×</button> -->
+                </div>
+                <div v-if="filters.subCategory && filters.subCategory.length > 0" class="filter-tag">
+                  <span>{{ getSubCategoryName(filters.subCategory[0]) }}</span>
+                  <!-- <button @click="clearFilter('subCategory')" class="clear-filter">×</button> -->
+                </div>
+                <div v-if="selectedSubSubCategory" class="filter-tag">
+                  <span>{{ selectedSubSubCategory.title }}</span>
+                  <button @click="clearFilter('subSubCategory')" class="clear-filter">×</button>
+                </div>
+                <div v-if="locationDetails" class="filter-tag">
+                  <span>{{ extractCityName(locationDetails.address) }}</span>
+                  <button @click="clearFilter('location')" class="clear-filter">×</button>
+                </div>
+                <div v-if="filters.radius !== defaultFilters.radius" class="filter-tag">
+                  <span>{{ filters.radius }}km radius</span>
+                  <button @click="clearFilter('radius')" class="clear-filter">×</button>
+                </div>
+                <div v-if="filters.area !== defaultFilters.area" class="filter-tag">
+                  <span>{{ filters.area }} sq.ft</span>
+                  <button @click="clearFilter('area')" class="clear-filter">×</button>
+                </div>
+                <button @click="resetFilters" class="clear-all-button">Clear All</button>
+              </div>
+            </div>
+
+            <div class="ads-header" v-if="!isSpecialPage">
+              <button class="back-to-form" @click="backToForm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+                  <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+                </svg>
+                Back
+              </button>
+            </div>
+            <div v-if="ads.length > 0" class="ads-grid">
+              <div class="card h-100 shadow-sm hover-effect" v-for="(ad, index) in ads" :key="index" style="width: 18rem">
+                <div class="position-relative">
+                  <img :src="ad.ad_image || '/assets/images/posted.png'" :alt="ad.ad.title" class="card-img-top" />
+                  <span class="ad-label">{{ ad.ad.type }}</span>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between">
+                    <h5 class="card-title mb-2">{{ ad.ad.title }}</h5>
+                    <div class="heart-icon" @click="toggleFavorite(ad.ad.id, ad.is_liked)">
+                      <svg v-if="ad.is_liked" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                        <path d="M24.3282 4.99269C20.9761 2.93654 18.0505 3.76514 16.293 5.08501C15.5722 5.6262 15.212 5.89679 15 5.89679C14.788 5.89679 14.4277 5.6262 13.707 5.08501C11.9495 3.76514 9.02386 2.93654 5.6718 4.99269C1.27259 7.69118 0.27715 16.5936 10.4244 24.1043C12.3571 25.5348 13.3235 26.25 15 26.25C16.6765 26.25 17.6429 25.5348 19.5756 24.1043C29.7229 16.5936 28.7274 7.69118 24.3282 4.99269Z" fill="#47509B"/>
+                      </svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.22172 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" stroke="black" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <p v-if="ad.price" class="fw-bold card-text price-text">₹ {{ ad.price }}/- <span v-if="ad.category.id === 1" class="per-mnth">per month</span></p>
+                  <p class="card-text small text-muted mb-3">{{ ad.category.name }} - {{ ad.category.sub_category }}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                      <span><img src="/assets/images/locationIcon.svg" alt=""></span> {{ extractCityName(ad.ad_info2) }}
+                    </small>
+                    <small class="text-muted">{{ formatTimeAgo(ad.ad_posted_on) }}</small>
+                  </div>
+                </div>
+                <div class="card-footer bg-white border-0">
+                  <button class="btn view-details w-100" @click="viewDetails(ad.ad.id)">View Details</button>
+                </div>
+              </div>
+            </div>
+            <div v-else class="empty-state">
+              <h3>No Ads Found</h3>
+              <p>Try adjusting your filters to see more results</p>
+            </div>
+
+            <!-- Add pagination controls -->
+            <div v-if="hasNextPage || currentPage > 1" class="pagination">
+              <button 
+                :disabled="currentPage === 1" 
+                @click="changePage(currentPage - 1)"
+                class="page-button"
+              >
+                Previous
+              </button>
+              <span class="page-info">
+                Page {{ currentPage }}
+              </span>
+              <button 
+                :disabled="!hasNextPage" 
+                @click="changePage(currentPage + 1)"
+                class="page-button"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </main>
       </div>
@@ -262,7 +381,8 @@ export default {
         type: "all_ads",
         coordinates: null,
         user_id: null,
-        favourite_only: false
+        favourite_only: false,
+        search: '', // Add search field
       },
       defaultFilters: {
         category: null,
@@ -274,7 +394,8 @@ export default {
         type: "all_ads",
         coordinates: null,
         user_id: null,
-        favourite_only: false
+        favourite_only: false,
+        search: '', // Add search field
       },
       minBudget: 0,
       maxBudget: 10000000,
@@ -294,6 +415,18 @@ export default {
       locationDetails: null, // To store location details
       currentPage: 1,
       hasNextPage: false,
+      currentStep: 1,
+      formSubmitted: false,
+      selectedCategory: null,
+      selectedSubCategory: null,
+      selectedType: null,
+      adTypes: [], // Will be populated from category data
+      totalSteps: 3,
+      selectedSubSubCategory: null,
+      hasSubSubCategories: false,
+      currentSubCategory: null,
+      isDragging: false,
+      debounceTimer: null,
     };
   },
   async mounted() {
@@ -311,10 +444,88 @@ export default {
     if (favourite_only) {
       this.filters.favourite_only = true;
     }
+
+    // Handle filter state from details page
+    const filterState = this.$route.query.filterState;
+    if (filterState) {
+      try {
+        const state = JSON.parse(filterState);
+        // Restore all filter states
+        this.filters = {
+          ...this.filters,
+          category: state.category,
+          subCategory: state.subCategory,
+          type: state.type,
+          search: state.search,
+          radius: state.radius,
+          area: state.area,
+          sort: state.sort,
+          coordinates: state.coordinates,
+          budget: state.budget || this.filters.budget
+        };
+        this.locationDetails = state.locationDetails;
+        this.selectedCategory = state.selectedCategory;
+        this.selectedSubCategory = state.selectedSubCategory;
+        this.selectedType = state.selectedType;
+        this.selectedSubSubCategory = state.selectedSubSubCategory;
+        this.currentStep = state.currentStep;
+        this.formSubmitted = state.formSubmitted;
+        this.currentPage = state.currentPage || 1;
+
+        // Fetch subcategories if we have a selected category
+        if (this.selectedCategory) {
+          await this.fetchSubCategories(this.selectedCategory);
+          
+          // If we have a selected subcategory, find and set the currentSubCategory
+          if (this.selectedSubCategory) {
+            this.currentSubCategory = this.subCategories.find(sub => sub.id === this.selectedSubCategory);
+          }
+        }
+
+        // Apply all filters and fetch the correct page
+        await this.fetchPage(this.currentPage);
+      } catch (error) {
+        console.error('Error parsing filter state:', error);
+      }
+    } else {
+      // If no filter state, check for page number in URL
+      const page = this.$route.query.page;
+      if (page) {
+        this.currentPage = parseInt(page);
+        await this.fetchPage(this.currentPage);
+      } else {
+        await this.fetchInitialAds();
+      }
+    }
     
-    await this.fetchInitialAds();
+    // Set formSubmitted to true for special pages
+    if (this.isSpecialPage) {
+      this.formSubmitted = true;
+    }
+    
+    // Add event listeners for range inputs
+    const rangeInputs = document.querySelectorAll('input[type="range"]');
+    rangeInputs.forEach(input => {
+      input.style.setProperty('--value-percent', (input.value - input.min) / (input.max - input.min) * 100 + '%');
+      
+      input.addEventListener('mousedown', this.handleRangeStart);
+      input.addEventListener('touchstart', this.handleRangeStart);
+      
+      input.addEventListener('mouseup', this.handleRangeEnd);
+      input.addEventListener('touchend', this.handleRangeEnd);
+      
+      input.addEventListener('input', (e) => {
+        e.target.style.setProperty('--value-percent', (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100 + '%');
+      });
+    });
   },
   methods: {
+    scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    },
     async fetchCategories() {
       try {
         const token = localStorage.getItem('accessToken');
@@ -322,33 +533,9 @@ export default {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        // Filter out category with id 3
-        this.categories = response.data.result.category_list.filter(category => category.id !== 3);
+        // Get the category list directly from the response
+        this.categories = response.data.result.category_list;
         
-        // Add additional categories
-        const additionalCategories = [
-          {
-            id: 8,
-            category_title: "Applicant",
-            category_images: "http://localhost:8000/media/MasterCategory_images/spaces_home_cate_Mc3pDUL.png",
-            category_description: "",
-            sub_category: [],
-            short_title: "",
-            short_description: ""
-          },
-          {
-            id: 7,
-            category_title: "Recruiter",
-            category_images: "http://localhost:8000/media/MasterCategory_images/home_used_eq.png",
-            category_description: "",
-            sub_category: [],
-            short_title: "",
-            short_description: ""
-          }
-        ];
-        
-        // Add the additional categories to the existing categories array
-        this.categories = [...this.categories, ...additionalCategories];
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -356,10 +543,111 @@ export default {
     async fetchSubCategories(categoryId) {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await axios.get(`${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`, {
+        let url;
+        let response;
+
+        if (categoryId === 3) {
+          if (this.selectedType === 'applicant') {
+            url = `${BASE_URL}${ENDPOINTS.APPLICANT_SUBCATEGORY}?category_id=3&type=Applicant`;
+          } else if (this.selectedType === 'recruiter') {
+            url = `${BASE_URL}${ENDPOINTS.APPLICANT_SUBCATEGORY}?category_id=3&type=Recruiter`;
+          } else {
+            url = `${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`;
+          }
+        } else {
+          url = `${BASE_URL}${ENDPOINTS.SUBCATEGORY}?category_id=${categoryId}`;
+        }
+
+        response = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        this.subCategories = response.data.results;
+
+        if (categoryId === 3) {
+          if (this.selectedType === 'applicant') {
+            this.subCategories = response.data.result.data.map(item => ({
+              ...item,
+              sub_category_title: item.job_category_title || item.sub_category_title,
+              sub_sub_category_list: item.sub_sub_category_list?.length > 0 
+                ? item.sub_sub_category_list.map(subItem => ({
+                    ...subItem,
+                    title: subItem.applicant_role_title                    ,
+                    image: subItem.sub_category_images
+                  }))
+                : (item.levels?.map(level => ({
+                    id: level.code,
+                    title: level.title,
+                    image: null
+                  })) || [])
+            }));
+          } else if (this.selectedType === 'recruiter') {
+            this.subCategories = response.data.result.data.map(item => ({
+              ...item,
+              sub_sub_category_list: item.sub_sub_category_list?.length > 0
+                ? item.sub_sub_category_list.map(subItem => ({
+                    ...subItem,
+                    title: subItem.sub_sub_category_title,
+                    image: subItem.sub_sub_category_images
+                  }))
+                : (item.levels?.map(level => ({
+                    id: level.code,
+                    title: level.title,
+                    image: null
+                  })) || [])
+            }));
+          }
+        } else if (categoryId === 4) { // Food Factory
+          this.subCategories = response.data.results.map(item => ({
+            ...item,
+            sub_sub_category_list: item.food_factory_list?.length > 0
+              ? item.food_factory_list.map(subItem => ({
+                  ...subItem,
+                  title: subItem.food_factory_title,
+                  image: subItem.food_factory_images
+                }))
+              : (item.levels?.map(level => ({
+                  id: level.code,
+                  title: level.title,
+                  image: null
+                })) || [])
+          }));
+        } else if (categoryId === 5) { // Service Provider
+          this.subCategories = response.data.results.map(item => ({
+            ...item,
+            sub_sub_category_list: item.service_provider_list?.length > 0
+              ? item.service_provider_list.map(subItem => ({
+                  ...subItem,
+                  title: subItem.service_provider_title,
+                  image: subItem.service_provider_images
+                }))
+              : (item.levels?.map(level => ({
+                  id: level.code,
+                  title: level.title,
+                  image: null
+                })) || [])
+          }));
+        } else {
+          this.subCategories = response.data.results.map(item => ({
+            ...item,
+            sub_sub_category_list: item.sub_sub_category_list?.length > 0
+              ? item.sub_sub_category_list.map(subItem => ({
+                  ...subItem,
+                  title: subItem.sub_sub_category_title,
+                  image: subItem.sub_sub_category_images
+                }))
+              : (item.levels?.map(level => ({
+                  id: level.code,
+                  title: level.title,
+                  image: null
+                })) || [])
+          }));
+        }
+
+        this.hasSubSubCategories = this.subCategories.some(
+          item => (item.sub_sub_category_list && item.sub_sub_category_list.length > 0) || 
+                 (item.levels && item.levels.length > 0)
+        );
+
+        this.totalSteps = this.hasSubSubCategories ? 3 : 2;
       } catch (error) {
         console.error("Error fetching subcategories:", error);
       }
@@ -398,7 +686,7 @@ export default {
           lat: eventData.locationInformation.lat,
           lng: eventData.locationInformation.lng
         };
-        this.fetchFilteredAds(); // Fetch ads with new location
+        this.applyFilters(); // Apply filters immediately when location changes
       }
     },
     fetchCurrentLocation() {
@@ -423,18 +711,45 @@ export default {
     viewDetails(adId) {
       const ad = this.ads.find(ad => ad.ad.id === adId);
       if (ad) {
+        // Create a state object with all current filters
+        const filterState = {
+          category: this.filters.category,
+          subCategory: this.filters.subCategory,
+          type: this.filters.type,
+          search: this.filters.search,
+          radius: this.filters.radius,
+          area: this.filters.area,
+          sort: this.filters.sort,
+          coordinates: this.filters.coordinates,
+          locationDetails: this.locationDetails,
+          selectedCategory: this.selectedCategory,
+          selectedSubCategory: this.selectedSubCategory,
+          selectedType: this.selectedType,
+          selectedSubSubCategory: this.selectedSubSubCategory,
+          currentStep: this.currentStep,
+          formSubmitted: this.formSubmitted,
+          currentPage: this.currentPage // Add current page to filter state
+        };
+
         this.$router.push({
           path: `/ads-details/${adId}`,
           query: {
             category_id: ad.category.id,
             type: ad.ad.type,
-            ad_uuid: ad.ad.uuid
+            ad_uuid: ad.ad.uuid,
+            filterState: JSON.stringify(filterState), // Pass filter state as query parameter
+            page: this.currentPage // Add page number to URL
           }
         });
       }
     },
     async fetchInitialAds() {
       const params = new URLSearchParams();
+      
+      // Add search parameter
+      if (this.filters.search) {
+        params.append('search', this.filters.search);
+      }
       
       // Add sort parameter
       if (this.filters.sort) {
@@ -477,6 +792,8 @@ export default {
         if (response.data) {
           this.ads = response.data.results;
           this.hasNextPage = !!response.data.next;
+          this.currentPage = 1;
+          debugger;
         }
       } catch (error) {
         console.error("Error fetching initial ads:", error);
@@ -487,19 +804,38 @@ export default {
         const token = localStorage.getItem('accessToken');
         const params = new URLSearchParams();
         
-        // Reset page to 1 when applying filters
-        this.currentPage = 1;
-        params.append('page', 1);
-        
-        // Add all existing filter parameters
-        if (this.filters.category) {
-          params.append('category', this.filters.category);
+        // Add search parameter
+        if (this.filters.search) {
+          params.append('search', this.filters.search);
         }
         
-        if (this.filters.subCategory && this.filters.subCategory.length > 0) {
-          this.filters.subCategory.forEach(subCategoryId => {
-            params.append('sub_category', subCategoryId);
-          });
+        params.append('page', 1); // Reset to first page when applying filters
+        this.currentPage = 1;
+        if (this.selectedCategory) {
+          params.append('category', this.selectedCategory);
+        }
+        
+        // Handle subcategory and level type parameters
+        if (this.selectedSubCategory) {
+          params.append('sub_category', this.selectedSubCategory);
+          
+          // Find the selected subcategory object
+          const selectedSubCategoryObj = this.subCategories.find(sub => sub.id === this.selectedSubCategory);
+          
+          if (selectedSubCategoryObj) {
+            // Check if the subcategory has levels or sub_sub_category_list
+            if (selectedSubCategoryObj.levels && selectedSubCategoryObj.levels.length > 0) {
+              // If selected sub-sub category exists and it's from levels
+              if (this.selectedSubSubCategory) {
+                params.append('level_type', this.selectedSubSubCategory.id); // Using levels.code as level_type
+              }
+            } else if (selectedSubCategoryObj.sub_sub_category_list && selectedSubCategoryObj.sub_sub_category_list.length > 0) {
+              // If selected sub-sub category exists and it's from sub_sub_category_list
+              if (this.selectedSubSubCategory) {
+                params.append('sub_sub_category', this.selectedSubSubCategory.id);
+              }
+            }
+          }
         }
         
         params.append('min_price', this.filters.budget.min);
@@ -532,8 +868,8 @@ export default {
           params.append('sort', sortValue);
         }
         
-        if (this.filters.type) {
-          params.append('type', this.filters.type);
+        if (this.selectedType) {
+          params.append('type', this.selectedType);
         }
 
         // Add user_id if present
@@ -558,19 +894,23 @@ export default {
         if (response.data) {
           this.ads = response.data.results;
           this.hasNextPage = !!response.data.next;
+          
+          // Update filters state to match current selections
+          this.filters = {
+            ...this.filters,
+            category: this.selectedCategory,
+            subCategory: this.selectedSubCategory ? [this.selectedSubCategory] : [],
+            type: this.selectedType
+          };
         }
       } catch (error) {
-        console.error("Error fetching filtered ads:", error);
+        console.error("Error applying filters:", error);
       }
     },
     async changePage(page) {
       this.currentPage = page;
       await this.fetchPage(page);
-      // Scroll to top of ads list
-      const adsList = document.querySelector('.ads-list');
-      if (adsList) {
-        adsList.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      this.scrollToTop();
     },
     async fetchPage(page) {
       try {
@@ -585,9 +925,7 @@ export default {
         }
         
         if (this.filters.subCategory && this.filters.subCategory.length > 0) {
-          this.filters.subCategory.forEach(subCategoryId => {
-            params.append('sub_category', subCategoryId);
-          });
+          params.append('sub_category', this.filters.subCategory[0]);
         }
         
         params.append('min_price', this.filters.budget.min);
@@ -659,7 +997,86 @@ export default {
       this.hasNextPage = false; // Reset hasNextPage
       this.locationDetails = null; // Clear location details
       this.filters.coordinates = null; // Clear coordinates
-      this.applyFilters(); // Apply the reset filters
+      this.selectedCategory = null;
+      this.selectedSubCategory = null;
+      this.selectedType = null;
+      this.selectedSubSubCategory = null;
+      this.currentStep = 1;
+      this.formSubmitted = false;
+
+      // Clear URL parameters
+      const query = { ...this.$route.query };
+      delete query.filterState;
+      delete query.page;
+      delete query.category;
+      delete query.sub_category;
+      delete query.type;
+      delete query.search;
+      delete query.radius;
+      delete query.area;
+      delete query.sort;
+      delete query.coordinates;
+      delete query.locationDetails;
+      delete query.selectedCategory;
+      delete query.selectedSubCategory;
+      delete query.selectedType;
+      delete query.selectedSubSubCategory;
+      delete query.currentStep;
+      delete query.formSubmitted;
+      delete query.currentPage;
+
+      // Update URL without filter state
+      this.$router.replace({ 
+        path: this.$route.path,
+        query: query
+      });
+
+      // Apply the reset filters
+      this.applyFilters();
+    },
+    backToForm() {
+      if (this.selectedSubSubCategory) {
+        // If we have a sub-sub-category selected, go back to sub-sub-category selection
+        this.formSubmitted = false;
+        this.currentStep = 3;
+      } else if (this.selectedSubCategory) {
+        // If we have a sub-category selected but no sub-sub-category, go back to sub-category selection
+        this.formSubmitted = false;
+        this.currentStep = 2;
+      } else {
+        // If neither is selected, go back to category selection
+        this.formSubmitted = false;
+        this.currentStep = 1;
+      }
+
+      // Clear URL parameters
+      const query = { ...this.$route.query };
+      delete query.filterState;
+      delete query.page;
+      delete query.category;
+      delete query.sub_category;
+      delete query.type;
+      delete query.search;
+      delete query.radius;
+      delete query.area;
+      delete query.sort;
+      delete query.coordinates;
+      delete query.locationDetails;
+      delete query.selectedCategory;
+      delete query.selectedSubCategory;
+      delete query.selectedType;
+      delete query.selectedSubSubCategory;
+      delete query.currentStep;
+      delete query.formSubmitted;
+      delete query.currentPage;
+
+      // Update URL without filter state
+      this.$router.replace({ 
+        path: this.$route.path,
+        query: query
+      });
+
+      this.scrollToTop();
     },
     async toggleFavorite(adId, currentStatus) {
       try {
@@ -692,6 +1109,216 @@ export default {
         console.error("Error toggling favorite:", error);
       }
     },
+    formatTimeAgo(timestamp) {
+      if (!timestamp) return '';
+      
+      const now = new Date();
+      const postedDate = new Date(timestamp);
+      const diffInSeconds = Math.floor((now - postedDate) / 1000);
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      const diffInDays = Math.floor(diffInHours / 24);
+      const diffInMonths = Math.floor(diffInDays / 30);
+      const diffInYears = Math.floor(diffInDays / 365);
+
+      if (diffInYears > 0) {
+        return `${diffInYears} ${diffInYears === 1 ? 'year' : 'years'} ago`;
+      } else if (diffInMonths > 0) {
+        return `${diffInMonths} ${diffInMonths === 1 ? 'month' : 'months'} ago`;
+      } else if (diffInDays > 0) {
+        return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`;
+      } else if (diffInHours > 0) {
+        return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`;
+      } else if (diffInMinutes > 0) {
+        return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`;
+      } else {
+        return 'Just now';
+      }
+    },
+    extractCityName(address) {
+      if (!address) return '';
+      
+      // Split the address by commas and remove any leading/trailing spaces
+      const parts = address.split(',').map(part => part.trim());
+      
+      // Get the third item from last (city name)
+      // If there aren't enough parts, return the last available part
+      if (parts.length >= 3) {
+        return parts[parts.length - 3];
+      } else if (parts.length > 0) {
+        return parts[parts.length - 1];
+      }
+      return '';
+    },
+    async selectCategory(category) {
+      this.selectedCategory = category.id;
+      this.selectedSubCategory = null;
+      this.selectedSubSubCategory = null;
+      
+      // Reset selected type
+      this.selectedType = null;
+      
+      // Update ad types based on category's applicant and recruiter titles for jobs
+      if (category.id === 3) { // Jobs category
+        this.adTypes = [
+          { id: 'recruiter', title: category.recruiter?.title || 'Recruiter' },
+          { id: 'applicant', title: category.applicant?.title || 'Applicant' }
+        ];
+        // Set recruiter as default for jobs
+        await this.selectType('recruiter');
+      } else if (category.seller && category.buyer) {
+        // For other categories, use seller/buyer
+        this.adTypes = [
+          { id: 'seller', title: category.seller.title },
+          { id: 'buyer', title: category.buyer.title }
+        ];
+        // Set seller as default
+        await this.selectType('seller');
+      } else {
+        // Fallback if no specific titles are available
+        this.adTypes = [
+          { id: 'seller', title: 'Seller' },
+          { id: 'buyer', title: 'Buyer' }
+        ];
+        // Set seller as default
+        await this.selectType('seller');
+      }
+      
+      // Fetch subcategories after setting the type
+      await this.fetchSubCategories(category.id);
+
+      // Update filters and apply
+      this.filters.category = category.id;
+      await this.applyFilters();
+      
+      // Automatically advance to next step
+      this.nextStep();
+    },
+    async toggleSubCategory(subcategory) {
+      this.selectedSubCategory = subcategory.id;
+      this.currentSubCategory = subcategory;
+      
+      // Update filters
+      this.filters.subCategory = [subcategory.id];
+      await this.applyFilters();
+      
+      if (this.hasSubSubCategories && subcategory.sub_sub_category_list?.length > 0) {
+        this.nextStep();
+      } else {
+        // If no sub-sub-categories, submit the form
+        this.formSubmitted = true;
+      }
+    },
+    async selectSubSubCategory(subSubCategory) {
+      this.selectedSubSubCategory = subSubCategory;
+      await this.applyFilters();
+    },
+    async selectType(type) {
+      this.selectedType = type;
+      this.filters.type = type;
+      this.selectedSubCategory = null;
+      this.selectedSubSubCategory = null;
+      
+      if (this.selectedCategory === 3) {
+        await this.fetchSubCategories(this.selectedCategory);
+      }
+      
+      await this.applyFilters();
+    },
+    nextStep() {
+      if (this.currentStep < this.totalSteps) {
+        this.currentStep++;
+        this.scrollToTop();
+      }
+    },
+    previousStep() {
+      if (this.currentStep > 1) {
+        this.currentStep--;
+        this.scrollToTop();
+      }
+    },
+    async submitForm() {
+      // Set all filter values
+      this.filters = {
+        ...this.filters,
+        category: this.selectedCategory,
+        subCategory: this.selectedSubCategory ? [this.selectedSubCategory] : [],
+        type: this.selectedType || 'all_ads',
+      };
+      
+      // Set coordinates if location is selected
+      if (this.locationDetails) {
+        this.filters.coordinates = {
+          lat: this.locationDetails.locationInformation.lat,
+          lng: this.locationDetails.locationInformation.lng
+        };
+      }
+      
+      // Set form submitted state
+      this.formSubmitted = true;
+      
+      // Apply filters and fetch ads
+      await this.applyFilters();
+      this.scrollToTop();
+    },
+    getCategoryName(categoryId) {
+      const category = this.categories.find(cat => cat.id === categoryId);
+      return category ? category.category_title : '';
+    },
+    getSubCategoryName(subCategoryId) {
+      const subCategory = this.subCategories.find(sub => sub.id === subCategoryId);
+      return subCategory ? subCategory.sub_category_title : '';
+    },
+    async clearFilter(filterType) {
+      switch(filterType) {
+        case 'category':
+          this.filters.category = null;
+          this.filters.subCategory = [];
+          this.selectedCategory = null;
+          this.selectedSubCategory = null;
+          this.selectedSubSubCategory = null;
+          break;
+        case 'type':
+          this.filters.type = 'all_ads';
+          this.selectedType = null;
+          break;
+        case 'subCategory':
+          this.filters.subCategory = [];
+          this.selectedSubCategory = null;
+          this.selectedSubSubCategory = null;
+          break;
+        case 'subSubCategory':
+          this.selectedSubSubCategory = null;
+          break;
+        case 'location':
+          this.locationDetails = null;
+          this.filters.coordinates = null;
+          break;
+        case 'radius':
+          this.filters.radius = this.defaultFilters.radius;
+          break;
+        case 'area':
+          this.filters.area = this.defaultFilters.area;
+          break;
+      }
+      await this.applyFilters();
+    },
+    handleRangeStart() {
+      this.isDragging = true;
+    },
+    handleRangeEnd() {
+      this.isDragging = false;
+      this.applyFilters(); // Apply filters only when the user releases the slider
+    },
+    // Add debounced search handler
+    handleSearch() {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer);
+      }
+      this.debounceTimer = setTimeout(() => {
+        this.applyFilters();
+      }, 500);
+    },
   },
   computed: {
     pageTitle() {
@@ -702,29 +1329,78 @@ export default {
       }
       return 'All Ads';
     },
+    isSpecialPage() {
+      return this.filters.favourite_only || this.filters.user_id;
+    },
     hasActiveFilters() {
       return (
-        this.filters.category !== null ||
+        this.filters.category !== this.defaultFilters.category ||
         this.filters.subCategory.length > 0 ||
-        this.filters.budget.min !== 50000 ||
-        this.filters.budget.max !== 10000000 ||
-        this.filters.area !== 20000 ||
-        this.filters.radius !== 10 ||
-        this.filters.coordinates !== null ||
-        this.filters.sort !== 'date'
+        this.filters.type !== this.defaultFilters.type ||
+        this.filters.area !== this.defaultFilters.area ||
+        this.filters.radius !== this.defaultFilters.radius ||
+        this.filters.coordinates !== this.defaultFilters.coordinates ||
+        this.filters.sort !== this.defaultFilters.sort ||
+        this.locationDetails !== null ||
+        this.selectedSubSubCategory !== null
       );
     }
   },
   watch: {
     'filters.sort': {
       handler(newValue, oldValue) {
-        // Only trigger if the value actually changed
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    },
+    'filters.radius': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue && !this.isDragging) {
+          // Only update the visual style while dragging
+          const rangeInput = document.querySelector('input[type="range"][v-model="filters.radius"]');
+          if (rangeInput) {
+            rangeInput.style.setProperty('--value-percent', (newValue - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100 + '%');
+          }
+        }
+      }
+    },
+    'filters.area': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue && !this.isDragging) {
+          // Only update the visual style while dragging
+          const rangeInput = document.querySelector('input[type="range"][v-model="filters.area"]');
+          if (rangeInput) {
+            rangeInput.style.setProperty('--value-percent', (newValue - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100 + '%');
+          }
+        }
+      }
+    },
+    'filters.budget.min': {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.applyFilters();
+        }
+      }
+    },
+    'filters.budget.max': {
+      handler(newValue, oldValue) {
         if (newValue !== oldValue) {
           this.applyFilters();
         }
       }
     }
   },
+  beforeDestroy() {
+    // Clean up event listeners
+    const rangeInputs = document.querySelectorAll('input[type="range"]');
+    rangeInputs.forEach(input => {
+      input.removeEventListener('mousedown', this.handleRangeStart);
+      input.removeEventListener('touchstart', this.handleRangeStart);
+      input.removeEventListener('mouseup', this.handleRangeEnd);
+      input.removeEventListener('touchend', this.handleRangeEnd);
+    });
+  }
 };
 </script>
 
@@ -739,14 +1415,75 @@ export default {
   font-size: 14px;
 }
 
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 59px;
+  margin-top: 32px;
+}
+
 .page-title {
   color: #161C2D;
   font-size: 36px;
   font-style: normal;
   font-weight: 700;
   text-align: left;
-  margin-top: 32px;
-  margin-bottom: 59px;
+  margin: 0; /* Remove margins since we're handling it in the container */
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search-container {
+  position: relative;
+  width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 16px;
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #161C2D;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #47509B;
+  box-shadow: 0 0 0 2px rgba(71, 80, 155, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.sort-section {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-section select {
+  padding: 8px 12px;
+  border: 1px solid #DEE1E6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #161C2D;
+  background-color: white;
 }
 
 /* Ads Page Layout */
@@ -757,7 +1494,7 @@ export default {
 
 .filters {
   flex: 1;
-  max-width: 390px;
+  max-width: 293px;
   background: #ffffff;
   border-radius: 10px;
   position: sticky;
@@ -774,7 +1511,7 @@ export default {
 }
 
 .filter-section {
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* Updated margin to account for removed buttons */
   cursor: pointer;
   padding-left: 10px;
 }
@@ -841,15 +1578,11 @@ export default {
   /* height: 100vh; */
 }
 
-.sort-section {
-  margin-bottom: 20px;
-  text-align: right;
-}
-
 .ads-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    justify-items: end;
 }
 
 .card {
@@ -863,7 +1596,7 @@ export default {
 .card-img-top {
   width: 100%;
   height: 150px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .card-body {
@@ -876,11 +1609,7 @@ export default {
   margin-bottom: 8px;
 }
 
-.card-text {
-  font-size: 14px;
-  margin-bottom: 16px;
-  color: #555;
-}
+
 
 .ad-label {
   position: absolute;
@@ -889,11 +1618,11 @@ export default {
   padding: 5px 10px;
   background: #EDECF5;
   border-radius: 8px;
+  background: linear-gradient(180deg, #47509B 0%, #A20584 100%);
+  color: white;
 }
 
-.price-text {
-  font-family: 'Poppins', sans-serif;
-}
+
 
 .card-footer {
   padding-bottom: 20px;
@@ -972,9 +1701,11 @@ export default {
 .map-popup {
   background: #fff;
   padding: 20px;
+  padding-top: 40px;
+  padding-bottom: 20px;
   border-radius: 10px;
   width: 80%;
-  max-width: 600px;
+  max-width: 700px;
   position: relative;
 }
 
@@ -1109,5 +1840,577 @@ opacity: 0.7;
 
 .heart-icon:hover svg {
   filter: brightness(1.2);
+}
+.card-text {
+  color: black;
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: black;
+}
+.per-mnth{
+  font-size: 12px;
+font-style: normal;
+font-weight: 500;
+}
+
+.breadcrumb-link {
+  text-decoration: none;
+  color: #777;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breadcrumb-link:hover {
+  color: #47509B;
+}
+
+.breadcrumb-link svg {
+  vertical-align: middle;
+}
+.price-text {
+  color:black;
+  font-family: 'Poppins', sans-serif;
+  font-size:20px;
+  margin-bottom:18px;
+}
+
+.main-content {
+  flex: 3;
+  overflow-y: auto;
+}
+
+.post-ad-form {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-step {
+  margin-bottom: 2rem;
+}
+
+.form-step h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #161C2D;
+}
+
+.category-grid, .subcategory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.category-card, .subcategory-card {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  height: 180px;
+}
+
+.category-card img, .subcategory-card img {
+  width: 100%;
+  height: 75%;
+  object-fit: cover;
+  margin: 0;
+}
+
+.category-card span, .subcategory-card span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #161C2D;
+  padding: 12px;
+  text-align: center;
+  background: white;
+  height: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-card.selected, .subcategory-card.selected {
+  border-color: #47509B;
+  background-color: white;
+}
+
+.category-card.selected span, .subcategory-card.selected span {
+  background-color: #F5F6FF;
+}
+
+.category-grid, .subcategory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.ad-type-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #DEE1E6;
+  padding-bottom: 1rem;
+}
+
+.tab-button {
+  padding: 0.75rem 2rem;
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: #47509B;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #47509B;
+}
+
+.tab-button:hover {
+  color: #47509B;
+}
+
+.applied-filters-section {
+  margin: 0 0 20px 0;
+  padding: 15px 0;
+  border-bottom: 1px solid #DEE1E6;
+}
+
+.applied-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #F5F6FF;
+  border: 1px solid #47509B;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #47509B;
+}
+
+.clear-filter {
+  background: none;
+  border: none;
+  color: #47509B;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.clear-filter:hover {
+  background: rgba(71, 80, 155, 0.1);
+}
+
+.clear-all-button {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 20px;
+  color: #47509B;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.clear-all-button:hover {
+  background: #F5F6FF;
+}
+
+.ads-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-to-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 8px;
+  color: #47509B;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-to-form:hover {
+  background: #F5F6FF;
+}
+
+.back-to-form svg {
+  width: 20px;
+  height: 20px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.next-button, .back-button {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.next-button {
+  background: #47509B;
+  color: white;
+  border: none;
+}
+
+.next-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.back-button {
+  background: white;
+  color: #47509B;
+  border: 1px solid #47509B;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.type-card {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.type-card img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.type-card span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #161C2D;
+}
+
+.type-card.selected {
+  border-color: #47509B;
+  background-color: #F5F6FF;
+}
+
+.type-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.step-header h3 {
+  margin: 0;
+  flex-grow: 1;
+}
+
+.step-header .back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 8px;
+  color: #47509B;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.step-header .back-button:hover {
+  background: #F5F6FF;
+}
+
+.step-header .back-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.grid-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card-section {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card-section:hover {
+  border-color: #47509B;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.selected-card {
+  border-color: #47509B;
+  background-color: #F5F6FF !important;
+}
+
+.category-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #161C2D;
+  margin-bottom: 4px;
+}
+
+.category-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.w-28 {
+  width: 112px;
+}
+
+.h-20 {
+  height: 80px;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+.ml-4 {
+  margin-left: 16px;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.p-4 {
+  padding: 16px;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+/* Update subcategory and sub-subcategory styles to original grid layout */
+.subcategory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.subcategory-card {
+  border: 1px solid #DEE1E6;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  height: 180px;
+}
+
+.subcategory-card img {
+  width: 100%;
+  height: 75%;
+  object-fit: cover;
+  margin: 0;
+}
+
+.subcategory-card span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #161C2D;
+  padding: 12px;
+  text-align: center;
+  background: white;
+  height: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subcategory-card.selected {
+  border-color: #47509B;
+  background-color: white;
+}
+
+.subcategory-card.selected span {
+  background-color: #F5F6FF;
+}
+
+/* Add these new styles for the range input */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #47509B 0%, #47509B var(--value-percent, 50%), #DEE1E6 var(--value-percent, 50%));
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #47509B;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  background: #DEE1E6;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: #47509B;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #47509B;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: #47509B;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-track {
+  width: 100%;
+  height: 4px;
+  background: #DEE1E6;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  background: #47509B;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-ms-fill-lower {
+  background: #47509B;
+  border-radius: 2px;
+}
+
+input[type="range"]::-ms-fill-upper {
+  background: #DEE1E6;
+  border-radius: 2px;
+}
+.arrow-icon {
+  position: absolute;
+    right: 0px;
+}
+.card-content {
+  margin-right:16px;
+}
+.sort-select{
+  cursor: pointer;
 }
 </style>

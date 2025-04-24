@@ -305,6 +305,7 @@
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
+    cursor: pointer;
   }
 
   .nav-title.active {
@@ -352,6 +353,7 @@
     align-self: stretch;
     border-radius: 12px;
     margin-left: 10px;
+    cursor: pointer;
   }
   
   .login-outline-button:hover {

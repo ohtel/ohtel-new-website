@@ -5,7 +5,15 @@
     </div>
     <headerSection/>
     <!-- Header Navigation -->
-     
+    <div class="back-button-container">
+      <button class="back-button" @click="goBack">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M20.5725 12L3.42969 12" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10"/>
+          <path d="M9.42969 18L3.42969 12L9.42969 6" stroke="#323743" stroke-width="2.05714" stroke-miterlimit="10" stroke-linecap="square"/>
+        </svg>
+        Back to Ads
+      </button>
+    </div>
     <nav class="breadcrumb">
       <a href="/">Home</a> > <a href="/ads">Hospitality Spaces</a> > {{ ad.title }}
     </nav>
@@ -112,7 +120,7 @@
                 </svg>
               </div>
                 </div>
-                <p v-if="route.query.category_id != 7 && route.query.category_id != 8&& route.query.category_id != 4&& route.query.category_id != 6" class="card-text text-primary fw-bold mb-1 price-text">₹ {{ restaurantAd.price }} </p>
+                <p v-if="route.query.category_id != 7 && route.query.category_id != 8&& route.query.category_id != 4&& route.query.category_id != 6" class="card-text mb-1 price-text details-price-text">₹ {{ restaurantAd.price }} </p>
                 <p class="card-text small text-muted mb-3">{{ restaurantAd.description }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <small class="text-muted">
@@ -395,7 +403,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import { BASE_URL, ENDPOINTS } from '../environment.js';
 import googleMap from '../../components/googleMap.vue';
@@ -406,6 +414,7 @@ import headerSection from '../main-pages/headerSection.vue'
     import howToPostAdSection from '../main-pages/howToPostAdSection.vue'
 
 const route = useRoute();
+const router = useRouter();
 const ad = ref({
   title: '',
   price: '',
@@ -1059,6 +1068,21 @@ const handleProductSubmit = async () => {
   }
 };
 
+// Add this new method
+const goBack = () => {
+  const filterState = route.query.filterState;
+  if (filterState) {
+    // Navigate back to view-ads with the preserved filter state
+    router.push({
+      path: '/view-ads',
+      query: { filterState }
+    });
+  } else {
+    // If no filter state, just go back
+    router.back();
+  }
+};
+
 onMounted(() => {
   fetchAdDetails();
 });
@@ -1159,7 +1183,7 @@ onMounted(() => {
 }
 .seller-info {
   background: #fff;
-  padding: 1rem;
+  padding: 26px 30px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -1217,6 +1241,7 @@ onMounted(() => {
         font-size: 16px;
         font-style: normal;
         font-weight: 500;
+        align-content: center;
     }
 .card {
   background: #fff;
@@ -1490,10 +1515,6 @@ margin-bottom: 24px;
   padding: 5px;
   border-radius: 50%;
   transition: background-color 0.2s;
-}
-
-.edit-icon:hover {
-  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .edit-popup-modal {
@@ -1799,5 +1820,47 @@ textarea.error {
 
 .edit-products-btn:hover {
   background: #3a4179;
+}
+
+/* Add these new styles */
+.back-button-container {
+  padding: 16px 10%;
+  background: #fff;
+  border-bottom: 1px solid #DEE1E6;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #47509B;
+  border-radius: 8px;
+  color: #47509B;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: #F5F6FF;
+}
+
+.back-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Update existing styles */
+.breadcrumb {
+  margin-top: 0;
+  padding: 16px 10%;
+  background: #fff;
+}
+.details-price-text{
+  font-size: 24px;
+  font-weight: 600; 
+  color: #161C2D;
 }
 </style>

@@ -2827,7 +2827,7 @@ export default {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   padding: 2rem;
-  font-family: "Arial", sans-serif;
+  // font-family: "Arial", sans-serif;
 }
 
 .stepper-content-wrapper {
@@ -3070,6 +3070,7 @@ export default {
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
+  padding-top: 24px;
 }
 .float-right {
   float: right;

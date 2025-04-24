@@ -5,7 +5,7 @@
       <div class="user-info mb-3">
         <div class="d-flex justify-content-between mb-3">
             <h2>User Info</h2>
-            <!-- <div class="d-flex gap-4">
+            <div class="d-flex gap-4">
                 <button class="delete-btn" @click="handleDelete">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
 <path d="M16.25 4.58398L15.7336 12.9382C15.6016 15.0727 15.5357 16.1399 15.0007 16.9072C14.7361 17.2866 14.3956 17.6067 14.0006 17.8473C13.2017 18.334 12.1325 18.334 9.99392 18.334C7.8526 18.334 6.78192 18.334 5.98254 17.8464C5.58733 17.6054 5.24667 17.2847 4.98223 16.9047C4.4474 16.1362 4.38287 15.0674 4.25384 12.93L3.75 4.58398" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
@@ -20,7 +20,7 @@
 <path d="M9.66602 16.666H14.666" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
 </svg> Edit
                 </button>
-            </div> -->
+            </div>
         </div>
         <div class="user-details">
           <div class="left-section">
@@ -128,6 +128,57 @@
         </form>
       </div>
     </div>
+
+    <!-- OTP Popup Modal -->
+    <div v-if="showOtpPopup" class="otp-popup-modal">
+      <div class="otp-popup-content">
+        <div class="otp-popup-header">
+          <h3>Verify OTP</h3>
+          <span class="close-icon" @click="closeOtpPopup">✖</span>
+        </div>
+        <form @submit.prevent="verifyOtp" class="otp-form">
+          <div class="form-group">
+            <label>Enter OTP sent to your {{ otpType === 'email' ? 'email' : 'phone' }}</label>
+            <div class="otp-input-container">
+              <input 
+                v-for="(digit, index) in 4" 
+                :key="index"
+                type="text"
+                maxlength="1"
+                v-model="otpForm.otp[index]"
+                @input="handleOtpInput($event, index)"
+                @keydown="handleOtpKeydown($event, index)"
+                :class="{ 'error': otpErrors.otp }"
+                class="otp-input"
+                :ref="'otpInput' + index"
+              />
+            </div>
+            <span class="error-message" v-if="otpErrors.otp">{{ otpErrors.otp }}</span>
+          </div>
+
+          <div class="resend-otp">
+            <button 
+              type="button" 
+              class="resend-btn" 
+              @click="sendOtp(otpType)"
+              :disabled="isOtpSent"
+            >
+              {{ isOtpSent ? `Resend OTP in ${otpCountdown}s` : 'Resend OTP' }}
+            </button>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" @click="closeOtpPopup">Cancel</button>
+            <button type="submit" class="save-btn">Verify</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div v-if="showToast" class="toast-notification" :class="toastType">
+      {{ toastMessage }}
+    </div>
   </div>
 </template>
 
@@ -165,6 +216,19 @@ export default {
       },
       errors: {},
       selectedFile: null,
+      showOtpPopup: false,
+      otpType: '',
+      otpForm: {
+        otp: ['', '', '', ''],
+        new_value: ''
+      },
+      otpErrors: {},
+      isOtpSent: false,
+      otpTimer: null,
+      otpCountdown: 0,
+      showToast: false,
+      toastMessage: '',
+      toastType: 'success',
     };
   },
   created() {
@@ -232,26 +296,147 @@ export default {
 
       return Object.keys(this.errors).length === 0;
     },
+    async sendOtp(type) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const endpoint = type === 'email' ? 'send-otp-for-email-change/' : 'send-otp-for-phone-change/';
+        const payload = type === 'email' ? { new_email: this.editForm.email } : { new_phone: this.editForm.phone };
+        
+        const response = await axios.post(
+          `${BASE_URL}${endpoint}`,
+          payload,
+          {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.data) {
+          this.otpType = type;
+          this.otpForm.new_value = type === 'email' ? this.editForm.email : this.editForm.phone;
+          this.showOtpPopup = true;
+          this.isOtpSent = true;
+          this.startOtpTimer();
+          
+          // Show success toast
+          this.showToast('OTP sent successfully');
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        this.showToast('Error sending OTP', 'error');
+      }
+    },
+
+    startOtpTimer() {
+      this.otpCountdown = 60;
+      this.otpTimer = setInterval(() => {
+        if (this.otpCountdown > 0) {
+          this.otpCountdown--;
+        } else {
+          clearInterval(this.otpTimer);
+          this.isOtpSent = false;
+        }
+      }, 1000);
+    },
+
+    handleOtpInput(event, index) {
+      const value = event.target.value;
+      // Only allow numbers
+      if (!/^\d*$/.test(value)) {
+        this.otpForm.otp[index] = '';
+        return;
+      }
+      
+      if (value.length === 1) {
+        // Move to next input if available
+        if (index < 3) {
+          this.$nextTick(() => {
+            this.$refs['otpInput' + (index + 1)][0].focus();
+          });
+        }
+      }
+    },
+    handleOtpKeydown(event, index) {
+      if (event.key === 'Backspace' && !this.otpForm.otp[index] && index > 0) {
+        // Move to previous input on backspace if current input is empty
+        this.$nextTick(() => {
+          this.$refs['otpInput' + (index - 1)][0].focus();
+        });
+      }
+    },
+    async verifyOtp() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const endpoint = this.otpType === 'email' ? 'validate-and-change-email/' : 'validate-and-change-phone/';
+        
+        const response = await axios.post(
+          `${BASE_URL}${endpoint}`,
+          {
+            otp: this.otpForm.otp.join(''),
+            [this.otpType === 'email' ? 'new_email' : 'new_phone']: this.otpForm.new_value
+          },
+          {
+            headers: { 
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.data) {
+          // Update local storage and user data
+          const updatedUser = {
+            ...JSON.parse(localStorage.getItem('user')),
+            [this.otpType]: this.otpForm.new_value
+          };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          this.user = updatedUser;
+          
+          this.closeOtpPopup();
+          this.showToast('Updated successfully');
+        }
+      } catch (error) {
+        console.error('Error verifying OTP:', error);
+        this.otpErrors.otp = 'Invalid OTP';
+        this.showToast('Error verifying OTP', 'error');
+      }
+    },
+
+    closeOtpPopup() {
+      this.showOtpPopup = false;
+      this.otpForm.otp = ['', '', '', ''];
+      this.otpForm.new_value = '';
+      this.otpErrors = {};
+      this.isOtpSent = false;
+      if (this.otpTimer) {
+        clearInterval(this.otpTimer);
+      }
+    },
+
+    showToast(message, type = 'success') {
+      this.toastMessage = message;
+      this.showToast = true;
+      this.toastType = type;
+      setTimeout(() => {
+        this.showToast = false;
+      }, 3000);
+    },
+
     async handleSubmit() {
       if (!this.validateForm()) return;
 
       try {
-        if (typeof window !== 'undefined') {
-          const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('accessToken');
+        
+        // 1. Update profile picture if changed
+        if (this.selectedFile) {
           const formData = new FormData();
+          formData.append('avatar', this.selectedFile);
           
-          // Append user data
-          formData.append('full_name', this.editForm.full_name);
-          formData.append('email', this.editForm.email);
-          formData.append('phone', this.editForm.phone);
-          
-          // Append profile picture if selected
-          if (this.selectedFile) {
-            formData.append('profile_picture', this.selectedFile);
-          }
-
-          const response = await axios.post(
-            `${BASE_URL}user/update/`,
+          await axios.put(
+            `${BASE_URL}image-update/`,
             formData,
             {
               headers: { 
@@ -260,27 +445,60 @@ export default {
               }
             }
           );
+        }
 
-          if (response.data) {
-            // Update local storage with new user data
-            const updatedUser = {
-              ...JSON.parse(localStorage.getItem('user')),
+        // 2. Update name if changed
+        if (this.editForm.full_name !== this.user.full_name) {
+          const response = await axios.put(
+            `${BASE_URL}user/update_user_details/`,
+            { 
               full_name: this.editForm.full_name,
-              email: this.editForm.email,
-              phone: this.editForm.phone,
-              profile_picture: response.data.profile_picture || this.editForm.profile_picture
-            };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            
-            // Update the user data in the component
-            this.user = updatedUser;
-            
-            // Close popup
-            this.closeEditPopup();
+              email: this.user.email,
+              phone: this.user.phone
+            },
+            {
+              headers: { 
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+
+          if (response.data.detail === "User Data Updated") {
+            // Update localStorage with new full_name
+            const userData = JSON.parse(localStorage.getItem('user'));
+            userData.full_name = this.editForm.full_name;
+            localStorage.setItem('user', JSON.stringify(userData));
+            this.user.full_name = this.editForm.full_name;
           }
         }
+
+        // 3. Handle email change if modified
+        if (this.editForm.email !== this.user.email) {
+          await this.sendOtp('email');
+          return; // Stop here and wait for OTP verification
+        }
+
+        // 4. Handle phone change if modified
+        if (this.editForm.phone !== this.user.phone) {
+          await this.sendOtp('phone');
+          return; // Stop here and wait for OTP verification
+        }
+
+        // If no OTP verification needed, update local storage and close popup
+        const updatedUser = {
+          ...JSON.parse(localStorage.getItem('user')),
+          full_name: this.editForm.full_name,
+          profile_picture: this.editForm.profile_picture
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        this.user = updatedUser;
+        
+        this.closeEditPopup();
+        this.showToast('Profile updated successfully');
       } catch (error) {
         console.error('Error updating profile:', error);
+        this.showToast('Error updating profile', 'error');
       }
     },
     async handleDelete() {
@@ -289,7 +507,7 @@ export default {
           if (typeof window !== 'undefined') {
             const token = localStorage.getItem('accessToken');
             const response = await axios.post(
-              `${BASE_URL}user/delete/`,
+              `${BASE_URL}hard-delete/`,
               {},
               {
                 headers: { 
@@ -307,6 +525,7 @@ export default {
           }
         } catch (error) {
           console.error('Error deleting account:', error);
+          this.showToast('Error deleting account', 'error');
         }
       }
     }
@@ -525,5 +744,202 @@ width: 120px;
 
 .upload-btn:hover {
   background: #3a4179;
+}
+
+/* OTP Popup Modal */
+.otp-popup-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.otp-popup-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.otp-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.otp-popup-header h3 {
+  margin: 0;
+  color: #161C2D;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+}
+
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #161C2D;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 8px 12px;
+  border: 1px solid #DEE1E6;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input.error {
+  border-color: #F55959;
+}
+
+.error-message {
+  color: #F55959;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cancel-btn, .save-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn {
+  background: #fff;
+  border: 1px solid #DEE1E6;
+  color: #161C2D;
+}
+
+.save-btn {
+  background: #47509B;
+  border: none;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background: #f5f5f5;
+}
+
+.save-btn:hover {
+  background: #3a4179;
+}
+
+/* Toast Notification */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  z-index: 1001;
+  animation: slideIn 0.3s ease-out;
+}
+
+.toast-notification.success {
+  background-color: #4CAF50;
+}
+
+.toast-notification.error {
+  background-color: #F55959;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Resend OTP Button */
+.resend-otp {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: #47509B;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px;
+  transition: color 0.2s;
+}
+
+.resend-btn:hover:not(:disabled) {
+  color: #3a4179;
+}
+
+.resend-btn:disabled {
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* OTP Input Styles */
+.otp-input-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.otp-input {
+  width: 48px;
+  height: 48px;
+  text-align: center;
+  font-size: 20px;
+  border: 2px solid #DEE1E6;
+  border-radius: 8px;
+  background: #fff;
+  transition: all 0.2s;
+}
+
+.otp-input:focus {
+  border-color: #47509B;
+  outline: none;
+}
+
+.otp-input.error {
+  border-color: #F55959;
 }
 </style>

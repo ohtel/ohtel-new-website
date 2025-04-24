@@ -4,8 +4,13 @@
       <h2 class="fw-bold">{{ heading }}</h2>
       <button class="btn view-all" @click="viewAllAds">View All Ads</button>
     </div>
+    <!-- Empty State -->
+    <div v-if="ads.length === 0" class="empty-state">
+      <h3>No Ads Available</h3>
+      <p>There are no {{ heading.toLowerCase() }} at the moment</p>
+    </div>
     <!-- Horizontal Scroll Section -->
-    <div class="scroll-container">
+    <div v-else class="scroll-container">
       <div class="d-flex flex-nowrap gap-4">
         <div
           v-for="(ad, index) in ads"
@@ -33,7 +38,7 @@
                 </svg>
               </div>
             </div>
-            <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text text-primary fw-bold mb-1 price-text">
+            <p v-if="ad.category.id!=8&&ad.category.id!=7&&ad.category.id!=4&&ad.category.id!=6" class="card-text fw-bold mb-1 price-text">
               ₹ {{ ad.price }} 
             </p>
             <p class="card-text small text-muted mb-3">
@@ -248,6 +253,13 @@ export default {
   padding: 5px 10px;
   background: #EDECF5;
   border-radius: 8px;
+  top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: #EDECF5;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #47509B 0%, #A20584 100%);
+    color: white;
 }
 .view-details {
   background: #47509B;
@@ -280,7 +292,9 @@ export default {
   flex-direction: column;
 }
 .card-title {
-  font-size: 1rem;
+  font-size: 18px;
+  font-weight: 700;
+  
   line-height: 1.4;
   height: 2.8em; /* Fixed height for title (2 lines) */
   overflow: hidden;
@@ -297,6 +311,9 @@ export default {
 }
 .price-text {
   font-family: 'Poppins', sans-serif;
+  color: #161C2D;
+  font-weight: 600;
+  font-size:14px;
 }
 .location-text {
   display: inline-block;
@@ -333,5 +350,31 @@ export default {
 }
 .featured-ads-card{
   height: 450px;
+}
+
+/* Add these new styles for empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  background: #fff;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.empty-state h3 {
+  color: #161C2D;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
 }
 </style>
