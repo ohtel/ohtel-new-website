@@ -2496,16 +2496,17 @@ export default {
     },
     updateStep2Cards(category) {
       this.step2Cards = [
-        {
-          id: 1,
-          title: category.buyer.title,
-          description: category.buyer.description,
-          image: category.category_images,
-        },
+        
         {
           id: 2,
           title: category.seller.title,
           description: category.seller.description,
+          image: category.category_images,
+        },
+        {
+          id: 1,
+          title: category.buyer.title,
+          description: category.buyer.description,
           image: category.category_images,
         },
       ];
