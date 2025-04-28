@@ -956,7 +956,8 @@ export default {
         }
         
         if (this.selectedType) {
-          params.append('type', this.selectedType);
+          params.append('type', this.selectedType=='seller' ? 'Seller' :this.selectedType=='recruiter' ? 
+          'Recruiter' :this.selectedType=='buyer' ? 'Buyer' :'Applicant');
         }
 
         // Add user_id if present
