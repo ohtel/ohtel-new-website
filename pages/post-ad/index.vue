@@ -274,7 +274,7 @@
                           >
                             <path
                               d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
-                              stroke="#161C2D"
+                              stroke="#FFFFFF"
                               stroke-width="1.5"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -316,15 +316,16 @@
                     <!-- Header -->
 
                     <!-- Card List -->
-                    <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                    <div class="d-flex justify-content-center gap-4" style="height: 425px; align-items: center;">
                       <div
                         v-for="card in step2Cards"
                         :key="card.id"
                         :class="[
-                          'd-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between',
+                          'd-flex items-start bg-white card-section align-items-center gap-3 justify-space-between',
                           { 'selected-card': selectedStep2Card === card.id },
                         ]"
                         @click="selectStep2Card(card)"
+                        style="width: 440px; height: 220px;border-radius: 16px;"
                       >
                         <!-- Image -->
                         <div class="d-flex">
@@ -343,7 +344,7 @@
                             </p>
                           </div>
                         </div>
-                        <div>
+                        <div style="height: 100%; background-color: #A20584; display: flex; align-items: center; padding: 0 10px; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="32"
@@ -353,7 +354,7 @@
                           >
                             <path
                               d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
-                              stroke="#161C2D"
+                              stroke="#FFFFFF"
                               stroke-width="1.5"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -3015,7 +3016,7 @@ export default {
 }
 .selected-card {
   border: 1px solid #161c2d !important;
-  padding: 9px;
+  // padding: 9px;
 }
 .card-subcategory {
   border: 1px solid #ffffff !important;
