@@ -346,7 +346,7 @@
                   <span>{{ filters.area }} sq.ft</span>
                   <button @click="clearFilter('area')" class="clear-filter">×</button>
                 </div>
-                <button @click="resetFilters" class="clear-all-button">Clear All</button>
+                <button @click="clearAllAndGoToCategory" class="clear-all-button">Clear All</button>
               </div>
             </div>
 
@@ -603,6 +603,43 @@ export default {
         e.target.style.setProperty('--value-percent', (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100 + '%');
       });
     });
+    this.refreshRangeInputs();
+
+    // Restore filter state from localStorage if present
+    const savedState = localStorage.getItem('adsFilterState');
+    if (savedState) {
+      try {
+        const state = JSON.parse(savedState);
+        this.filters = state.filters || this.filters;
+        this.selectedCategory = state.selectedCategory || null;
+        this.selectedSubCategory = state.selectedSubCategory || null;
+        this.selectedSubSubCategory = state.selectedSubSubCategory || null;
+        this.selectedType = state.selectedType || null;
+        this.formSubmitted = state.formSubmitted || false;
+        this.currentStep = state.currentStep || 1;
+        // Optionally restore locationDetails, etc.
+        if (state.locationDetails) this.locationDetails = state.locationDetails;
+
+        // Fetch subcategories if we have a selected category
+        if (this.selectedCategory) {
+          await this.fetchSubCategories(this.selectedCategory);
+          // If we have a selected subcategory, find and set the currentSubCategory
+          if (this.selectedSubCategory) {
+            this.currentSubCategory = this.subCategories.find(
+              sub => sub.id === this.selectedSubCategory
+            );
+          }
+        }
+
+        // If we restored to ads list, fetch ads
+        if (this.formSubmitted) {
+          await this.applyFilters();
+        }
+      } catch (e) {
+        // If error, clear the saved state
+        localStorage.removeItem('adsFilterState');
+      }
+    }
   },
   methods: {
     scrollToTop() {
@@ -1077,50 +1114,41 @@ export default {
         console.error("Error fetching page:", error);
       }
     },
-    resetFilters() {
-      // Reset all filters to default values
+    resetFilters(clearSelection = false) {
+      // If clearSelection is true, also clear category/subcategory/sub-subcategory
       this.filters = JSON.parse(JSON.stringify(this.defaultFilters));
-      this.subCategories = []; // Clear subcategories
-      this.currentPage = 1; // Reset to first page
-      this.hasNextPage = false; // Reset hasNextPage
-      this.locationDetails = null; // Clear location details
-      this.filters.coordinates = null; // Clear coordinates
-      this.selectedCategory = null;
-      this.selectedSubCategory = null;
-      this.selectedType = null;
-      this.selectedSubSubCategory = null;
-      this.currentStep = 1;
+      if (clearSelection) {
+        this.selectedCategory = null;
+        this.selectedSubCategory = null;
+        this.selectedSubSubCategory = null;
+        this.currentStep = 1;
+      }
+      this.locationDetails = null;
+      this.showMobileFilter = false;
+      this.refreshRangeInputs();
+    },
+    clearAllAndGoToCategory() {
+      // Clear all filters and selections, go to category selection page
+      this.resetFilters(true);
       this.formSubmitted = false;
-
-      // Clear URL parameters
-      const query = { ...this.$route.query };
-      delete query.filterState;
-      delete query.page;
-      delete query.category;
-      delete query.sub_category;
-      delete query.type;
-      delete query.search;
-      delete query.radius;
-      delete query.area;
-      delete query.sort;
-      delete query.coordinates;
-      delete query.locationDetails;
-      delete query.selectedCategory;
-      delete query.selectedSubCategory;
-      delete query.selectedType;
-      delete query.selectedSubSubCategory;
-      delete query.currentStep;
-      delete query.formSubmitted;
-      delete query.currentPage;
-
-      // Update URL without filter state
-      this.$router.replace({ 
-        path: this.$route.path,
-        query: query
-      });
-
-      // Apply the reset filters
-      this.applyFilters();
+      this.currentStep = 1;
+      this.clearFilterState();
+    },
+    goToAdsList() {
+      // Called when moving forward to ads list
+      // Keep only the selection, clear other filters
+      const keep = {
+        category: this.selectedCategory,
+        subCategory: this.selectedSubCategory ? [this.selectedSubCategory] : [],
+        type: this.selectedType,
+      };
+      this.filters = {
+        ...JSON.parse(JSON.stringify(this.defaultFilters)),
+        ...keep
+      };
+      this.refreshRangeInputs();
+      this.formSubmitted = true;
+      this.saveFilterState();
     },
     backToForm() {
       if (this.selectedSubSubCategory) {
@@ -1407,6 +1435,36 @@ export default {
         this.applyFilters();
       }, 500);
     },
+    refreshRangeInputs() {
+      // Update the background fill of all range inputs to match their value
+      this.$nextTick(() => {
+        const rangeInputs = document.querySelectorAll('input[type="range"]');
+        rangeInputs.forEach(input => {
+          const min = parseFloat(input.min);
+          const max = parseFloat(input.max);
+          const val = parseFloat(input.value);
+          const percent = ((val - min) / (max - min)) * 100;
+          input.style.setProperty('--value-percent', percent + '%');
+        });
+      });
+    },
+    saveFilterState() {
+      // Save current filter and selection state to localStorage
+      const state = {
+        filters: this.filters,
+        selectedCategory: this.selectedCategory,
+        selectedSubCategory: this.selectedSubCategory,
+        selectedSubSubCategory: this.selectedSubSubCategory,
+        selectedType: this.selectedType,
+        formSubmitted: this.formSubmitted,
+        currentStep: this.currentStep,
+        locationDetails: this.locationDetails,
+      };
+      localStorage.setItem('adsFilterState', JSON.stringify(state));
+    },
+    clearFilterState() {
+      localStorage.removeItem('adsFilterState');
+    },
   },
   computed: {
     pageTitle() {
@@ -1481,7 +1539,22 @@ export default {
           this.applyFilters();
         }
       }
-    }
+    },
+    currentStep(newVal, oldVal) {
+      // Refresh range inputs on step change
+      this.refreshRangeInputs();
+    },
+    filters: {
+      handler() {
+        if (this.formSubmitted) this.saveFilterState();
+      },
+      deep: true
+    },
+    selectedCategory() { if (this.formSubmitted) this.saveFilterState(); },
+    selectedSubCategory() { if (this.formSubmitted) this.saveFilterState(); },
+    selectedSubSubCategory() { if (this.formSubmitted) this.saveFilterState(); },
+    selectedType() { if (this.formSubmitted) this.saveFilterState(); },
+    formSubmitted() { if (this.formSubmitted) this.saveFilterState(); },
   },
   beforeDestroy() {
     // Clean up event listeners
