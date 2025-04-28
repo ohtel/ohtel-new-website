@@ -327,22 +327,22 @@
                         @click="selectStep2Card(card)"
                         style="width: 440px; height: 220px;border-radius: 16px;"
                       >
-                        <!-- Image -->
-                        <div class="d-flex">
+                        <!-- Content Block -->
+                        <div class="d-flex flex-column align-items-center justify-content-center" style="width: 100%;">
+                          <!-- Image -->
                           <img
                             src="/assets/images/ohtel_logo.png"
                             alt="Card Image"
-                            class="w-28 h-20 object-cover-buyer-seller"
+                            class="w-28 h-20 object-cover-buyer-seller mb-3"
                           />
-                          <!-- Content -->
-                          <div class="ml-4 text-left">
-                            <h3 class="category-card-title">
-                              {{ card.title }}
-                            </h3>
-                            <p class="category-subtitle">
-                              {{ card.description }}
-                            </p>
-                          </div>
+                          <!-- Title -->
+                          <h3 class="category-card-title text-center mb-2">
+                            {{ card.title }}
+                          </h3>
+                          <!-- Description -->
+                          <p class="category-subtitle text-center">
+                            {{ card.description }}
+                          </p>
                         </div>
                         <div style="height: 100%; background-color: #A20584; display: flex; align-items: center; padding: 0 10px; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
                           <svg
