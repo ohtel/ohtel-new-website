@@ -22,7 +22,7 @@
           </defs>
         </svg> {{ pageTitle }}</a>
       </nav>
-      <div class="search-container-mobile">
+      <div class="search-container-mobile" v-if="showControls">
         <span class="search-icon-mobile">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 11.555 11.555 14.1667 8.33333 14.1667C5.11167 14.1667 2.5 11.555 2.5 8.33333C2.5 5.11167 5.11167 2.5 8.33333 2.5C11.555 2.5 14.1667 5.11167 14.1667 8.33333Z" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -37,10 +37,10 @@
             />
             
           </div>
-      <div class="page-header">
+      <div v-if="showControls" class="page-header">
         <h1 class="page-title">{{ pageTitle }}</h1>
        
-        <div class="header-actions">
+        <div class="header-actions" v-if="showControls">
           <div class="search-container">
             <input 
               type="text" 
@@ -73,13 +73,11 @@
             </select>
           </div>
         </div>
-        <div class="divider-line-mobile">
-
-        </div>
+        <div class="divider-line-mobile" v-if="showControls"></div>
           
        
         <!-- Mobile Filter Button -->
-        <button class="mobile-filter-btn" @click="showMobileFilter = true">
+        <button class="mobile-filter-btn" v-if="showControls" @click="showMobileFilter = true">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
 <path d="M3 5.83203H5.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M3 14.168H8" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -94,7 +92,7 @@
 
       <div class="ads-container">
         <!-- Filters Section (Sidebar, hidden on mobile) -->
-        <aside class="filters">
+        <aside class="filters" v-if="showControls">
           <h2>Filters</h2>
 
           <!-- Rest of the filters -->
@@ -150,7 +148,7 @@
         </aside>
 
         <!-- Mobile Filter Modal -->
-        <div v-if="showMobileFilter" class="mobile-filter-modal">
+        <div v-if="showMobileFilter && showControls" class="mobile-filter-modal">
           <div class="mobile-filter-content">
             <div class="mobile-filter-header">
               <span>Filters</span>
@@ -1048,6 +1046,8 @@ export default {
         
         if (this.filters.type) {
           params.append('type', this.filters.type);
+          params.append('type', this.filters.type=='seller' ? 'Seller' :this.filters.type=='recruiter' ? 
+          'Recruiter' :this.filters.type=='buyer' ? 'Buyer' :'Applicant');
         }
 
         // Add user_id if present
@@ -1432,7 +1432,11 @@ export default {
         this.locationDetails !== null ||
         this.selectedSubSubCategory !== null
       );
-    }
+    },
+    showControls() {
+      // Show controls only when on the ads list page (not on selection steps)
+      return this.formSubmitted || this.isSpecialPage;
+    },
   },
   watch: {
     'filters.sort': {
