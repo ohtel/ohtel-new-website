@@ -316,7 +316,7 @@
                     <!-- Header -->
 
                     <!-- Card List -->
-                    <div class="d-flex justify-content-center gap-4" style="height: 425px; align-items: center;">
+                    <div class="d-flex justify-content-center gap-4 type-card-section" style="height: 425px; align-items: center;">
                       <div
                         v-for="card in step2Cards"
                         :key="card.id"
@@ -344,7 +344,7 @@
                             {{ card.description }}
                           </p>
                         </div>
-                        <div style="height: 100%; background-color: #A20584; display: flex; align-items: center; padding: 0 10px; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
+                        <div class="arrow-icon-pink-color" style="height: 100%; background-color: #A20584; display: flex; align-items: center; padding: 0 10px; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="32"
@@ -3085,14 +3085,35 @@ export default {
 
 @media (max-width: 945px) {
   .main-section {
-    width: fit-content;
+    width: 100%;
+    overflow-x: hidden;
   }
   .div-grid {
     grid-template-columns: repeat(1, 1fr);
   }
-  // .main-div{
-  //     width: fit-content;
-  // }
+  .main-div {
+    width: 100%;
+    padding: 1rem;
+  }
+  .card-section {
+    width: 100% !important;
+    flex-direction: column;
+    text-align: center;
+  }
+  .category-section {
+    padding: 1rem !important;
+  }
+  .content-box {
+    width: 100%;
+  }
+  .step-content {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .stepper-content-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+  }
 }
 // .address-class{
 //     width: 67.5%;
@@ -3423,6 +3444,7 @@ export default {
   }
   .custom-stepper{
     flex-direction: row;
+    margin-bottom: 25px;
   }
   .vertical-progress-bar{
     display: none;
@@ -3432,10 +3454,25 @@ export default {
     height: 4px;
     margin-left:0px;
     align-self: center;
-   
+    border-bottom-left-radius: 0px; 
+     border-bottom-right-radius: 0px;
   }
   .custom-stepper{
     justify-content: center;
+  }
+  .arrow-icon-pink-color{
+    display: none!important;
+  }
+  .type-card-section{
+    height: auto!important;
+  }
+  .category-section .category-subtitle{
+    font-size: 12px;
+  }
+}
+@media (max-width: 362px) {
+  .object-cover{
+    width: 210px;
   }
 }
 </style>
