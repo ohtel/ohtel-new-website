@@ -591,17 +591,29 @@ export default {
     // Add event listeners for range inputs
     const rangeInputs = document.querySelectorAll('input[type="range"]');
     rangeInputs.forEach(input => {
-      input.style.setProperty('--value-percent', (input.value - input.min) / (input.max - input.min) * 100 + '%');
+      // Set initial value
+      const min = parseFloat(input.min);
+      const max = parseFloat(input.max);
+      const val = parseFloat(input.value);
+      const percent = ((val - min) / (max - min)) * 100;
+      input.style.setProperty('--value-percent', percent + '%');
       
+      // Add input event listener
+      input.addEventListener('input', (e) => {
+        const min = parseFloat(e.target.min);
+        const max = parseFloat(e.target.max);
+        const val = parseFloat(e.target.value);
+        const percent = ((val - min) / (max - min)) * 100;
+        e.target.style.setProperty('--value-percent', percent + '%');
+      });
+      
+      // Add mousedown/touchstart event listeners
       input.addEventListener('mousedown', this.handleRangeStart);
       input.addEventListener('touchstart', this.handleRangeStart);
       
+      // Add mouseup/touchend event listeners
       input.addEventListener('mouseup', this.handleRangeEnd);
       input.addEventListener('touchend', this.handleRangeEnd);
-      
-      input.addEventListener('input', (e) => {
-        e.target.style.setProperty('--value-percent', (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100 + '%');
-      });
     });
     this.refreshRangeInputs();
 
@@ -1133,6 +1145,8 @@ export default {
       this.formSubmitted = false;
       this.currentStep = 1;
       this.clearFilterState();
+      // Reset radius to default value
+      this.filters.radius = this.defaultFilters.radius;
     },
     goToAdsList() {
       // Called when moving forward to ads list
@@ -1191,6 +1205,9 @@ export default {
         path: this.$route.path,
         query: query
       });
+
+      // Reset radius to default value
+      this.filters.radius = this.defaultFilters.radius;
 
       this.scrollToTop();
     },
@@ -1506,14 +1523,21 @@ export default {
     },
     'filters.radius': {
       handler(newValue, oldValue) {
-        if (newValue !== oldValue && !this.isDragging) {
-          // Only update the visual style while dragging
-          const rangeInput = document.querySelector('input[type="range"][v-model="filters.radius"]');
-          if (rangeInput) {
-            rangeInput.style.setProperty('--value-percent', (newValue - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100 + '%');
-          }
+        if (newValue !== oldValue) {
+          this.$nextTick(() => {
+            // Update the visual style for all range inputs
+            const rangeInputs = document.querySelectorAll('input[type="range"]');
+            rangeInputs.forEach(input => {
+              const min = parseFloat(input.min);
+              const max = parseFloat(input.max);
+              const val = parseFloat(newValue);
+              const percent = ((val - min) / (max - min)) * 100;
+              input.style.setProperty('--value-percent', percent + '%');
+            });
+          });
         }
-      }
+      },
+      immediate: true
     },
     'filters.area': {
       handler(newValue, oldValue) {
