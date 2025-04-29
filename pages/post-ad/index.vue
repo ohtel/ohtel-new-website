@@ -49,7 +49,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 1:</span>
                   <div class="step-title">Select Category</div>
                 </div>
@@ -73,7 +73,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 2:</span>
                   <div class="step-title">Select Ad Type</div>
                 </div>
@@ -97,7 +97,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 3:</span>
                   <div class="step-title">Select Sub Category</div>
                 </div>
@@ -123,7 +123,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 3.5:</span>
                   <div class="step-title">Select Sub-Sub-Category</div>
                 </div>
@@ -148,7 +148,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 4:</span>
                   <div class="step-title">Additional Info</div>
                 </div>
@@ -172,7 +172,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 5:</span>
                   <div class="step-title">Personal Informations</div>
                 </div>
@@ -196,7 +196,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 6:</span>
                   <div class="step-title">Select Subscription Plan</div>
                 </div>
@@ -219,7 +219,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 7:</span>
                   <div class="step-title">Review & Publish</div>
                 </div>
@@ -235,7 +235,7 @@
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
+                  <div class="">
                     <!-- Header -->
 
                     <!-- Card List -->
@@ -3412,6 +3412,30 @@ export default {
   .proceed-button {
     background-color: #4CAF50;
     color: white;
+  }
+}
+@media (max-width: 1024px) {
+  .stepper-content-wrapper {
+   display: block;
+  }
+  .stepper-content {
+    display: none;
+  }
+  .custom-stepper{
+    flex-direction: row;
+  }
+  .vertical-progress-bar{
+    display: none;
+  }
+  .step-line{
+    width: 50px;
+    height: 4px;
+    margin-left:0px;
+    align-self: center;
+   
+  }
+  .custom-stepper{
+    justify-content: center;
   }
 }
 </style>
