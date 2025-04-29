@@ -130,7 +130,7 @@
             </div>
           </div>
 
-          <div class="filter-section">
+          <!-- <div class="filter-section">
             <h3 @click="toggleSection('area')">Area (Sq.ft) <span class="arrow" :class="{ 'open': isOpen('area') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -144,7 +144,7 @@
                 <span>20000</span>
               </div>
             </div>
-          </div>
+          </div> -->
         </aside>
 
         <!-- Mobile Filter Modal -->
@@ -177,7 +177,7 @@
                 <span>50 km</span>
               </div>
             </div>
-            <div class="filter-section">
+            <!-- <div class="filter-section">
               <h3>Area (Sq.ft)</h3>
               <input type="range" min="0" max="20000" v-model="filters.area" />
               <div>
@@ -185,7 +185,7 @@
                 <span>{{ filters.area }}</span>
                 <span>20000</span>
               </div>
-            </div>
+            </div> -->
             <!-- Add more filter fields as needed -->
             <button class="apply-btn" @click="applyFilters(); showMobileFilter = false">Apply</button>
           </div>
