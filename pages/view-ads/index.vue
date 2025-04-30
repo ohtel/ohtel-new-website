@@ -22,10 +22,25 @@
           </defs>
         </svg> {{ pageTitle }}</a>
       </nav>
-
-      <div class="page-header">
+      <div class="search-container-mobile" v-if="showControls">
+        <span class="search-icon-mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 11.555 11.555 14.1667 8.33333 14.1667C5.11167 14.1667 2.5 11.555 2.5 8.33333C2.5 5.11167 5.11167 2.5 8.33333 2.5C11.555 2.5 14.1667 5.11167 14.1667 8.33333Z" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <input 
+              type="text" 
+              v-model="filters.search" 
+              placeholder="Search ads..." 
+              class="search-input"
+              @input="handleSearch"
+            />
+            
+          </div>
+      <div v-if="showControls" class="page-header">
         <h1 class="page-title">{{ pageTitle }}</h1>
-        <div class="header-actions">
+       
+        <div class="header-actions" v-if="showControls">
           <div class="search-container">
             <input 
               type="text" 
@@ -35,13 +50,22 @@
               @input="handleSearch"
             />
             <span class="search-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M17.5 17.5L12.5 12.5M14.1667 8.33333C14.1667 11.555 11.555 14.1667 8.33333 14.1667C5.11167 14.1667 2.5 11.555 2.5 8.33333C2.5 5.11167 5.11167 2.5 8.33333 2.5C11.555 2.5 14.1667 5.11167 14.1667 8.33333Z" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
+              
             </span>
           </div>
           <div class="sort-section">
-            <span>Sort by:</span>
+            <span class="sort-label-desktop">Sort by:</span>
+            <span class=" sort-icon-mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+                <path d="M3 12.5001L12.1667 12.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 7.5H8.83333" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 17.5H16.3333" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15.9166 2.5V12.5M15.9166 2.5C15.3331 2.5 14.2428 4.16192 13.8333 4.58333M15.9166 2.5C16.5001 2.5 17.5903 4.16192 17.9999 4.58333" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
             <select class="sort-select" v-model="filters.sort">
               <option value="date">Date posted</option>
               <option value="lowToHigh">Price: Low to High</option>
@@ -49,11 +73,26 @@
             </select>
           </div>
         </div>
+        <div class="divider-line-mobile" v-if="showControls"></div>
+          
+       
+        <!-- Mobile Filter Button -->
+        <button class="mobile-filter-btn" v-if="showControls" @click="showMobileFilter = true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+<path d="M3 5.83203H5.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 14.168H8" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.5 14.168H18" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13 5.83203H18" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.5 5.83203C5.5 5.05546 5.5 4.66718 5.62687 4.36089C5.79602 3.95251 6.12048 3.62806 6.52886 3.4589C6.83515 3.33203 7.22343 3.33203 8 3.33203C8.77657 3.33203 9.16483 3.33203 9.47117 3.4589C9.8795 3.62806 10.204 3.95251 10.3732 4.36089C10.5 4.66718 10.5 5.05546 10.5 5.83203C10.5 6.6086 10.5 6.99688 10.3732 7.30317C10.204 7.71155 9.8795 8.03601 9.47117 8.20516C9.16483 8.33203 8.77657 8.33203 8 8.33203C7.22343 8.33203 6.83515 8.33203 6.52886 8.20516C6.12048 8.03601 5.79602 7.71155 5.62687 7.30317C5.5 6.99688 5.5 6.6086 5.5 5.83203Z" stroke="black" stroke-width="1.5"/>
+<path d="M10.5 14.168C10.5 13.3914 10.5 13.0031 10.6268 12.6968C10.796 12.2885 11.1205 11.964 11.5288 11.7948C11.8352 11.668 12.2234 11.668 13 11.668C13.7766 11.668 14.1648 11.668 14.4712 11.7948C14.8795 11.964 15.204 12.2885 15.3732 12.6968C15.5 13.0031 15.5 13.3914 15.5 14.168C15.5 14.9446 15.5 15.3328 15.3732 15.6391C15.204 16.0475 14.8795 16.372 14.4712 16.5411C14.1648 16.668 13.7766 16.668 13 16.668C12.2234 16.668 11.8352 16.668 11.5288 16.5411C11.1205 16.372 10.796 16.0475 10.6268 15.6391C10.5 15.3328 10.5 14.9446 10.5 14.168Z" stroke="black" stroke-width="1.5"/>
+</svg>
+          Filter
+        </button>
       </div>
 
       <div class="ads-container">
-        <!-- Filters Section -->
-        <aside class="filters">
+        <!-- Filters Section (Sidebar, hidden on mobile) -->
+        <aside class="filters" v-if="showControls">
           <h2>Filters</h2>
 
           <!-- Rest of the filters -->
@@ -91,7 +130,7 @@
             </div>
           </div>
 
-          <div class="filter-section">
+          <!-- <div class="filter-section">
             <h3 @click="toggleSection('area')">Area (Sq.ft) <span class="arrow" :class="{ 'open': isOpen('area') }">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
                 <path d="M13 6.99995C13 6.99995 8.5811 1 7 1C5.4188 1 1 7 1 7" stroke="#161C2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -102,10 +141,55 @@
               <div>
                 <span>0</span>
                 <span>{{ filters.area }}</span>
+                <span>20000</span>
               </div>
             </div>
-          </div>
+          </div> -->
         </aside>
+
+        <!-- Mobile Filter Modal -->
+        <div v-if="showMobileFilter && showControls" class="mobile-filter-modal">
+          <div class="mobile-filter-content">
+            <div class="mobile-filter-header">
+              <span>Filters</span>
+              <button class="close-btn" @click="showMobileFilter = false">&times;</button>
+            </div>
+            <!-- Full filter form (same as sidebar) -->
+            <div class="filter-section">
+              <h3>Location</h3>
+              <div class="filter-options">
+                <div class="location-search" @click="openGoogleMap">
+                  <h2 v-if="!locationDetails">
+                    <span class="location-icon"><img src="/assets/images/locationIcon.svg" alt=""></span>select location
+                  </h2>
+                  <h2 v-else>
+                    <span class="location-icon"><img src="/assets/images/locationIcon.svg" alt=""></span>{{ locationDetails.address }}
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div class="filter-section">
+              <h3>Radius (km)</h3>
+              <input type="range" min="1" max="50" v-model="filters.radius" />
+              <div>
+                <span>1 km</span>
+                <span>{{ filters.radius }} km</span>
+                <span>50 km</span>
+              </div>
+            </div>
+            <!-- <div class="filter-section">
+              <h3>Area (Sq.ft)</h3>
+              <input type="range" min="0" max="20000" v-model="filters.area" />
+              <div>
+                <span>0</span>
+                <span>{{ filters.area }}</span>
+                <span>20000</span>
+              </div>
+            </div> -->
+            <!-- Add more filter fields as needed -->
+            <button class="apply-btn" @click="applyFilters(); showMobileFilter = false">Apply</button>
+          </div>
+        </div>
 
         <!-- Main Content Section -->
         <main class="main-content">
@@ -262,7 +346,7 @@
                   <span>{{ filters.area }} sq.ft</span>
                   <button @click="clearFilter('area')" class="clear-filter">×</button>
                 </div>
-                <button @click="resetFilters" class="clear-all-button">Clear All</button>
+                <button @click="clearAllAndGoToCategory" class="clear-all-button">Clear All</button>
               </div>
             </div>
 
@@ -375,8 +459,7 @@ export default {
         category: null,
         subCategory: [],
         budget: { min: 0, max: 10000000 },
-        area: 20000,
-        radius: 10,
+        radius: 25,
         sort: "date",
         type: "all_ads",
         coordinates: null,
@@ -388,8 +471,7 @@ export default {
         category: null,
         subCategory: [],
         budget: { min: 0, max: 10000000 },
-        area: 20000,
-        radius: 10,
+        radius: 25,
         sort: "date",
         type: "all_ads",
         coordinates: null,
@@ -427,6 +509,7 @@ export default {
       currentSubCategory: null,
       isDragging: false,
       debounceTimer: null,
+      showMobileFilter: false,
     };
   },
   async mounted() {
@@ -506,18 +589,67 @@ export default {
     // Add event listeners for range inputs
     const rangeInputs = document.querySelectorAll('input[type="range"]');
     rangeInputs.forEach(input => {
-      input.style.setProperty('--value-percent', (input.value - input.min) / (input.max - input.min) * 100 + '%');
+      // Set initial value
+      const min = parseFloat(input.min);
+      const max = parseFloat(input.max);
+      const val = parseFloat(input.value);
+      const percent = ((val - min) / (max - min)) * 100;
+      input.style.setProperty('--value-percent', percent + '%');
       
+      // Add input event listener
+      input.addEventListener('input', (e) => {
+        const min = parseFloat(e.target.min);
+        const max = parseFloat(e.target.max);
+        const val = parseFloat(e.target.value);
+        const percent = ((val - min) / (max - min)) * 100;
+        e.target.style.setProperty('--value-percent', percent + '%');
+      });
+      
+      // Add mousedown/touchstart event listeners
       input.addEventListener('mousedown', this.handleRangeStart);
       input.addEventListener('touchstart', this.handleRangeStart);
       
+      // Add mouseup/touchend event listeners
       input.addEventListener('mouseup', this.handleRangeEnd);
       input.addEventListener('touchend', this.handleRangeEnd);
-      
-      input.addEventListener('input', (e) => {
-        e.target.style.setProperty('--value-percent', (e.target.value - e.target.min) / (e.target.max - e.target.min) * 100 + '%');
-      });
     });
+    this.refreshRangeInputs();
+
+    // Restore filter state from localStorage if present
+    const savedState = localStorage.getItem('adsFilterState');
+    if (savedState) {
+      try {
+        const state = JSON.parse(savedState);
+        this.filters = state.filters || this.filters;
+        this.selectedCategory = state.selectedCategory || null;
+        this.selectedSubCategory = state.selectedSubCategory || null;
+        this.selectedSubSubCategory = state.selectedSubSubCategory || null;
+        this.selectedType = state.selectedType || null;
+        this.formSubmitted = state.formSubmitted || false;
+        this.currentStep = state.currentStep || 1;
+        // Optionally restore locationDetails, etc.
+        if (state.locationDetails) this.locationDetails = state.locationDetails;
+
+        // Fetch subcategories if we have a selected category
+        if (this.selectedCategory) {
+          await this.fetchSubCategories(this.selectedCategory);
+          // If we have a selected subcategory, find and set the currentSubCategory
+          if (this.selectedSubCategory) {
+            this.currentSubCategory = this.subCategories.find(
+              sub => sub.id === this.selectedSubCategory
+            );
+          }
+        }
+
+        // If we restored to ads list, fetch ads
+        if (this.formSubmitted) {
+          await this.applyFilters();
+        }
+      } catch (e) {
+        // If error, clear the saved state
+        localStorage.removeItem('adsFilterState');
+      }
+    }
   },
   methods: {
     scrollToTop() {
@@ -869,7 +1001,8 @@ export default {
         }
         
         if (this.selectedType) {
-          params.append('type', this.selectedType);
+          params.append('type', this.selectedType=='seller' ? 'Seller' :this.selectedType=='recruiter' ? 
+          'Recruiter' :this.selectedType=='buyer' ? 'Buyer' :'Applicant');
         }
 
         // Add user_id if present
@@ -960,6 +1093,8 @@ export default {
         
         if (this.filters.type) {
           params.append('type', this.filters.type);
+          params.append('type', this.filters.type=='seller' ? 'Seller' :this.filters.type=='recruiter' ? 
+          'Recruiter' :this.filters.type=='buyer' ? 'Buyer' :'Applicant');
         }
 
         // Add user_id if present
@@ -989,50 +1124,43 @@ export default {
         console.error("Error fetching page:", error);
       }
     },
-    resetFilters() {
-      // Reset all filters to default values
+    resetFilters(clearSelection = false) {
+      // If clearSelection is true, also clear category/subcategory/sub-subcategory
       this.filters = JSON.parse(JSON.stringify(this.defaultFilters));
-      this.subCategories = []; // Clear subcategories
-      this.currentPage = 1; // Reset to first page
-      this.hasNextPage = false; // Reset hasNextPage
-      this.locationDetails = null; // Clear location details
-      this.filters.coordinates = null; // Clear coordinates
-      this.selectedCategory = null;
-      this.selectedSubCategory = null;
-      this.selectedType = null;
-      this.selectedSubSubCategory = null;
-      this.currentStep = 1;
+      if (clearSelection) {
+        this.selectedCategory = null;
+        this.selectedSubCategory = null;
+        this.selectedSubSubCategory = null;
+        this.currentStep = 1;
+      }
+      this.locationDetails = null;
+      this.showMobileFilter = false;
+      this.refreshRangeInputs();
+    },
+    clearAllAndGoToCategory() {
+      // Clear all filters and selections, go to category selection page
+      this.resetFilters(true);
       this.formSubmitted = false;
-
-      // Clear URL parameters
-      const query = { ...this.$route.query };
-      delete query.filterState;
-      delete query.page;
-      delete query.category;
-      delete query.sub_category;
-      delete query.type;
-      delete query.search;
-      delete query.radius;
-      delete query.area;
-      delete query.sort;
-      delete query.coordinates;
-      delete query.locationDetails;
-      delete query.selectedCategory;
-      delete query.selectedSubCategory;
-      delete query.selectedType;
-      delete query.selectedSubSubCategory;
-      delete query.currentStep;
-      delete query.formSubmitted;
-      delete query.currentPage;
-
-      // Update URL without filter state
-      this.$router.replace({ 
-        path: this.$route.path,
-        query: query
-      });
-
-      // Apply the reset filters
-      this.applyFilters();
+      this.currentStep = 1;
+      this.clearFilterState();
+      // Reset radius to default value
+      this.filters.radius = this.defaultFilters.radius;
+    },
+    goToAdsList() {
+      // Called when moving forward to ads list
+      // Keep only the selection, clear other filters
+      const keep = {
+        category: this.selectedCategory,
+        subCategory: this.selectedSubCategory ? [this.selectedSubCategory] : [],
+        type: this.selectedType,
+      };
+      this.filters = {
+        ...JSON.parse(JSON.stringify(this.defaultFilters)),
+        ...keep
+      };
+      this.refreshRangeInputs();
+      this.formSubmitted = true;
+      this.saveFilterState();
     },
     backToForm() {
       if (this.selectedSubSubCategory) {
@@ -1075,6 +1203,9 @@ export default {
         path: this.$route.path,
         query: query
       });
+
+      // Reset radius to default value
+      this.filters.radius = this.defaultFilters.radius;
 
       this.scrollToTop();
     },
@@ -1319,6 +1450,36 @@ export default {
         this.applyFilters();
       }, 500);
     },
+    refreshRangeInputs() {
+      // Update the background fill of all range inputs to match their value
+      this.$nextTick(() => {
+        const rangeInputs = document.querySelectorAll('input[type="range"]');
+        rangeInputs.forEach(input => {
+          const min = parseFloat(input.min);
+          const max = parseFloat(input.max);
+          const val = parseFloat(input.value);
+          const percent = ((val - min) / (max - min)) * 100;
+          input.style.setProperty('--value-percent', percent + '%');
+        });
+      });
+    },
+    saveFilterState() {
+      // Save current filter and selection state to localStorage
+      const state = {
+        filters: this.filters,
+        selectedCategory: this.selectedCategory,
+        selectedSubCategory: this.selectedSubCategory,
+        selectedSubSubCategory: this.selectedSubSubCategory,
+        selectedType: this.selectedType,
+        formSubmitted: this.formSubmitted,
+        currentStep: this.currentStep,
+        locationDetails: this.locationDetails,
+      };
+      localStorage.setItem('adsFilterState', JSON.stringify(state));
+    },
+    clearFilterState() {
+      localStorage.removeItem('adsFilterState');
+    },
   },
   computed: {
     pageTitle() {
@@ -1344,7 +1505,11 @@ export default {
         this.locationDetails !== null ||
         this.selectedSubSubCategory !== null
       );
-    }
+    },
+    showControls() {
+      // Show controls only when on the ads list page (not on selection steps)
+      return this.formSubmitted || this.isSpecialPage;
+    },
   },
   watch: {
     'filters.sort': {
@@ -1356,14 +1521,21 @@ export default {
     },
     'filters.radius': {
       handler(newValue, oldValue) {
-        if (newValue !== oldValue && !this.isDragging) {
-          // Only update the visual style while dragging
-          const rangeInput = document.querySelector('input[type="range"][v-model="filters.radius"]');
-          if (rangeInput) {
-            rangeInput.style.setProperty('--value-percent', (newValue - rangeInput.min) / (rangeInput.max - rangeInput.min) * 100 + '%');
-          }
+        if (newValue !== oldValue) {
+          this.$nextTick(() => {
+            // Update the visual style for all range inputs
+            const rangeInputs = document.querySelectorAll('input[type="range"]');
+            rangeInputs.forEach(input => {
+              const min = parseFloat(input.min);
+              const max = parseFloat(input.max);
+              const val = parseFloat(newValue);
+              const percent = ((val - min) / (max - min)) * 100;
+              input.style.setProperty('--value-percent', percent + '%');
+            });
+          });
         }
-      }
+      },
+      immediate: true
     },
     'filters.area': {
       handler(newValue, oldValue) {
@@ -1389,7 +1561,22 @@ export default {
           this.applyFilters();
         }
       }
-    }
+    },
+    currentStep(newVal, oldVal) {
+      // Refresh range inputs on step change
+      this.refreshRangeInputs();
+    },
+    filters: {
+      handler() {
+        if (this.formSubmitted) this.saveFilterState();
+      },
+      deep: true
+    },
+    selectedCategory() { if (this.formSubmitted) this.saveFilterState(); },
+    selectedSubCategory() { if (this.formSubmitted) this.saveFilterState(); },
+    selectedSubSubCategory() { if (this.formSubmitted) this.saveFilterState(); },
+    selectedType() { if (this.formSubmitted) this.saveFilterState(); },
+    formSubmitted() { if (this.formSubmitted) this.saveFilterState(); },
   },
   beforeDestroy() {
     // Clean up event listeners
@@ -1404,7 +1591,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .ads-page{
   padding: 0px 5%;
 }
@@ -1481,8 +1668,10 @@ export default {
   padding: 8px 12px;
   border: 1px solid #DEE1E6;
   border-radius: 6px;
-  font-size: 14px;
-  color: #161C2D;
+  font-size: 16px;
+  outline: none;
+  color: #000;
+    font-weight: 600;
   background-color: white;
 }
 
@@ -1695,7 +1884,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 3000;
 }
 
 .map-popup {
@@ -2412,5 +2601,179 @@ input[type="range"]::-ms-fill-upper {
 }
 .sort-select{
   cursor: pointer;
+}
+.mobile-filter-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: #fff;
+  color: #000;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 16px;
+}
+.search-container-mobile{
+  display: none;
+  position: relative;
+}
+.search-icon-mobile{
+  position: absolute;
+    right: 12px;
+    top: 21px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+.divider-line-mobile{
+  display: none;
+}
+@media (max-width: 1024px){
+.page-title{
+  display: none;
+}
+}
+@media (max-width: 700px) {
+.header-actions{
+  display:grid;
+  gap: 12px;
+}
+.search-container{
+  display: none;
+}
+.search-container-mobile{
+  display: block;
+}
+.sort-section {
+span{
+  display: none;
+}
+.ads-page{
+  padding: 0px 0%!important;
+}
+}
+.page-header{
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  padding: 4px;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+.step-header{
+  margin-top: 1.5rem;
+}
+.arrow-icon{
+  display: none;
+}
+.sort-icon-mobile{
+  display: block;
+  padding-left: 12px;
+}
+.sort-icon-desktop{
+  display: none;
+}
+.sort-section select{
+  border: none;
+}
+.divider-line-mobile{
+  display: block;
+  border-right: 2px solid rgba(0, 0, 0, 0.10);
+    height: 40px;
+}
+.ads-grid{
+  justify-self: center;
+}
+.card-section{
+  max-width: 366px;
+  display: block!important;
+  text-align-last: center;
+}
+.category-card-title{
+  text-align: center;
+}
+}
+@media (max-width: 768px) {
+  .filters {
+    display: none;
+  }
+  .mobile-filter-btn {
+    display: flex;
+  }
+  .mobile-filter-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  .mobile-filter-content {
+    background: #fff;
+    border-radius: 24px;
+    width: 90vw;
+    max-width: 400px;
+    padding: 32px 24px 24px 24px;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .mobile-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #47509B;
+    cursor: pointer;
+    margin-left: 16px;
+  }
+  .apply-btn {
+    background: #47509B;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 0;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 16px;
+    cursor: pointer;
+    width: 100%;
+  }
+}
+.sort-label-desktop {
+  display: inline;
+}
+.sort-icon-mobile {
+  display: none;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+@media (max-width: 700px) {
+  .sort-label-desktop {
+    display: none;
+  }
+  .sort-icon-mobile {
+    display: inline-block!important;
+  }
+  .sort-section select {
+    background: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    padding-right: 0 !important;
+  }
 }
 </style>

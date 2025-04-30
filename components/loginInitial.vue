@@ -612,4 +612,15 @@ export default {
 .login-btn{
     margin-bottom: 24px;
 }
+@media (max-width: 1024px) {
+  .carousel-section{
+    display: none!important;
+  }
+  .center-section {
+    width: 100%!important;
+  }
+  .login-inputs{
+    justify-content: center!important;
+  }
+}
 </style>

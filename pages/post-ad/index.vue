@@ -49,7 +49,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 1:</span>
                   <div class="step-title">Select Category</div>
                 </div>
@@ -73,7 +73,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 2:</span>
                   <div class="step-title">Select Ad Type</div>
                 </div>
@@ -97,7 +97,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 3:</span>
                   <div class="step-title">Select Sub Category</div>
                 </div>
@@ -123,7 +123,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 3.5:</span>
                   <div class="step-title">Select Sub-Sub-Category</div>
                 </div>
@@ -148,7 +148,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 4:</span>
                   <div class="step-title">Additional Info</div>
                 </div>
@@ -172,7 +172,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 5:</span>
                   <div class="step-title">Personal Informations</div>
                 </div>
@@ -196,7 +196,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 6:</span>
                   <div class="step-title">Select Subscription Plan</div>
                 </div>
@@ -219,7 +219,7 @@
                     ></div>
                   </div>
                 </div>
-                <div class="justify-items-left">
+                <div class="justify-items-left stepper-content">
                   <span class="step-count">Step 7:</span>
                   <div class="step-title">Review & Publish</div>
                 </div>
@@ -235,7 +235,7 @@
             <div class="flex flex-col items-center h-48">
               <div class="content-box">
                 <section class="category-section py-12 px-6 bg-gray-50">
-                  <div class="max-w-6xl mx-auto">
+                  <div class="">
                     <!-- Header -->
 
                     <!-- Card List -->
@@ -274,7 +274,7 @@
                           >
                             <path
                               d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
-                              stroke="#161C2D"
+                              stroke="#FFFFFF"
                               stroke-width="1.5"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -316,34 +316,35 @@
                     <!-- Header -->
 
                     <!-- Card List -->
-                    <div class="d-grid grid-cols-1 md:grid-cols-2 grid-section">
+                    <div class="d-flex justify-content-center gap-4 type-card-section" style="height: 425px; align-items: center;">
                       <div
                         v-for="card in step2Cards"
                         :key="card.id"
                         :class="[
-                          'd-flex items-start bg-white p-4 card-section align-items-center gap-3 justify-space-between',
+                          'd-flex items-start bg-white card-section align-items-center gap-3 justify-space-between',
                           { 'selected-card': selectedStep2Card === card.id },
                         ]"
                         @click="selectStep2Card(card)"
+                        style="width: 440px; height: 220px;border-radius: 16px;"
                       >
-                        <!-- Image -->
-                        <div class="d-flex">
+                        <!-- Content Block -->
+                        <div class="d-flex flex-column align-items-center justify-content-center" style="width: 100%;">
+                          <!-- Image -->
                           <img
                             src="/assets/images/ohtel_logo.png"
                             alt="Card Image"
-                            class="w-28 h-20 object-cover-buyer-seller"
+                            class="w-28 h-20 object-cover-buyer-seller mb-3"
                           />
-                          <!-- Content -->
-                          <div class="ml-4 text-left">
-                            <h3 class="category-card-title">
-                              {{ card.title }}
-                            </h3>
-                            <p class="category-subtitle">
-                              {{ card.description }}
-                            </p>
-                          </div>
+                          <!-- Title -->
+                          <h3 class="category-card-title text-center mb-2">
+                            {{ card.title }}
+                          </h3>
+                          <!-- Description -->
+                          <p class="category-subtitle text-center">
+                            {{ card.description }}
+                          </p>
                         </div>
-                        <div>
+                        <div class="arrow-icon-pink-color" style="height: 100%; background-color: #A20584; display: flex; align-items: center; padding: 0 10px; border-top-right-radius: 16px; border-bottom-right-radius: 16px;">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="32"
@@ -353,7 +354,7 @@
                           >
                             <path
                               d="M12.0001 8C12.0001 8 20 13.8919 20 16C20 18.1083 12 24 12 24"
-                              stroke="#161C2D"
+                              stroke="#FFFFFF"
                               stroke-width="1.5"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -3015,7 +3016,7 @@ export default {
 }
 .selected-card {
   border: 1px solid #161c2d !important;
-  padding: 9px;
+  // padding: 9px;
 }
 .card-subcategory {
   border: 1px solid #ffffff !important;
@@ -3084,14 +3085,35 @@ export default {
 
 @media (max-width: 945px) {
   .main-section {
-    width: fit-content;
+    width: 100%;
+    overflow-x: hidden;
   }
   .div-grid {
     grid-template-columns: repeat(1, 1fr);
   }
-  // .main-div{
-  //     width: fit-content;
-  // }
+  .main-div {
+    width: 100%;
+    padding: 1rem;
+  }
+  .card-section {
+    width: 100% !important;
+    flex-direction: column;
+    text-align: center;
+  }
+  .category-section {
+    padding: 1rem !important;
+  }
+  .content-box {
+    width: 100%;
+  }
+  .step-content {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .stepper-content-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+  }
 }
 // .address-class{
 //     width: 67.5%;
@@ -3411,6 +3433,46 @@ export default {
   .proceed-button {
     background-color: #4CAF50;
     color: white;
+  }
+}
+@media (max-width: 1024px) {
+  .stepper-content-wrapper {
+   display: block;
+  }
+  .stepper-content {
+    display: none;
+  }
+  .custom-stepper{
+    flex-direction: row;
+    margin-bottom: 25px;
+  }
+  .vertical-progress-bar{
+    display: none;
+  }
+  .step-line{
+    width: 50px;
+    height: 4px;
+    margin-left:0px;
+    align-self: center;
+    border-bottom-left-radius: 0px; 
+     border-bottom-right-radius: 0px;
+  }
+  .custom-stepper{
+    justify-content: center;
+  }
+  .arrow-icon-pink-color{
+    display: none!important;
+  }
+  .type-card-section{
+    height: auto!important;
+  }
+  .category-section .category-subtitle{
+    font-size: 12px;
+  }
+}
+@media (max-width: 362px) {
+  .object-cover{
+    width: 210px;
   }
 }
 </style>

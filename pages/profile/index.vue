@@ -5,7 +5,7 @@
       <div class="user-info mb-3">
         <div class="d-flex justify-content-between mb-3">
             <h2>User Info</h2>
-            <div class="d-flex gap-4">
+            <div class="d-flex gap-4 desktop-buttons">
                 <button class="delete-btn" @click="handleDelete">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
 <path d="M16.25 4.58398L15.7336 12.9382C15.6016 15.0727 15.5357 16.1399 15.0007 16.9072C14.7361 17.2866 14.3956 17.6067 14.0006 17.8473C13.2017 18.334 12.1325 18.334 9.99392 18.334C7.8526 18.334 6.78192 18.334 5.98254 17.8464C5.58733 17.6054 5.24667 17.2847 4.98223 16.9047C4.4474 16.1362 4.38287 15.0674 4.25384 12.93L3.75 4.58398" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
@@ -53,6 +53,23 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- Mobile Buttons -->
+      <div class="mobile-buttons">
+        <button class="delete-btn" @click="handleDelete">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M16.25 4.58398L15.7336 12.9382C15.6016 15.0727 15.5357 16.1399 15.0007 16.9072C14.7361 17.2866 14.3956 17.6067 14.0006 17.8473C13.2017 18.334 12.1325 18.334 9.99392 18.334C7.8526 18.334 6.78192 18.334 5.98254 17.8464C5.58733 17.6054 5.24667 17.2847 4.98223 16.9047C4.4474 16.1362 4.38287 15.0674 4.25384 12.93L3.75 4.58398" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2.5 4.58268H17.5M13.3797 4.58268L12.8109 3.40912C12.433 2.62957 12.244 2.23978 11.9181 1.99669C11.8458 1.94277 11.7693 1.8948 11.6892 1.85327C11.3283 1.66602 10.8951 1.66602 10.0287 1.66602C9.14067 1.66602 8.69667 1.66602 8.32973 1.86112C8.24842 1.90436 8.17082 1.95427 8.09774 2.01032C7.76803 2.26327 7.58386 2.66731 7.21551 3.4754L6.71077 4.58268" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M7.91602 13.75V8.75" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12.084 13.75V8.75" stroke="#F55959" stroke-width="1.5" stroke-linecap="round"/>
+          </svg> Delete
+        </button>
+        <button class="edit-btn" @click="openEditPopup">
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+            <path d="M13.1791 4.98597L14.3472 3.81784C14.9923 3.1727 16.0383 3.1727 16.6835 3.81784C17.3286 4.46298 17.3286 5.50897 16.6835 6.15411L15.5153 7.32224M13.1791 4.98597L6.31751 11.8476C5.44643 12.7186 5.01087 13.1542 4.71429 13.6849C4.41771 14.2157 4.11932 15.4689 3.83398 16.6673C5.03239 16.382 6.28564 16.0836 6.81639 15.787C7.34714 15.4904 7.78268 15.0549 8.65378 14.1838L15.5153 7.32224M13.1791 4.98597L15.5153 7.32224" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.66602 16.666H14.666" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg> Edit
+        </button>
       </div>
       <div class="ads-section mt-3 mb-3">
         <FeaturedAds heading="My Ads" :isProfilePage="true" />
@@ -550,13 +567,15 @@ export default {
 
 .left-section {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .middle-section {
   flex: 2;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
 }
 
 .right-section {
@@ -568,6 +587,9 @@ export default {
   height: 150px;
   border-radius: 50%;
   margin-bottom: 10px;
+  object-fit: cover;
+  border: 3px solid #47509B;
+  box-shadow: 0 4px 12px rgba(71, 80, 155, 0.2);
 }
 
 .form-row {
@@ -576,13 +598,126 @@ export default {
 
 .styled-input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 14px;
-  border: 2px solid #ddd;
+  border: 2px solid #DEE1E6;
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  background-color: #F5F6FF;
 }
+
+.styled-input:focus {
+  border-color: #47509B;
+  box-shadow: 0 0 0 3px rgba(71, 80, 155, 0.1);
+}
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 2% 5%;
+  }
+
+  .user-info {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .user-info h2 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .user-details {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 32px;
+    padding: 0 16px;
+  }
+
+  .left-section {
+    width: 100%;
+    padding: 24px 0;
+    border-bottom: 1px solid #DEE1E6;
+  }
+
+  .middle-section {
+    width: 100%;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid #DEE1E6;
+  }
+
+  .right-section {
+    width: 100%;
+    align-items: center;
+    padding: 24px 0;
+  }
+
+  .form-row {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .form-row label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .styled-input {
+    text-align: center;
+    font-size: 16px;
+    padding: 12px 16px;
+    background-color: #F5F6FF;
+    border: 2px solid #DEE1E6;
+  }
+
+  .user-photo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 16px;
+  }
+
+  .user-info .d-flex {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .mobile-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 24px 16px;
+    justify-content: center;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .mobile-buttons .delete-btn,
+  .mobile-buttons .edit-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .desktop-buttons {
+    display: none!important;
+  }
+}
+@media (min-width: 768px){
+  .mobile-buttons{
+    display: none!important;
+  }
+}
+
 .delete-btn{
     padding: 10px;
     border-radius: 4px;
@@ -942,4 +1077,10 @@ width: 120px;
 .otp-input.error {
   border-color: #F55959;
 }
+
+.desktop-buttons {
+  display: flex;
+}
+
+
 </style>
